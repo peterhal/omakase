@@ -17,7 +17,7 @@ package omakase.syntax.tokens;
 import omakase.util.SourceRange;
 
 /**
- * An identifier Token.
+ * A token representing an identifier.
  */
 public class IdentifierToken extends Token {
   public final String value;

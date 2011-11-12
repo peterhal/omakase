@@ -113,7 +113,7 @@ public class Scanner {
       buffer.append(nextChar());
     }
     String value = buffer.toString();
-    TokenKind keyword = Keywords.get(value);
+    TokenKind keyword = TokenKind.getKeyword(value);
     if (keyword != null) {
       return createToken(keyword, startIndex);
     }

@@ -14,6 +14,10 @@
 
 package omakase.syntax.tokens;
 
+import com.google.common.collect.ImmutableMap;
+
+import java.util.EnumSet;
+
 /**
  * The kinds of Tokens.
  */
@@ -71,4 +75,18 @@ public enum TokenKind {
   public String toString() {
     return value;
   }
+
+  private static final ImmutableMap<String, TokenKind> keywords;
+  static {
+    ImmutableMap.Builder<String, TokenKind> map = ImmutableMap.builder();
+    for (TokenKind keyword : EnumSet.range(TokenKind.CLASS, TokenKind.VAR)) {
+      map.put(keyword.value, keyword);
+    }
+    keywords = map.build();
+  }
+
+  public static TokenKind getKeyword(String value) {
+    return keywords.get(value);
+  }
+
 }
