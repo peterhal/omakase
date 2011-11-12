@@ -119,15 +119,20 @@ public class Scanner {
     return new IdentifierToken(getRange(startIndex), value);
   }
 
-
   private Token scanNumber(int startIndex, char firstDigit) {
-    long value = digitToValue(firstDigit);
-    char ch;
-    while (isDigit(ch = peekChar())) {
-      value *= 10;
-      value += digitToValue(ch);
+    buffer.setLength(0);
+    buffer.append(firstDigit);
+    while (isDigit(peekChar())) {
+      buffer.append(nextChar());
     }
-    return new NumericLiteralToken(getRange(startIndex), (int) value);
+    int value;
+    try {
+      value = Integer.parseInt(buffer.toString());
+    } catch (NumberFormatException e) {
+      reportError(startIndex, "Integer literal too large.");
+      value = 0;
+    }
+    return new NumericLiteralToken(getRange(startIndex), value);
   }
 
   private Token scanStringLiteral(int startIndex) {
