@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package omakase.syntax;
+package omakase.syntax.tokens;
 
 import com.google.common.collect.ImmutableMap;
 

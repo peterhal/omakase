@@ -17,7 +17,7 @@ package omakase.printtokens;
 import com.google.common.collect.ImmutableList;
 import com.google.common.io.Files;
 import omakase.syntax.Scanner;
-import omakase.syntax.Token;
+import omakase.syntax.tokens.Token;
 import omakase.util.ConsoleErrorReporter;
 import omakase.util.SourceFile;
 

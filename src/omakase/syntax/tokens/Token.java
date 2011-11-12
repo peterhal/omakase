@@ -12,23 +12,24 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package omakase.syntax;
+package omakase.syntax.tokens;
 
 import omakase.util.SourceRange;
 
 /**
- * An identifier Token.
+ * A token in the omakase language.
  */
-public class IdentifierToken extends Token {
-  public final String value;
+public class Token {
+  public final TokenKind kind;
+  public final SourceRange location;
 
-  public IdentifierToken(SourceRange range, String value) {
-    super(TokenKind.IDENTIFIER, range);
-    this.value = value;
+  public Token(TokenKind kind, SourceRange location) {
+    this.kind = kind;
+    this.location = location;
   }
 
   @Override
   public String toString() {
-    return String.format("%s: %s", location, value);
+    return String.format("%s: %s", location, kind);
   }
 }

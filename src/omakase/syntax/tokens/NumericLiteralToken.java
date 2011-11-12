@@ -12,23 +12,23 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package omakase.syntax;
+package omakase.syntax.tokens;
 
 import omakase.util.SourceRange;
 
 /**
- * A string literal token.
+ * A numeric literal token.
  */
-public class StringLiteralToken extends Token {
-  public final String value;
+public class NumericLiteralToken extends Token {
+  public final int value;
 
-  public StringLiteralToken(SourceRange range, String value) {
-    super(TokenKind.STRING, range);
+  public NumericLiteralToken(SourceRange range, int value) {
+    super(TokenKind.NUMBER, range);
     this.value = value;
   }
 
   @Override
   public String toString() {
-    return String.format("%s: \"%s\"", location, value);
+    return String.format("%s: %d", location, value);
   }
 }

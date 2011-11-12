@@ -28,7 +28,7 @@ public class SourceLocation {
 
   @Override
   public String toString() {
-    return String.format("%s (%d, %d)", file.name, line(), column());
+    return String.format("%s (%d, %d)", file.name, line() + 1, column() + 1);
   }
 
   public int line() {
