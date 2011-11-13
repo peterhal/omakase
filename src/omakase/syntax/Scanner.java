@@ -44,6 +44,13 @@ public class Scanner {
     return tokens.build();
   }
 
+  /**
+   * Scans a source file into tokens.
+   */
+  public static ImmutableList<Token> scanFile(ErrorReporter reporter, SourceFile file) {
+    return new Scanner(reporter, file).scanAll();
+  }
+
   private Token scanToken() {
     skipWhitespaceAndComments();
     int startIndex = index;

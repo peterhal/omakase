@@ -17,7 +17,7 @@ package omakase.syntax.tokens;
 import omakase.util.SourceRange;
 
 /**
- * A string literal token.
+ * A token representing a quoted string.
  */
 public class StringLiteralToken extends Token {
   public final String value;

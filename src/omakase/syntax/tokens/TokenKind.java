@@ -65,7 +65,19 @@ public enum TokenKind {
 
   ;
 
-  public final String value;
+  /**
+   * Map from string to TokenKind containing all the keywords.
+   */
+  private static final ImmutableMap<String, TokenKind> keywords;
+  static {
+    ImmutableMap.Builder<String, TokenKind> map = ImmutableMap.builder();
+    for (TokenKind keyword : EnumSet.range(TokenKind.CLASS, TokenKind.VAR)) {
+      map.put(keyword.value, keyword);
+    }
+    keywords = map.build();
+  }
+
+  private final String value;
 
   TokenKind(String value) {
     this.value = value;
@@ -76,17 +88,15 @@ public enum TokenKind {
     return value;
   }
 
-  private static final ImmutableMap<String, TokenKind> keywords;
-  static {
-    ImmutableMap.Builder<String, TokenKind> map = ImmutableMap.builder();
-    for (TokenKind keyword : EnumSet.range(TokenKind.CLASS, TokenKind.VAR)) {
-      map.put(keyword.value, keyword);
-    }
-    keywords = map.build();
+  public String value() {
+    return value;
   }
 
+  /**
+   * Returns the TokenKind of a string if the string is a keyword.
+   * Returns null if the value is not a keyword.
+   */
   public static TokenKind getKeyword(String value) {
     return keywords.get(value);
   }
-
 }

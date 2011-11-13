@@ -17,7 +17,7 @@ package omakase.syntax.tokens;
 import omakase.util.SourceRange;
 
 /**
- * A numeric literal token.
+ * A token representing a number. Currently limited to integer values.
  */
 public class NumericLiteralToken extends Token {
   public final int value;
