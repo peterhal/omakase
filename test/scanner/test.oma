@@ -1,0 +1,9 @@
+/* multi-line
+ * commment
+ */ 
+class Program {
+  // single-line comment
+  main() {
+  }
+}
+

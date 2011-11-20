@@ -100,7 +100,7 @@ public class Scanner {
     case '?': return createToken(TokenKind.QUESTION, startIndex);
     case ':': return createToken(TokenKind.COLON, startIndex);
     case '/': return createToken(TokenKind.SLASH, startIndex);
-    case '\"': return scanStringLiteral(index);
+    case '\"': return scanStringLiteral(startIndex);
     case '0': case '1': case '2': case '3': case '4':
     case '5': case '6': case '7': case '8': case '9':
       return scanNumber(startIndex, ch);
@@ -182,7 +182,7 @@ public class Scanner {
 
   private char scanHexEscapeDigits(int startIndex) {
     if (!isHexDigit(peekChar())) {
-      reportError(startIndex, "Missing hex digit in hex escape sequence.");
+      reportError(index, "Missing hex digit in hex escape sequence.");
       return '\0';
     }
     int digits = 0;

@@ -46,8 +46,10 @@ public class Program {
 
     SourceFile file = new SourceFile(filename, source);
     ImmutableList<Token> tokens = Scanner.scanFile(ConsoleErrorReporter.reporter, file);
-    for (Token token : tokens) {
-      System.out.println(token.toString());
+    if (!ConsoleErrorReporter.reporter.hadError()) {
+      for (Token token : tokens) {
+        System.out.println(token.toString());
+      }
     }
   }
 }

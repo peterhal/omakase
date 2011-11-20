@@ -18,7 +18,10 @@ package omakase.util;
  * A channel for reporting errors, warnings and messages to the user.
  */
 public abstract class ErrorReporter {
+  private boolean hadError;
+
   public void reportError(SourceLocation location, String format, Object... args) {
+    this.hadError = true;
     String message = String.format(format, args);
     if (location != null) {
       message = String.format("%s: %s", location, message);
@@ -27,4 +30,12 @@ public abstract class ErrorReporter {
   }
 
   public abstract void reportMessage(String message);
+
+  public boolean hadError() {
+    return hadError;
+  }
+
+  public void clearError() {
+    hadError = false;
+  }
 }
