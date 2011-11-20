@@ -19,12 +19,15 @@ import com.google.common.collect.ImmutableMap;
 import java.util.EnumSet;
 
 /**
- * The kinds of Tokens.
+ * The kinds of Tokens. Tokens may be identifiers, keywords, punctuation or literals.
  */
 public enum TokenKind {
   IDENTIFIER("identifier"),
+
   END_OF_FILE("End of file"),
   ERROR("error"),
+
+  // literals
   NUMBER("number literal"),
   STRING("string literal"),
 

@@ -17,7 +17,11 @@ package omakase.syntax.tokens;
 import omakase.util.SourceRange;
 
 /**
- * A token in the omakase language.
+ * A token in the omakase language. Tokens represent identifiers, keywords, punctuation or literals.
+ * Tokens have a kind and a source range. Some tokens contain additional information which is
+ * available in derived classes.
+ *
+ * Tokens are immutable.
  */
 public class Token {
   public final TokenKind kind;

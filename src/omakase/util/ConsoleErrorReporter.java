@@ -15,7 +15,7 @@
 package omakase.util;
 
 /**
- * An error reporter that reports errors to the console.
+ * An error reporter that reports errors to the stderr.
  */
 public class ConsoleErrorReporter extends ErrorReporter {
   private ConsoleErrorReporter() {}

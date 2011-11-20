@@ -14,14 +14,25 @@
 
 package omakase.util;
 
+import com.google.common.base.Preconditions;
+
 /**
- * A range of characters in a source file.
+ * A range of characters in a source file. Represented as the start and ending location.
+ *
+ * Source ranges are immutable.
  */
 public class SourceRange {
   public final SourceLocation start;
   public final SourceLocation end;
 
+  /**
+   * Start and end of a source range must be in the same file.
+   * Start offset must be before the end offset in a source range.
+   */
   public SourceRange(SourceLocation start, SourceLocation end) {
+    Preconditions.checkArgument(start.file == end.file);
+    Preconditions.checkArgument(start.offset <= end.offset);
+
     this.start = start;
     this.end = end;
   }

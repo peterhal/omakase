@@ -20,6 +20,12 @@ package omakase.util;
 public abstract class ErrorReporter {
   private boolean hadError;
 
+  /**
+   * Reports an error at a given source location.
+   * @param location The location to report the error at.
+   * @param format A format string for the error message.
+   * @param args The arguments to the format string.
+   */
   public void reportError(SourceLocation location, String format, Object... args) {
     this.hadError = true;
     String message = String.format(format, args);
@@ -31,10 +37,16 @@ public abstract class ErrorReporter {
 
   public abstract void reportMessage(String message);
 
+  /**
+   * @return Has an error been reported since the last time that clearError has been called.
+   */
   public boolean hadError() {
     return hadError;
   }
 
+  /**
+   * Resets the hadError flag.
+   */
   public void clearError() {
     hadError = false;
   }

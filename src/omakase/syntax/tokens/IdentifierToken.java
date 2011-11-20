@@ -17,7 +17,9 @@ package omakase.syntax.tokens;
 import omakase.util.SourceRange;
 
 /**
- * A token representing an identifier.
+ * A token representing an identifier. Identifiers are the user defined names in the program.
+ *
+ * IdentifierTokens are immutable.
  */
 public class IdentifierToken extends Token {
   public final String value;

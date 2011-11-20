@@ -18,6 +18,8 @@ import omakase.util.SourceRange;
 
 /**
  * A token representing a number. Currently limited to integer values.
+ *
+ * NumericLiteralTokens are immutable.
  */
 public class NumericLiteralToken extends Token {
   public final int value;

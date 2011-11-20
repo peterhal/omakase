@@ -19,19 +19,22 @@ import org.joda.primitives.collection.impl.ArrayIntCollection;
 import java.util.Arrays;
 
 /**
- *
+ * Maps offsets in a string to line and column.
  */
 public class LineOffsetTable {
 
   private final int[] offsets;
 
-  public LineOffsetTable(String contents) {
+  /**
+   * @param value The string to create a line offset table for.
+   */
+  public LineOffsetTable(String value) {
     ArrayIntCollection offsets = new ArrayIntCollection();
     offsets.add(0);
-    for (int i = 0; i < contents.length(); i++) {
-      switch (contents.charAt(i)) {
+    for (int i = 0; i < value.length(); i++) {
+      switch (value.charAt(i)) {
       case '\r':
-        if ((i + 1) < contents.length() && contents.charAt(i + 1) == '\n') {
+        if ((i + 1) < value.length() && value.charAt(i + 1) == '\n') {
           i++;
         }
         // fallthrough
@@ -48,15 +51,24 @@ public class LineOffsetTable {
     this.offsets = offsets.toIntArray();
   }
 
+  /**
+   * Returns the line of a given character offset.
+   */
   public int line(int offset) {
     int index = Arrays.binarySearch(offsets, offset);
     return (index >= 0) ? index : - index - 2;
   }
 
+  /**
+   * Returns the column of a given character offset.
+   */
   public int column(int offset) {
     return offset - offsetOfLine(line(offset));
   }
 
+  /**
+   * Returns the starting offset of a line.
+   */
   public int offsetOfLine(int line) {
     return offsets[line];
   }

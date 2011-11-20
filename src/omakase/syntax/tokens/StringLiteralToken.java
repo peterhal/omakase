@@ -18,6 +18,8 @@ import omakase.util.SourceRange;
 
 /**
  * A token representing a quoted string.
+ *
+ * StringLiteralTokens are immutable.
  */
 public class StringLiteralToken extends Token {
   public final String value;

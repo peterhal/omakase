@@ -14,14 +14,21 @@
 
 package omakase.util;
 
+import com.google.common.base.Preconditions;
+
 /**
- * A location in a source file.
+ * A location in a source file. Contains the source file, char offset, line and column within the
+ * file. Note that offset, line and column are all 0 based offsets.
+ *
+ * SourceLocations are immutable.
  */
 public class SourceLocation {
   public final SourceFile file;
   public final int offset;
 
   public SourceLocation(SourceFile file, int offset) {
+    Preconditions.checkArgument(offset >= 0 && offset <= (file.length() + 1));
+
     this.file = file;
     this.offset = offset;
   }
@@ -31,10 +38,16 @@ public class SourceLocation {
     return String.format("%s (%d, %d)", file.name, line() + 1, column() + 1);
   }
 
+  /**
+   * @return The line number of this location.
+   */
   public int line() {
     return file.lineOfOffset(offset);
   }
 
+  /**
+   * @return The column number of this location.
+   */
   public int column() {
     return file.columnOfOffset(offset);
   }

@@ -15,7 +15,9 @@
 package omakase.util;
 
 /**
- * A file to be compiled.
+ * A source file to be compiled.
+ *
+ * SourceFiles appear immutable, though the line/column mapping is built on demand.
  */
 public class SourceFile {
   public final String name;

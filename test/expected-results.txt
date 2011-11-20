@@ -34,6 +34,7 @@ scanner/all-tokens.oma (32, 1): null
 scanner/all-tokens.oma (33, 1): true
 scanner/all-tokens.oma (34, 1): var
 scanner/all-tokens.oma (37, 1): End of file
+scanner/empty.oma (1, 1): End of file
 scanner/test.oma (4, 1): class
 scanner/test.oma (4, 7): Program
 scanner/test.oma (4, 15): {

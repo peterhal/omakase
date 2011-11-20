@@ -22,7 +22,9 @@ import omakase.util.SourceLocation;
 import omakase.util.SourceRange;
 
 /**
- * Converts text to tokens.
+ * Scanning is the first phase of compilation. The scanner takes the raw characters of a source
+ * file and converts them to tokens. Tokens include punctuation, identifiers, keywords and literals.
+ * While scanning for tokens, whitespace and comments are ignored.
  */
 public class Scanner {
   private final ErrorReporter reporter;
@@ -30,27 +32,41 @@ public class Scanner {
   private int index;
   private final StringBuilder buffer = new StringBuilder();
 
+  /**
+   * @param reporter Where to report errors during scanning.
+   * @param file The file to scan.
+   */
   public Scanner(ErrorReporter reporter, SourceFile file) {
     this.reporter = reporter;
     this.file = file;
     this.index = 0;
   }
 
+  /**
+   * Scans the entire file.
+   * @return The list of tokens scanned.
+   */
   public ImmutableList<Token> scanAll() {
     ImmutableList.Builder<Token> tokens = ImmutableList.builder();
-    while (!atEnd()) {
+    do {
       tokens.add(scanToken());
-    }
+    } while(!atEnd());
     return tokens.build();
   }
 
   /**
-   * Scans a source file into tokens.
+   * Scans an entire source file into tokens.
+   * @param reporter The error reporter to use when reporting errors.
+   * @param file The file to scan.
    */
   public static ImmutableList<Token> scanFile(ErrorReporter reporter, SourceFile file) {
     return new Scanner(reporter, file).scanAll();
   }
 
+  /**
+   * Scans a single token.
+   * @return The token scanned.
+   */
   private Token scanToken() {
     skipWhitespaceAndComments();
     int startIndex = index;
@@ -113,6 +129,14 @@ public class Scanner {
     }
   }
 
+  /**
+   * Scans an identifier or keyword token. Note the current position will be immediately after the
+   * first character in the identifier/keyword when this method is called.
+   *
+   * @param startIndex The index of the first character in the token.
+   * @param firstChar The first character in the token.
+   * @return The token representing the identifier or keyword scanned.
+   */
   private Token scanIdentifierOrKeyword(int startIndex, char firstChar) {
     buffer.setLength(0);
     buffer.append(firstChar);
@@ -127,7 +151,14 @@ public class Scanner {
     return new IdentifierToken(getRange(startIndex), value);
   }
 
-  private Token scanNumber(int startIndex, char firstDigit) {
+  /**
+   * Scan a Numeric literal. Note that the current position will be immediately after the first
+   * digit of the number when this method is called.
+   * @param startIndex The index of the first digit in the number.
+   * @param firstDigit The first digit in the number.
+   * @return A token representing the scanned number.
+   */
+  private NumericLiteralToken scanNumber(int startIndex, char firstDigit) {
     buffer.setLength(0);
     buffer.append(firstDigit);
     while (isDigit(peekChar())) {
@@ -143,7 +174,14 @@ public class Scanner {
     return new NumericLiteralToken(getRange(startIndex), value);
   }
 
-  private Token scanStringLiteral(int startIndex) {
+  /**
+   * Scan a string literal token. Note the current position will be immediately after the opening
+   * " character when this method is called.
+   *
+   * @param startIndex The index of the opening " character.
+   * @return The token scanned.
+   */
+  private StringLiteralToken scanStringLiteral(int startIndex) {
     buffer.setLength(0);
     while (!atEnd()) {
       char ch = nextChar();
@@ -162,6 +200,10 @@ public class Scanner {
     return new StringLiteralToken(this.getRange(startIndex), buffer.toString());
   }
 
+  /**
+   * Scans past an escape sequence in a string literal.
+   * @return The value of the character scanned.
+   */
   private char scanCharacterEscapeSequence() {
     int startIndex = index;
     char ch = nextChar();
@@ -173,14 +215,18 @@ public class Scanner {
     case 'n': return '\n';
     case 'r': return '\r';
     case 't': return '\t';
-    case 'x': return scanHexEscapeDigits(startIndex);
+    case 'x': return scanHexEscapeDigits();
     default:
       reportError(startIndex, "Unrecognized character escape '%s'.", ch);
       return ch;
     }
   }
 
-  private char scanHexEscapeDigits(int startIndex) {
+  /**
+   * Scan past up to 4 hex digits.
+   * @return Return the value of the digits scanned.
+   */
+  private char scanHexEscapeDigits() {
     if (!isHexDigit(peekChar())) {
       reportError(index, "Missing hex digit in hex escape sequence.");
       return '\0';
@@ -195,6 +241,10 @@ public class Scanner {
     return (char) value;
   }
 
+  /**
+   * Skip forward past any amount of whitespace or comments until a non-whitespace or comment is
+   * found.
+   */
   private void skipWhitespaceAndComments() {
     while (!atEnd()) {
       skipWhitespace();
@@ -204,6 +254,10 @@ public class Scanner {
     }
   }
 
+  /**
+   * Detect if a comment starts at the current location. If so, skip past it.
+   * @return True if a comment was skipped.
+   */
   private boolean skipComment() {
     if (peek('/')) {
       switch (peekChar(1)) {
@@ -220,6 +274,9 @@ public class Scanner {
     return false;
   }
 
+  /**
+   * Skip past a multi line comment.
+   */
   private void scanMultiLineComment() {
     int startIndex = index;
     // skip the /*
@@ -237,6 +294,9 @@ public class Scanner {
     reportError(startIndex, "Unterminated multi-line comment.");
   }
 
+  /**
+   * Skip past a single line comment.
+   */
   private void scanSingleLineComment() {
     // skip the //
     nextChar();
@@ -246,33 +306,63 @@ public class Scanner {
     }
   }
 
+  /**
+   * Skip past any whitespace characters.
+   */
   private void skipWhitespace() {
     while (Character.isWhitespace(peekChar())) {
       nextChar();
     }
   }
 
+  /**
+   * Report an error.
+   * @param index The index in the source file to report the error at.
+   * @param format A format message to report.
+   * @param args The arguments of the format.
+   */
   private void reportError(int index, String format, Object... args) {
     this.reporter.reportError(getLocation(index), format, args);
   }
 
+  /**
+   * Create a new simple token.
+   * @param kind The kind of token to create.
+   * @param start The starting offset of the token.
+   * @return A new token from start to the current position.
+   */
   private Token createToken(TokenKind kind, int start) {
 
     return new Token(kind, getRange(start));
   }
 
+  /**
+   * @return A SourceRange from start to the current position within the current file.
+   */
   private SourceRange getRange(int start) {
     return getRange(start, index);
   }
 
+  /**
+   * @return A SourceRange from start to end within the current file.
+   */
   private SourceRange getRange(int start, int end) {
     return new SourceRange(getLocation(start), getLocation(end));
   }
 
+  /**
+   * @return A SourceLocation within the file for the given index.
+   */
   private SourceLocation getLocation(int index) {
     return new SourceLocation(file, index);
   }
 
+  /**
+   * Tests the next character. If the next character is equal to the expected character, then
+   * advance past it, otherwise return false and do not advance.
+   * @param expected The character to test for.
+   * @return True if the next character was the expected character, false otherwise.
+   */
   private boolean eatOpt(char expected) {
     if (peekChar() == expected) {
       nextChar();
@@ -281,20 +371,34 @@ public class Scanner {
     return false;
   }
 
+  /**
+   * Advances the current position in the file one character.
+   * @return The character advanced over.
+   */
   private char nextChar() {
     char ch = peekChar();
     index++;
     return ch;
   }
 
+  /**
+   * @return True if the index-th next character is equal to ch.
+   */
   private boolean peek(char ch, int index) {
     return peekChar(index) == ch;
   }
 
+  /**
+   * @return True if the next character is equal to ch.
+   */
   private boolean peek(char ch) {
     return peek(ch, 0);
   }
 
+  /**
+   * @return The index-th next character in the file ahead of the current position. Returns '\0' if the
+   * requested character is past the end of the file.
+   */
   private char peekChar(int index) {
     int offset = index + this.index;
     if (offset >= file.length()) {
@@ -303,22 +407,37 @@ public class Scanner {
     return file.contents.charAt(offset);
   }
 
+  /**
+   * @return The next character in the file.
+   */
   private char peekChar() {
     return peekChar(0);
   }
 
+  /**
+   * @return Is this scanner at the end of the file.
+   */
   private boolean atEnd() {
     return index >= file.length();
   }
 
+  /**
+   * @return True if ch may start an identifier.
+   */
   private boolean isIdentifierStartChar(char ch) {
     return Character.isLetter(ch) || ch == '_' || ch == '$';
   }
 
+  /**
+   * @return True if ch is valid in an identifier.
+   */
   private boolean isIdentifierPartChar(char ch) {
     return isIdentifierStartChar(ch) || isDigit(ch);
   }
 
+  /**
+   * @return True if ch is a hexadecimal digit.
+   */
   private boolean isHexDigit(char ch) {
     switch (ch) {
     case '0': case '1': case '2': case '3': case '4':
@@ -331,6 +450,9 @@ public class Scanner {
     }
   }
 
+  /**
+   * @return Converts a hexadecimal digit character to its numeric value.
+   */
   private int hexDigitToValue(char ch) {
     switch (ch) {
     case '0': case '1': case '2': case '3': case '4':
@@ -345,10 +467,16 @@ public class Scanner {
     }
   }
 
+  /**
+   * @return Converts a decimal digit character to its numeric value.
+   */
   private int digitToValue(char digit) {
     return digit - '0';
   }
 
+  /**
+   * @return Returns true if ch is a decimal digit character.
+   */
   private static boolean isDigit(char ch) {
     switch (ch) {
     case '0': case '1': case '2': case '3': case '4':
@@ -359,6 +487,9 @@ public class Scanner {
     }
   }
 
+  /**
+   * @return Returns true if ch is a line terminator character.
+   */
   private static boolean isLineTerminator(char ch) {
     switch (ch) {
     case '\n':
