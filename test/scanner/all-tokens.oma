@@ -1,0 +1,36 @@
+identifier
+0
+"string"
+{
+}
+(
+)
+.
+;
+,
+<
+>
+<=
+>=
+==
+!=
++
+-
+*
+!
+&
+&&
+|
+||
+?
+:
+=
+/
+class
+false
+let
+null
+true
+var
+// single line comment
+/* multi line comment */
