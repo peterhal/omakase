@@ -1,0 +1,2 @@
+Class-Path: guava-10.0.1.jar joda-primitives-1.0.jar
+Main-Class: omakase.printtokens.Program
