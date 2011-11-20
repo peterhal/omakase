@@ -20,7 +20,7 @@ for error_source in errors/*.oma ; do
   ../omascan.sh $error_source >> $RESULTS_FILE 2>&1
 done
 
-if diff expected_results.txt $RESULTS_FILE > $OUT_DIR/results.dif ; then
+if diff expected-results.txt $RESULTS_FILE > $OUT_DIR/results.dif ; then
   echo Tests Passed.
 else
   echo Tests Failed. See out/results.diff for details.

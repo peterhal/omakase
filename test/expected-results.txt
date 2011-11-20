@@ -1,0 +1,17 @@
+Running Omakase Tests ...
+scanner/test.oma (4, 1): class
+scanner/test.oma (4, 7): Program
+scanner/test.oma (4, 15): {
+scanner/test.oma (6, 3): main
+scanner/test.oma (6, 7): (
+scanner/test.oma (6, 8): )
+scanner/test.oma (6, 10): {
+scanner/test.oma (7, 3): }
+scanner/test.oma (8, 1): }
+scanner/test.oma (9, 2): End of file
+errors/missing-hex-escape.oma (1, 4): Missing hex digit in hex escape sequence.
+errors/number-too-large.oma (1, 1): Integer literal too large.
+errors/unexpected-char.oma (1, 1): Unexpected character '@'.
+errors/unrecognized-character-escape.oma (1, 3): Unrecognized character escape 'h'.
+errors/unterminated-multi-line-comment.oma (1, 1): Unterminated multi-line comment.
+errors/unterminated-string-literal.oma (1, 1): Unterminated string literal
