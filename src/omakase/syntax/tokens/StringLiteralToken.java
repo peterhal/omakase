@@ -31,6 +31,6 @@ public class StringLiteralToken extends Token {
 
   @Override
   public String toString() {
-    return String.format("%s: \"%s\"", location, value);
+    return super.toString() + String.format(" \"%s\"", value);
   }
 }

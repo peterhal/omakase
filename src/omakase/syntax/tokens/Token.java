@@ -34,6 +34,6 @@ public class Token {
 
   @Override
   public String toString() {
-    return String.format("%s: %s", location, kind);
+    return String.format("%s: %s", location, kind.name());
   }
 }

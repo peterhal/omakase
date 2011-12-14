@@ -31,6 +31,6 @@ public class NumericLiteralToken extends Token {
 
   @Override
   public String toString() {
-    return String.format("%s: %d", location, value);
+    return super.toString() + String.format(" %d", value);
   }
 }
