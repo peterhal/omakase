@@ -1,4 +1,4 @@
-// Copyright 2011 Peter Hallam
+// Copyright 2012 Peter Hallam
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,41 +12,24 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package omakase.syntax.tokens;
+package omakase.syntax.trees;
 
 import omakase.util.SourceLocation;
 import omakase.util.SourceRange;
 
 /**
- * A token in the omakase language. Tokens represent identifiers, keywords, punctuation or literals.
- * Tokens have a kind and a source range. Some tokens contain additional information which is
- * available in derived classes.
  *
- * Tokens are immutable.
  */
-public class Token {
-  public final TokenKind kind;
+public class ParseTree {
   public final SourceRange location;
+  public final ParseTreeKind kind;
 
-  public Token(TokenKind kind, SourceRange location) {
+  public ParseTree(SourceRange range, ParseTreeKind kind) {
+    location = range;
     this.kind = kind;
-    this.location = location;
-  }
-
-  @Override
-  public String toString() {
-    return String.format("%s: %s", location, kind.name());
   }
 
   public SourceLocation start() {
-    return this.location.start;
-  }
-
-  public SourceLocation end() {
-    return this.location.end;
-  }
-
-  public IdentifierToken asIdentifier() {
-    return (IdentifierToken) this;
+    return location.start;
   }
 }
