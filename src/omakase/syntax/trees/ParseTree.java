@@ -32,4 +32,40 @@ public class ParseTree {
   public SourceLocation start() {
     return location.start;
   }
+
+  public ClassDeclarationTree asClassDeclaration() {
+    return (ClassDeclarationTree) this;
+  }
+
+  public MethodDeclarationTree asMethodDeclaration() {
+    return (MethodDeclarationTree) this;
+  }
+
+  public ParameterDeclarationTree asParameterDeclaration() {
+    return (ParameterDeclarationTree) this;
+  }
+
+  public BlockTree asBlock() {
+    return (BlockTree) this;
+  }
+
+  public ExpressionStatementTree asExpressionStatement() {
+    return (ExpressionStatementTree) this;
+  }
+
+  public LiteralExpressionTree asLiteralExpression() {
+    return (LiteralExpressionTree) this;
+  }
+
+  public SimpleNameExpressionTree asSimpleNameExpression() {
+    return (SimpleNameExpressionTree) this;
+  }
+
+  public CallExpressionTree asCallExpression() {
+    return (CallExpressionTree) this;
+  }
+
+  public SourceFileTree asSourceFile() {
+    return (SourceFileTree) this;
+  }
 }
