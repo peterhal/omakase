@@ -49,4 +49,12 @@ public class Token {
   public IdentifierToken asIdentifier() {
     return (IdentifierToken) this;
   }
+
+  public NumericLiteralToken asNumericLiteral() {
+    return (NumericLiteralToken) this;
+  }
+
+  public StringLiteralToken asStringLiteral() {
+    return (StringLiteralToken) this;
+  }
 }

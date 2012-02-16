@@ -60,7 +60,7 @@ public class Parser {
 
   private ParseTree parseClass() {
     Token start = eat(TokenKind.CLASS);
-    Token name = eat(TokenKind.IDENTIFIER);
+    IdentifierToken name = eatId();
     eat(TokenKind.OPEN_CURLY);
     ImmutableList<ParseTree> members = parseClassMembers();
     eat(TokenKind.CLOSE_CURLY);

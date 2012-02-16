@@ -15,17 +15,17 @@
 package omakase.syntax.trees;
 
 import com.google.common.collect.ImmutableList;
-import omakase.syntax.tokens.Token;
+import omakase.syntax.tokens.IdentifierToken;
 import omakase.util.SourceRange;
 
 /**
  *
  */
 public class ClassDeclarationTree extends ParseTree {
-  public final Token name;
+  public final IdentifierToken name;
   public final ImmutableList<ParseTree> members;
 
-  public ClassDeclarationTree(SourceRange range, Token name, ImmutableList<ParseTree> members) {
+  public ClassDeclarationTree(SourceRange range, IdentifierToken name, ImmutableList<ParseTree> members) {
     super(range, ParseTreeKind.CLASS_DECLARATION);
     this.name = name;
     this.members = members;

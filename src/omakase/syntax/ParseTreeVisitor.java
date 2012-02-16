@@ -57,47 +57,47 @@ public class ParseTreeVisitor {
     }
   }
 
-  private void visit(SourceFileTree tree) {
+  protected void visit(SourceFileTree tree) {
     visitList(tree.declarations);
   }
 
-  private void visit(CallExpressionTree tree) {
+  protected void visit(CallExpressionTree tree) {
     visitAny(tree.function);
     visitList(tree.arguments);
   }
 
-  private void visit(SimpleNameExpressionTree tree) {
+  protected void visit(SimpleNameExpressionTree tree) {
 
   }
 
-  private void visit(LiteralExpressionTree tree) {
+  protected void visit(LiteralExpressionTree tree) {
 
   }
 
-  private void visit(ExpressionStatementTree tree) {
+  protected void visit(ExpressionStatementTree tree) {
     visitAny(tree.expression);
   }
 
-  private void visit(BlockTree tree) {
+  protected void visit(BlockTree tree) {
     visitList(tree.statements);
   }
 
-  private void visit(ParameterDeclarationTree tree) {
+  protected void visit(ParameterDeclarationTree tree) {
 
   }
 
-  private void visit(MethodDeclarationTree tree) {
+  protected void visit(MethodDeclarationTree tree) {
     visitList(tree.formals);
     visitAny(tree.body);
   }
 
-  private void visitList(ImmutableList<ParseTree> trees) {
+  protected void visitList(ImmutableList<ParseTree> trees) {
     for (ParseTree tree: trees) {
       visitAny(tree);
     }
   }
 
-  private void visit(ClassDeclarationTree tree) {
+  protected void visit(ClassDeclarationTree tree) {
     visitList(tree.members);
   }
 }
