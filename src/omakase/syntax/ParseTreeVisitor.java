@@ -34,17 +34,14 @@ public class ParseTreeVisitor {
     }
 
     switch (tree.kind) {
-    case CLASS_DECLARATION:
-      visit(tree.asClassDeclaration());
-      break;
-    case METHOD_DECLARATION:
-      visit(tree.asMethodDeclaration());
-      break;
-    case PARAMETER_DECLARATION:
-      visit(tree.asParameterDeclaration());
-      break;
     case BLOCK:
       visit(tree.asBlock());
+      break;
+    case CALL_EXPRESSION:
+      visit(tree.asCallExpression());
+      break;
+    case CLASS_DECLARATION:
+      visit(tree.asClassDeclaration());
       break;
     case EXPRESSION_STATEMENT:
       visit(tree.asExpressionStatement());
@@ -52,11 +49,14 @@ public class ParseTreeVisitor {
     case LITERAL_EXPRESSION:
       visit(tree.asLiteralExpression());
       break;
+    case METHOD_DECLARATION:
+      visit(tree.asMethodDeclaration());
+      break;
+    case PARAMETER_DECLARATION:
+      visit(tree.asParameterDeclaration());
+      break;
     case SIMPLE_NAME_EXPRESSION:
       visit(tree.asSimpleNameExpression());
-      break;
-    case CALL_EXPRESSION:
-      visit(tree.asCallExpression());
       break;
     case SOURCE_FILE:
       visit(tree.asSourceFile());
@@ -64,8 +64,8 @@ public class ParseTreeVisitor {
     }
   }
 
-  protected void visit(SourceFileTree tree) {
-    visitList(tree.declarations);
+  protected void visit(BlockTree tree) {
+    visitList(tree.statements);
   }
 
   protected void visit(CallExpressionTree tree) {
@@ -73,24 +73,15 @@ public class ParseTreeVisitor {
     visitList(tree.arguments);
   }
 
-  protected void visit(SimpleNameExpressionTree tree) {
-
-  }
-
-  protected void visit(LiteralExpressionTree tree) {
-
+  protected void visit(ClassDeclarationTree tree) {
+    visitList(tree.members);
   }
 
   protected void visit(ExpressionStatementTree tree) {
     visitAny(tree.expression);
   }
 
-  protected void visit(BlockTree tree) {
-    visitList(tree.statements);
-  }
-
-  protected void visit(ParameterDeclarationTree tree) {
-
+  protected void visit(LiteralExpressionTree tree) {
   }
 
   protected void visit(MethodDeclarationTree tree) {
@@ -98,7 +89,13 @@ public class ParseTreeVisitor {
     visitAny(tree.body);
   }
 
-  protected void visit(ClassDeclarationTree tree) {
-    visitList(tree.members);
+  protected void visit(ParameterDeclarationTree tree) {
+  }
+
+  protected void visit(SimpleNameExpressionTree tree) {
+  }
+
+  protected void visit(SourceFileTree tree) {
+    visitList(tree.declarations);
   }
 }

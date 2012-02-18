@@ -19,6 +19,7 @@ import omakase.syntax.trees.ParseTree;
 import omakase.syntax.trees.ParseTreeKind;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.PrintStream;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -41,7 +42,11 @@ public class Program {
   static final String packagePrefix = "omakase.syntax.trees.";
 
   public static void main(String[] args) {
-    printVisitor(args[0], loadTrees(), System.out);
+    try {
+      printVisitor(args[0], loadTrees(), new PrintStream(args[1]));
+    } catch (FileNotFoundException e) {
+      e.printStackTrace();
+    }
   }
 
   private static void printVisitor(String arg, ArrayList<TreeInfo> trees, PrintStream out) {
