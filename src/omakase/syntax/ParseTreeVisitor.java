@@ -21,6 +21,13 @@ import omakase.syntax.trees.*;
  *
  */
 public class ParseTreeVisitor {
+
+  protected void visitList(ImmutableList<? extends ParseTree> trees) {
+    for (ParseTree tree: trees) {
+      visitAny(tree);
+    }
+  }
+
   public void visitAny(ParseTree tree) {
     if (tree == null) {
       return;
@@ -89,12 +96,6 @@ public class ParseTreeVisitor {
   protected void visit(MethodDeclarationTree tree) {
     visitList(tree.formals);
     visitAny(tree.body);
-  }
-
-  protected void visitList(ImmutableList<ParseTree> trees) {
-    for (ParseTree tree: trees) {
-      visitAny(tree);
-    }
   }
 
   protected void visit(ClassDeclarationTree tree) {
