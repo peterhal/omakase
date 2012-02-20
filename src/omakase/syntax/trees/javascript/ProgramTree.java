@@ -12,19 +12,21 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package omakase.syntax.trees;
+package omakase.syntax.trees.javascript;
+
+import com.google.common.collect.ImmutableList;
+import omakase.syntax.trees.ParseTree;
+import omakase.syntax.trees.ParseTreeKind;
+import omakase.util.SourceRange;
 
 /**
  *
  */
-public enum ParseTreeKind {
-  CLASS_DECLARATION,
-  METHOD_DECLARATION,
-  PARAMETER_DECLARATION,
-  BLOCK,
-  EXPRESSION_STATEMENT,
-  LITERAL_EXPRESSION,
-  SIMPLE_NAME_EXPRESSION,
-  CALL_EXPRESSION,
-  JAVASCRIPT_PROGRAM, SOURCE_FILE
+public class ProgramTree extends ParseTree {
+  public final ImmutableList<ParseTree> sourceElements;
+
+  public ProgramTree(SourceRange range, ImmutableList<ParseTree> sourceElements) {
+    super(range, ParseTreeKind.JAVASCRIPT_PROGRAM);
+    this.sourceElements = sourceElements;
+  }
 }

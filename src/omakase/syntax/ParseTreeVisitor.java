@@ -61,6 +61,9 @@ public class ParseTreeVisitor {
     case SOURCE_FILE:
       visit(tree.asSourceFile());
       break;
+    case JAVASCRIPT_PROGRAM:
+      visit(tree.asJavascriptProgram());
+      break;
     }
   }
 
@@ -97,5 +100,9 @@ public class ParseTreeVisitor {
 
   protected void visit(SourceFileTree tree) {
     visitList(tree.declarations);
+  }
+
+  protected void visit(omakase.syntax.trees.javascript.ProgramTree tree) {
+    visitList(tree.sourceElements);
   }
 }

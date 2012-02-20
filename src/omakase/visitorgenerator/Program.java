@@ -96,14 +96,22 @@ public class Program {
     ArrayList<TreeInfo> result = new ArrayList<TreeInfo>();
     ParseTreeKind[] kinds = ParseTreeKind.values();
     for (ParseTreeKind kind: kinds) {
-      String camelName = upperCaseToCamelCase(kind.name());
-
       TreeInfo info = new TreeInfo();
       info.kind = kind;
-      info.className = camelName + "Tree";
+      String camelName = upperCaseToCamelCase(kind.name());
       info.asName = "as" + camelName;
+      String javascriptPrefix = "Javascript";
+      String fullClassName;
+      if (camelName.startsWith(javascriptPrefix)) {
+        info.className = packagePrefix + "javascript." + camelName.substring(javascriptPrefix.length()) + "Tree";
+        fullClassName = info.className;
+      } else {
+        info.className = camelName + "Tree";
+        fullClassName = packagePrefix + info.className;
+      }
+
       try {
-        info.clazz = Class.forName(packagePrefix + info.className);
+        info.clazz = Class.forName(fullClassName);
       } catch (ClassNotFoundException e) {
         e.printStackTrace();
       }

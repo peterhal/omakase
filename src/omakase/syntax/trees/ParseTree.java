@@ -14,6 +14,7 @@
 
 package omakase.syntax.trees;
 
+import omakase.syntax.trees.javascript.ProgramTree;
 import omakase.util.SourceLocation;
 import omakase.util.SourceRange;
 
@@ -67,5 +68,9 @@ public class ParseTree {
 
   public SourceFileTree asSourceFile() {
     return (SourceFileTree) this;
+  }
+
+  public ProgramTree asJavascriptProgram() {
+    return (ProgramTree) this;
   }
 }
