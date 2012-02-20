@@ -14,6 +14,7 @@
 
 package omakase.visitorgenerator;
 
+import com.google.common.collect.ImmutableList;
 import com.google.common.io.Files;
 import omakase.syntax.trees.ParseTree;
 import omakase.syntax.trees.ParseTreeKind;
@@ -25,10 +26,15 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.List;
 
 /**
+ * Generates ParseTreeVisitor and ParseTreeTransformer from the ParseTree class declarations.
  *
+ * Command Line Arguments:
+ *  src\omakase\visitorgenerator\ParseTreeVisitor.header
+ *  src\omakase\syntax\ParseTreeVisitor.java
+ *  src\omakase\visitorgenerator\ParseTreeTransformer.header
+ *  src\omakase\syntax\ParseTreeTransformer.java
  */
 public class Program {
 
@@ -42,20 +48,102 @@ public class Program {
   static final String packagePrefix = "omakase.syntax.trees.";
 
   public static void main(String[] args) {
+    final String visitorHeaderFileName = args[0];
+    final String visitorOutputFilename = args[1];
+    final String transformerHeaderFilename = args[2];
+    final String transformerOutputFilename = args[3];
+
     try {
-      printVisitor(args[0], loadTrees(), new PrintStream(args[1]));
+      final ArrayList<TreeInfo> trees = loadTrees();
+      printVisitor(visitorHeaderFileName, trees, new PrintStream(visitorOutputFilename));
+      printTransformer(transformerHeaderFilename, trees, new PrintStream(transformerOutputFilename));
     } catch (FileNotFoundException e) {
       e.printStackTrace();
     }
   }
 
-  private static void printVisitor(String arg, ArrayList<TreeInfo> trees, PrintStream out) {
-    printHeader(out, arg);
+  private static void printTransformer(String headerFileName, ArrayList<TreeInfo> trees, PrintStream out) {
+    printHeader(out, headerFileName);
+    printTransformAny(out, trees);
+    printTreeTransforms(out, trees);
+    out.println("}"); // class
+  }
+
+  private static void printTreeTransforms(PrintStream out, ArrayList<TreeInfo> trees) {
+    for (TreeInfo tree: trees) {
+      out.println();
+      out.printf("  protected ParseTree transform(%s tree) {\n", tree.className);
+      // transform each field
+      for (Field field: tree.clazz.getFields()) {
+        if (isParseTreeType(field)) {
+          out.printf("    ParseTree %s = transformAny(tree.%s);\n", field.getName(), field.getName());
+        } else if (isParseTreeListType(field)) {
+          out.printf("    ImmutableList<ParseTree> %s = transformList(tree.%s);\n", field.getName(), field.getName());
+        }
+      }
+
+      // test for no change and early return
+      boolean firstField = true;
+      for (Field field: tree.clazz.getFields()) {
+        if (isParseTreeOrListType(field)) {
+          if (firstField) {
+            firstField = false;
+            out.print("    if (");
+          } else {
+            out.println(" &&");
+            out.print("        ");
+          }
+          out.printf("%s == tree.%s", field.getName(), field.getName());
+        }
+      }
+      if (firstField) {
+        out.println("    return tree;");
+      } else {
+        out.println(") {");
+        out.println("      return tree;");
+        out.println("    }");
+
+        // return new tree
+        out.printf("    return new %s(\n", tree.className);
+        out.print("        null");
+        for (Field field: tree.clazz.getFields()) {
+          if (field.getDeclaringClass() == tree.clazz) {
+            out.println(",");
+            out.printf("        ");
+            if (isParseTreeListType(field)){
+              out.printf("%s", field.getName());
+            } else {
+              out.printf("tree.%s", field.getName());
+            }
+          }
+        }
+        out.println(");");
+      }
+
+      out.println("  }");  // transform
+    }
+  }
+
+  private static boolean isParseTreeOrListType(Field field) {
+    return isParseTreeType(field) || isParseTreeListType(field);
+  }
+
+  private static void printTransformAny(PrintStream out, ArrayList<TreeInfo> trees) {
+    for (TreeInfo tree: trees) {
+      out.printf("    case %s:\n", tree.kind.name());
+      out.printf("      return transform(tree.%s());\n", tree.asName);
+    }
+    out.println("    default:");
+    out.println("      throw new RuntimeException(\"Unexpected tree kind.\");");
+    out.println("    }"); // switch
+    out.println("  }");   // transformAny
+  }
+
+  private static void printVisitor(String headerFileName, ArrayList<TreeInfo> trees, PrintStream out) {
+    printHeader(out, headerFileName);
     printVisitAny(out, trees);
-    out.println("    }");
-    out.println("  }");
     printTreeVisits(out, trees);
-    out.println("}");
+    out.println("}"); // class
   }
 
   private static void printHeader(PrintStream out, String headerFileName) {
@@ -71,11 +159,10 @@ public class Program {
       out.println();
       out.printf("  protected void visit(%s tree) {\n", tree.className);
       for (Field field: tree.clazz.getFields()) {
-        Class fieldType = field.getType();
-        if (ParseTree.class.isAssignableFrom(fieldType)) {
+        if (isParseTreeType(field)) {
           out.printf("    visitAny(tree.%s);\n", field.getName());
         } else {
-          if (List.class.isAssignableFrom((fieldType))) {
+          if (isParseTreeListType(field)) {
             out.printf("    visitList(tree.%s);\n", field.getName());
           }
         }
@@ -84,12 +171,22 @@ public class Program {
     }
   }
 
+  private static boolean isParseTreeListType(Field field) {
+    return ImmutableList.class.isAssignableFrom((field.getType()));
+  }
+
+  private static boolean isParseTreeType(Field field) {
+    return ParseTree.class.isAssignableFrom(field.getType());
+  }
+
   private static void printVisitAny(PrintStream out, ArrayList<TreeInfo> trees) {
     for (TreeInfo tree: trees) {
       out.printf("    case %s:\n", tree.kind.name());
       out.printf("      visit(tree.%s());\n", tree.asName);
       out.println("      break;");
     }
+    out.println("    }"); //switch
+    out.println("  }");   // transformAny
   }
 
   private static ArrayList<TreeInfo> loadTrees() {
