@@ -14,28 +14,23 @@
 
 package omakase.syntax.trees;
 
+import omakase.syntax.tokens.IdentifierToken;
+import omakase.syntax.tokens.Token;
+import omakase.syntax.tokens.TokenKind;
+import omakase.util.SourceRange;
+
 /**
  *
  */
-public enum ParseTreeKind {
-  // Omakase
-  BLOCK,
-  CALL_EXPRESSION,
-  CLASS_DECLARATION,
-  EXPRESSION_STATEMENT,
-  FORMAL_PARAMETER_LIST,
-  FUNCTION_EXPRESSION,
-  LITERAL_EXPRESSION,
-  METHOD_DECLARATION,
-  PARAMETER_DECLARATION,
-  PAREN_EXPRESSION,
-  SIMPLE_NAME_EXPRESSION,
-  SOURCE_FILE,
+public class BinaryExpressionTree extends ParseTree {
+  public final ParseTree left;
+  public final Token operator;
+  public final ParseTree right;
 
-  // Javascript
-  JAVASCRIPT_BLOCK,
-  JAVASCRIPT_CALL_EXPRESSION,
-  JAVASCRIPT_EXPRESSION_STATEMENT,
-  JAVASCRIPT_PROGRAM,
-  JAVASCRIPT_SIMPLE_NAME_EXPRESSION
+  public BinaryExpressionTree(SourceRange location, ParseTree left, Token operator, ParseTree right) {
+    super(location, ParseTreeKind.SIMPLE_NAME_EXPRESSION);
+    this.left = left;
+    this.operator = operator;
+    this.right = right;
+  }
 }

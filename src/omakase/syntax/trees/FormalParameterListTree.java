@@ -14,28 +14,18 @@
 
 package omakase.syntax.trees;
 
+import com.google.common.collect.ImmutableList;
+import omakase.syntax.tokens.IdentifierToken;
+import omakase.util.SourceRange;
+
 /**
  *
  */
-public enum ParseTreeKind {
-  // Omakase
-  BLOCK,
-  CALL_EXPRESSION,
-  CLASS_DECLARATION,
-  EXPRESSION_STATEMENT,
-  FORMAL_PARAMETER_LIST,
-  FUNCTION_EXPRESSION,
-  LITERAL_EXPRESSION,
-  METHOD_DECLARATION,
-  PARAMETER_DECLARATION,
-  PAREN_EXPRESSION,
-  SIMPLE_NAME_EXPRESSION,
-  SOURCE_FILE,
+public class FormalParameterListTree extends ParseTree {
+  public final ImmutableList<ParseTree> parameters;
 
-  // Javascript
-  JAVASCRIPT_BLOCK,
-  JAVASCRIPT_CALL_EXPRESSION,
-  JAVASCRIPT_EXPRESSION_STATEMENT,
-  JAVASCRIPT_PROGRAM,
-  JAVASCRIPT_SIMPLE_NAME_EXPRESSION
+  public FormalParameterListTree(SourceRange location, ImmutableList<ParseTree> parameters) {
+    super(location, ParseTreeKind.FORMAL_PARAMETER_LIST);
+    this.parameters = parameters;
+  }
 }

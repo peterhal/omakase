@@ -29,6 +29,19 @@ public class JavascriptTransformer extends ParseTreeTransformer {
 
   @Override
   protected ParseTree transform(ClassDeclarationTree tree) {
-    return super.transform(tree);    //To change body of overridden methods use File | Settings | File Templates.
+    return new ClassTransformer().transform(tree);
   }
+
+    private static class ClassTransformer {
+      // class C { members } =>
+      //
+      //  (function() {
+      //    C = function() {}
+      //    C.prototype.member = ...;
+      //  }());
+      //
+      public ParseTree transform(ClassDeclarationTree tree) {
+        return null;
+      }
+    }
 }

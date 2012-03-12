@@ -14,28 +14,20 @@
 
 package omakase.syntax.trees;
 
+import com.google.common.collect.ImmutableList;
+import omakase.syntax.tokens.IdentifierToken;
+import omakase.util.SourceRange;
+
 /**
  *
  */
-public enum ParseTreeKind {
-  // Omakase
-  BLOCK,
-  CALL_EXPRESSION,
-  CLASS_DECLARATION,
-  EXPRESSION_STATEMENT,
-  FORMAL_PARAMETER_LIST,
-  FUNCTION_EXPRESSION,
-  LITERAL_EXPRESSION,
-  METHOD_DECLARATION,
-  PARAMETER_DECLARATION,
-  PAREN_EXPRESSION,
-  SIMPLE_NAME_EXPRESSION,
-  SOURCE_FILE,
+public class FunctionExpressionTree extends ParseTree {
+  public final FormalParameterListTree parameters;
+  public final BlockTree body;
 
-  // Javascript
-  JAVASCRIPT_BLOCK,
-  JAVASCRIPT_CALL_EXPRESSION,
-  JAVASCRIPT_EXPRESSION_STATEMENT,
-  JAVASCRIPT_PROGRAM,
-  JAVASCRIPT_SIMPLE_NAME_EXPRESSION
+  public FunctionExpressionTree(SourceRange location, FormalParameterListTree parameters, BlockTree body) {
+    super(location, ParseTreeKind.FUNCTION_EXPRESSION);
+    this.parameters = parameters;
+    this.body = body;
+  }
 }

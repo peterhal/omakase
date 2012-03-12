@@ -12,30 +12,20 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package omakase.syntax.trees;
+package omakase.syntax.trees.javascript;
+
+import omakase.syntax.trees.ParseTree;
+import omakase.syntax.trees.ParseTreeKind;
+import omakase.util.SourceRange;
 
 /**
  *
  */
-public enum ParseTreeKind {
-  // Omakase
-  BLOCK,
-  CALL_EXPRESSION,
-  CLASS_DECLARATION,
-  EXPRESSION_STATEMENT,
-  FORMAL_PARAMETER_LIST,
-  FUNCTION_EXPRESSION,
-  LITERAL_EXPRESSION,
-  METHOD_DECLARATION,
-  PARAMETER_DECLARATION,
-  PAREN_EXPRESSION,
-  SIMPLE_NAME_EXPRESSION,
-  SOURCE_FILE,
+public class ExpressionStatementTree extends ParseTree {
+  public final ParseTree expression;
 
-  // Javascript
-  JAVASCRIPT_BLOCK,
-  JAVASCRIPT_CALL_EXPRESSION,
-  JAVASCRIPT_EXPRESSION_STATEMENT,
-  JAVASCRIPT_PROGRAM,
-  JAVASCRIPT_SIMPLE_NAME_EXPRESSION
+  public ExpressionStatementTree(SourceRange location, ParseTree expression) {
+    super(location, ParseTreeKind.JAVASCRIPT_EXPRESSION_STATEMENT);
+    this.expression = expression;
+  }
 }

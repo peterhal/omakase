@@ -22,18 +22,18 @@ import omakase.syntax.trees.*;
  */
 public class ParseTreeTransformer {
 
-  protected ImmutableList<ParseTree> transformList(ImmutableList<ParseTree> trees) {
-    ImmutableList.Builder<ParseTree> result = null;
+  private <T extends ParseTree> ImmutableList<T> transformList(ImmutableList<T> trees) {
+    ImmutableList.Builder<T> result = null;
     for (int i = 0; i < trees.size(); i++) {
       ParseTree element = transformAny(trees.get(i));
       if (result == null && element != trees.get(i)) {
-        result = new ImmutableList.Builder<ParseTree>();
+        result = new ImmutableList.Builder<T>();
         for (int j = 0; j < i; j++) {
           result.add(trees.get(j));
         }
       }
       if (result != null) {
-        result.add(element);
+        result.add((T)element);
       }
     }
     if (result == null) {
