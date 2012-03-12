@@ -46,6 +46,12 @@ public class ParseTreeVisitor {
     case EXPRESSION_STATEMENT:
       visit(tree.asExpressionStatement());
       break;
+    case FORMAL_PARAMETER_LIST:
+      visit(tree.asFormalParameterList());
+      break;
+    case FUNCTION_EXPRESSION:
+      visit(tree.asFunctionExpression());
+      break;
     case LITERAL_EXPRESSION:
       visit(tree.asLiteralExpression());
       break;
@@ -55,14 +61,29 @@ public class ParseTreeVisitor {
     case PARAMETER_DECLARATION:
       visit(tree.asParameterDeclaration());
       break;
+    case PAREN_EXPRESSION:
+      visit(tree.asParenExpression());
+      break;
     case SIMPLE_NAME_EXPRESSION:
       visit(tree.asSimpleNameExpression());
       break;
     case SOURCE_FILE:
       visit(tree.asSourceFile());
       break;
+    case JAVASCRIPT_BLOCK:
+      visit(tree.asJavascriptBlock());
+      break;
+    case JAVASCRIPT_CALL_EXPRESSION:
+      visit(tree.asJavascriptCallExpression());
+      break;
+    case JAVASCRIPT_EXPRESSION_STATEMENT:
+      visit(tree.asJavascriptExpressionStatement());
+      break;
     case JAVASCRIPT_PROGRAM:
       visit(tree.asJavascriptProgram());
+      break;
+    case JAVASCRIPT_SIMPLE_NAME_EXPRESSION:
+      visit(tree.asJavascriptSimpleNameExpression());
       break;
     }
   }
@@ -84,6 +105,15 @@ public class ParseTreeVisitor {
     visitAny(tree.expression);
   }
 
+  protected void visit(FormalParameterListTree tree) {
+    visitList(tree.parameters);
+  }
+
+  protected void visit(FunctionExpressionTree tree) {
+    visitAny(tree.parameters);
+    visitAny(tree.body);
+  }
+
   protected void visit(LiteralExpressionTree tree) {
   }
 
@@ -95,6 +125,10 @@ public class ParseTreeVisitor {
   protected void visit(ParameterDeclarationTree tree) {
   }
 
+  protected void visit(ParenExpressionTree tree) {
+    visitAny(tree.expression);
+  }
+
   protected void visit(SimpleNameExpressionTree tree) {
   }
 
@@ -102,7 +136,23 @@ public class ParseTreeVisitor {
     visitList(tree.declarations);
   }
 
+  protected void visit(omakase.syntax.trees.javascript.BlockTree tree) {
+    visitList(tree.statements);
+  }
+
+  protected void visit(omakase.syntax.trees.javascript.CallExpressionTree tree) {
+    visitAny(tree.function);
+    visitList(tree.arguments);
+  }
+
+  protected void visit(omakase.syntax.trees.javascript.ExpressionStatementTree tree) {
+    visitAny(tree.expression);
+  }
+
   protected void visit(omakase.syntax.trees.javascript.ProgramTree tree) {
     visitList(tree.sourceElements);
+  }
+
+  protected void visit(omakase.syntax.trees.javascript.SimpleNameExpressionTree tree) {
   }
 }
