@@ -28,7 +28,7 @@ public class BinaryExpressionTree extends ParseTree {
   public final ParseTree right;
 
   public BinaryExpressionTree(SourceRange location, ParseTree left, Token operator, ParseTree right) {
-    super(location, ParseTreeKind.SIMPLE_NAME_EXPRESSION);
+    super(location, ParseTreeKind.JAVASCRIPT_BINARY_EXPRESSION);
     this.left = left;
     this.operator = operator;
     this.right = right;

@@ -15,12 +15,15 @@
 package omakase.codegeneration;
 
 import com.google.common.collect.ImmutableList;
+import omakase.syntax.tokens.IdentifierToken;
+import omakase.syntax.tokens.Token;
+import omakase.syntax.tokens.TokenKind;
 import omakase.syntax.trees.ParseTree;
 import omakase.syntax.trees.javascript.*;
 
 /**
  */
-public final class ParseTreeFactory {
+public final class JavascriptParseTreeFactory {
   public static ParseTree createCall(ParseTree function, ParseTree... arguments) {
     return new CallExpressionTree(null, function, createList(arguments));
   }
@@ -35,5 +38,35 @@ public final class ParseTreeFactory {
   
   public static ParseTree createFunction(FormalParameterListTree parameters, BlockTree body) {
     return new FunctionExpressionTree(null, null, parameters, body);
+  }
+  
+  public static FormalParameterListTree createFormalParameterList() {
+    return new FormalParameterListTree(null, ImmutableList.<ParseTree>of());
+  }
+  
+  public static BlockTree createBlock(ParseTree... statements) {
+    return new BlockTree(null, ImmutableList.<ParseTree>copyOf(statements));
+  }
+  
+  public static ParseTree createAssignmentStatement(ParseTree left, ParseTree right) {
+    return createExpressionStatement(
+        createBinaryExpression(left, TokenKind.JAVASCRIPT_EQUAL, right)
+    );
+  }
+  
+  public static ParseTree createIdentifier(IdentifierToken identifier) {
+    return new IdentifierExpressionTree(null, identifier);
+  }
+
+  public static ParseTree createBinaryExpression(ParseTree left, TokenKind kind, ParseTree right) {
+    return new BinaryExpressionTree(null, left, createToken(kind), right);
+  }
+
+  public static Token createToken(TokenKind kind) {
+    return new Token(kind, null);
+  }
+
+  public static ParseTree createExpressionStatement(ParseTree expression) {
+    return new ExpressionStatementTree(null, expression);
   }
 }

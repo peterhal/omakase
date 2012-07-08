@@ -266,6 +266,7 @@ public class ParseTreeWriter extends ParseTreeVisitor {
   }
 
   protected void visit(omakase.syntax.trees.javascript.IdentifierExpressionTree tree) {
+    write(tree.name);
   }
 
   protected void visit(omakase.syntax.trees.javascript.IfStatementTree tree) {
