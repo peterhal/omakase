@@ -21,9 +21,9 @@ import omakase.util.SourceRange;
 /**
  */
 public class ConditionalExpressionTree extends ParseTree {
-  private final ParseTree condition;
-  private final ParseTree left;
-  private final ParseTree right;
+  public final ParseTree condition;
+  public final ParseTree left;
+  public final ParseTree right;
 
   public ConditionalExpressionTree(SourceRange location, ParseTree condition, ParseTree left, ParseTree right) {
     super(location, ParseTreeKind.JAVASCRIPT_CONDITIONAL_EXPRESSION);

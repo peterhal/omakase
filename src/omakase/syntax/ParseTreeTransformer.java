@@ -403,7 +403,19 @@ public class ParseTreeTransformer {
   }
 
   protected ParseTree transform(omakase.syntax.trees.javascript.ConditionalExpressionTree tree) {
-    return tree;
+    ParseTree condition = transformAny(tree.condition);
+    ParseTree left = transformAny(tree.left);
+    ParseTree right = transformAny(tree.right);
+    if (condition == tree.condition &&
+        left == tree.left &&
+        right == tree.right) {
+      return tree;
+    }
+    return new omakase.syntax.trees.javascript.ConditionalExpressionTree(
+        null,
+        tree.condition,
+        tree.left,
+        tree.right);
   }
 
   protected ParseTree transform(omakase.syntax.trees.javascript.ContinueStatementTree tree) {

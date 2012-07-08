@@ -33,7 +33,6 @@ public class ParseTree {
     return location.start;
   }
 
-
   public BinaryExpressionTree asBinaryExpression() {
     return (BinaryExpressionTree) this;
   }

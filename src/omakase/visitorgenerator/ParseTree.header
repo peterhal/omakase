@@ -32,4 +32,3 @@ public class ParseTree {
   public SourceLocation start() {
     return location.start;
   }
-

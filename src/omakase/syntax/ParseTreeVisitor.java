@@ -305,6 +305,9 @@ public class ParseTreeVisitor {
   }
 
   protected void visit(omakase.syntax.trees.javascript.ConditionalExpressionTree tree) {
+    visitAny(tree.condition);
+    visitAny(tree.left);
+    visitAny(tree.right);
   }
 
   protected void visit(omakase.syntax.trees.javascript.ContinueStatementTree tree) {
