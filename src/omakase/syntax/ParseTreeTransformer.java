@@ -18,7 +18,7 @@ import com.google.common.collect.ImmutableList;
 import omakase.syntax.trees.*;
 
 /**
- *
+ * Base class for transformation compiler passes.
  */
 public class ParseTreeTransformer {
 
