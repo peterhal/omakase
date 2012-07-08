@@ -48,6 +48,8 @@ public class ParseTreeTransformer {
     }
 
     switch (tree.kind) {
+    case BINARY_EXPRESSION:
+      return transform(tree.asBinaryExpression());
     case BLOCK:
       return transform(tree.asBlock());
     case CALL_EXPRESSION:
@@ -72,12 +74,20 @@ public class ParseTreeTransformer {
       return transform(tree.asSimpleNameExpression());
     case SOURCE_FILE:
       return transform(tree.asSourceFile());
+    case JAVASCRIPT_BINARY_EXPRESSION:
+      return transform(tree.asJavascriptBinaryExpression());
     case JAVASCRIPT_BLOCK:
       return transform(tree.asJavascriptBlock());
     case JAVASCRIPT_CALL_EXPRESSION:
       return transform(tree.asJavascriptCallExpression());
     case JAVASCRIPT_EXPRESSION_STATEMENT:
       return transform(tree.asJavascriptExpressionStatement());
+    case JAVASCRIPT_FORMAL_PARAMETER_LIST:
+      return transform(tree.asJavascriptFormalParameterList());
+    case JAVASCRIPT_FUNCTION_EXPRESSION:
+      return transform(tree.asJavascriptFunctionExpression());
+    case JAVASCRIPT_PAREN_EXPRESSION:
+      return transform(tree.asJavascriptParenExpression());
     case JAVASCRIPT_PROGRAM:
       return transform(tree.asJavascriptProgram());
     case JAVASCRIPT_SIMPLE_NAME_EXPRESSION:
@@ -85,6 +95,20 @@ public class ParseTreeTransformer {
     default:
       throw new RuntimeException("Unexpected tree kind.");
     }
+  }
+
+  protected ParseTree transform(BinaryExpressionTree tree) {
+    ParseTree left = transformAny(tree.left);
+    ParseTree right = transformAny(tree.right);
+    if (left == tree.left &&
+        right == tree.right) {
+      return tree;
+    }
+    return new BinaryExpressionTree(
+        null,
+        tree.left,
+        tree.operator,
+        tree.right);
   }
 
   protected ParseTree transform(BlockTree tree) {
@@ -200,6 +224,20 @@ public class ParseTreeTransformer {
         declarations);
   }
 
+  protected ParseTree transform(omakase.syntax.trees.javascript.BinaryExpressionTree tree) {
+    ParseTree left = transformAny(tree.left);
+    ParseTree right = transformAny(tree.right);
+    if (left == tree.left &&
+        right == tree.right) {
+      return tree;
+    }
+    return new omakase.syntax.trees.javascript.BinaryExpressionTree(
+        null,
+        tree.left,
+        tree.operator,
+        tree.right);
+  }
+
   protected ParseTree transform(omakase.syntax.trees.javascript.BlockTree tree) {
     ImmutableList<ParseTree> statements = transformList(tree.statements);
     if (statements == tree.statements) {
@@ -229,6 +267,39 @@ public class ParseTreeTransformer {
       return tree;
     }
     return new omakase.syntax.trees.javascript.ExpressionStatementTree(
+        null,
+        tree.expression);
+  }
+
+  protected ParseTree transform(omakase.syntax.trees.javascript.FormalParameterListTree tree) {
+    ImmutableList<ParseTree> parameters = transformList(tree.parameters);
+    if (parameters == tree.parameters) {
+      return tree;
+    }
+    return new omakase.syntax.trees.javascript.FormalParameterListTree(
+        null,
+        parameters);
+  }
+
+  protected ParseTree transform(omakase.syntax.trees.javascript.FunctionExpressionTree tree) {
+    ParseTree parameters = transformAny(tree.parameters);
+    ParseTree body = transformAny(tree.body);
+    if (parameters == tree.parameters &&
+        body == tree.body) {
+      return tree;
+    }
+    return new omakase.syntax.trees.javascript.FunctionExpressionTree(
+        null,
+        tree.parameters,
+        tree.body);
+  }
+
+  protected ParseTree transform(omakase.syntax.trees.javascript.ParenExpressionTree tree) {
+    ParseTree expression = transformAny(tree.expression);
+    if (expression == tree.expression) {
+      return tree;
+    }
+    return new omakase.syntax.trees.javascript.ParenExpressionTree(
         null,
         tree.expression);
   }

@@ -86,6 +86,14 @@ public class ParseTree {
     return (ParenExpressionTree) this;
   }
 
+  public BinaryExpressionTree asBinaryExpression() {
+    return (BinaryExpressionTree) this;
+  }
+
+  public omakase.syntax.trees.javascript.BinaryExpressionTree asJavascriptBinaryExpression() {
+    return (omakase.syntax.trees.javascript.BinaryExpressionTree) this;
+  }
+
   public omakase.syntax.trees.javascript.BlockTree asJavascriptBlock() {
     return (omakase.syntax.trees.javascript.BlockTree) this;
   }
@@ -101,4 +109,16 @@ public class ParseTree {
   public omakase.syntax.trees.javascript.SimpleNameExpressionTree asJavascriptSimpleNameExpression() {
     return (omakase.syntax.trees.javascript.SimpleNameExpressionTree) this;
   }
+  public omakase.syntax.trees.javascript.FormalParameterListTree asJavascriptFormalParameterList() {
+    return (omakase.syntax.trees.javascript.FormalParameterListTree) this;
+  }
+
+  public omakase.syntax.trees.javascript.FunctionExpressionTree asJavascriptFunctionExpression() {
+    return (omakase.syntax.trees.javascript.FunctionExpressionTree) this;
+  }
+
+  public omakase.syntax.trees.javascript.ParenExpressionTree asJavascriptParenExpression() {
+    return (omakase.syntax.trees.javascript.ParenExpressionTree) this;
+  }
+
 }

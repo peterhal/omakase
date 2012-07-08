@@ -44,7 +44,7 @@ public class JavascriptTransformer extends ParseTreeTransformer {
       //
       public ParseTree transform(ClassDeclarationTree tree) {
         return createParenExpression(createCall(
-            createFunction()
+            createFunction(null, null)
         ));
       }
     }
