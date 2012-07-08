@@ -35,6 +35,8 @@ import java.util.Comparator;
  *  src\omakase\syntax\ParseTreeVisitor.java
  *  src\omakase\visitorgenerator\ParseTreeTransformer.header
  *  src\omakase\syntax\ParseTreeTransformer.java
+ *  src\omakase\visitorgenerator\ParseTree.header
+ *  src\omakase\syntax\trees\ParseTree.java
  */
 public class Program {
 
@@ -52,18 +54,36 @@ public class Program {
     final String visitorOutputFilename = args[1];
     final String transformerHeaderFilename = args[2];
     final String transformerOutputFilename = args[3];
+    final String parseTreeHeaderFilename = args[4];
+    final String parseTreeOutputFilename = args[5];
 
     try {
       final ArrayList<TreeInfo> trees = loadTrees();
       printVisitor(visitorHeaderFileName, trees, new PrintStream(visitorOutputFilename));
       printTransformer(transformerHeaderFilename, trees, new PrintStream(transformerOutputFilename));
+      printParseTree(parseTreeHeaderFilename, trees, new PrintStream(parseTreeOutputFilename));
     } catch (FileNotFoundException e) {
       e.printStackTrace();
     }
   }
 
-  private static void printTransformer(String headerFileName, ArrayList<TreeInfo> trees, PrintStream out) {
-    printHeader(out, headerFileName);
+  private static void printParseTree(String headerFilename, ArrayList<TreeInfo> trees, PrintStream out) {
+    printHeader(out, headerFilename);
+    printAsMethods(out, trees);
+    out.println("}"); // class
+  }
+
+  private static void printAsMethods(PrintStream out, ArrayList<TreeInfo> trees) {
+    for (TreeInfo tree: trees) {
+      out.println();
+      out.printf("  public %s %s() {\n", tree.className, tree.asName);
+      out.printf("    return (%s) this;\n", tree.className);
+      out.println("  }");
+    }
+  }
+
+  private static void printTransformer(String headerFilename, ArrayList<TreeInfo> trees, PrintStream out) {
+    printHeader(out, headerFilename);
     printTransformAny(out, trees);
     printTreeTransforms(out, trees);
     out.println("}"); // class
