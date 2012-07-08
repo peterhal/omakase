@@ -15,7 +15,6 @@
 package omakase.syntax.trees;
 
 import com.google.common.collect.ImmutableList;
-import omakase.syntax.tokens.IdentifierToken;
 import omakase.util.SourceRange;
 
 /**

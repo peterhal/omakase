@@ -58,6 +58,7 @@ public class Scanner {
    * Scans an entire source file into tokens.
    * @param reporter The error reporter to use when reporting errors.
    * @param file The file to scan.
+   * @return The scanned tokens.
    */
   public static ImmutableList<Token> scanFile(ErrorReporter reporter, SourceFile file) {
     return new Scanner(reporter, file).scanAll();
