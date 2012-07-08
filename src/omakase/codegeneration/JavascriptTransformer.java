@@ -18,6 +18,8 @@ import omakase.syntax.ParseTreeTransformer;
 import omakase.syntax.trees.*;
 import omakase.syntax.trees.javascript.ProgramTree;
 
+import static omakase.codegeneration.ParseTreeFactory.*;
+
 /**
  *
  */
@@ -41,7 +43,9 @@ public class JavascriptTransformer extends ParseTreeTransformer {
       //  }());
       //
       public ParseTree transform(ClassDeclarationTree tree) {
-        return null;
+        return createParenExpression(createCall(
+            createFunction()
+        ));
       }
     }
 }

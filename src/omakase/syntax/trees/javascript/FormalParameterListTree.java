@@ -12,25 +12,21 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package omakase.syntax.trees;
+package omakase.syntax.trees.javascript;
 
-import omakase.syntax.tokens.IdentifierToken;
-import omakase.syntax.tokens.Token;
-import omakase.syntax.tokens.TokenKind;
+import com.google.common.collect.ImmutableList;
+import omakase.syntax.trees.ParseTree;
+import omakase.syntax.trees.ParseTreeKind;
 import omakase.util.SourceRange;
 
 /**
  *
  */
-public class BinaryExpressionTree extends ParseTree {
-  public final ParseTree left;
-  public final Token operator;
-  public final ParseTree right;
+public class FormalParameterListTree extends ParseTree {
+  public final ImmutableList<ParseTree> parameters;
 
-  public BinaryExpressionTree(SourceRange location, ParseTree left, Token operator, ParseTree right) {
-    super(location, ParseTreeKind.BINARY_EXPRESSION);
-    this.left = left;
-    this.operator = operator;
-    this.right = right;
+  public FormalParameterListTree(SourceRange location, ImmutableList<ParseTree> parameters) {
+    super(location, ParseTreeKind.JAVASCRIPT_FORMAL_PARAMETER_LIST);
+    this.parameters = parameters;
   }
 }
