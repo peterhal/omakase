@@ -91,7 +91,7 @@ public class ParseTreeTransformer {
       return transform(tree.asJavascriptParenExpression());
     case JAVASCRIPT_PROGRAM:
       return transform(tree.asJavascriptProgram());
-    case JAVASCRIPT_SIMPLE_NAME_EXPRESSION:
+    case JAVASCRIPT_IDENTIFIER_EXPRESSION:
       return transform(tree.asJavascriptSimpleNameExpression());
     default:
       throw new RuntimeException("Unexpected tree kind.");

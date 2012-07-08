@@ -98,7 +98,7 @@ public class ParseTreeVisitor {
     case JAVASCRIPT_PROGRAM:
       visit(tree.asJavascriptProgram());
       break;
-    case JAVASCRIPT_SIMPLE_NAME_EXPRESSION:
+    case JAVASCRIPT_IDENTIFIER_EXPRESSION:
       visit(tree.asJavascriptSimpleNameExpression());
       break;
     }
