@@ -16,6 +16,7 @@ package omakase.syntax;
 
 import com.google.common.collect.ImmutableList;
 import omakase.syntax.trees.*;
+import omakase.syntax.trees.javascript.IdentifierExpressionTree;
 
 /**
  *
@@ -191,6 +192,6 @@ public class ParseTreeVisitor {
     visitList(tree.sourceElements);
   }
 
-  protected void visit(omakase.syntax.trees.javascript.SimpleNameExpressionTree tree) {
+  protected void visit(IdentifierExpressionTree tree) {
   }
 }

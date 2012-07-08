@@ -16,6 +16,7 @@ package omakase.syntax;
 
 import com.google.common.collect.ImmutableList;
 import omakase.syntax.trees.*;
+import omakase.syntax.trees.javascript.IdentifierExpressionTree;
 
 /**
  * Base class for transformation compiler passes.
@@ -314,7 +315,7 @@ public class ParseTreeTransformer {
         sourceElements);
   }
 
-  protected ParseTree transform(omakase.syntax.trees.javascript.SimpleNameExpressionTree tree) {
+  protected ParseTree transform(IdentifierExpressionTree tree) {
     return tree;
   }
 }

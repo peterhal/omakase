@@ -14,6 +14,7 @@
 
 package omakase.syntax.trees;
 
+import omakase.syntax.trees.javascript.IdentifierExpressionTree;
 import omakase.syntax.trees.javascript.ProgramTree;
 import omakase.util.SourceLocation;
 import omakase.util.SourceRange;
@@ -106,8 +107,8 @@ public class ParseTree {
     return (omakase.syntax.trees.javascript.ExpressionStatementTree) this;
   }
 
-  public omakase.syntax.trees.javascript.SimpleNameExpressionTree asJavascriptSimpleNameExpression() {
-    return (omakase.syntax.trees.javascript.SimpleNameExpressionTree) this;
+  public IdentifierExpressionTree asJavascriptSimpleNameExpression() {
+    return (IdentifierExpressionTree) this;
   }
   public omakase.syntax.trees.javascript.FormalParameterListTree asJavascriptFormalParameterList() {
     return (omakase.syntax.trees.javascript.FormalParameterListTree) this;
