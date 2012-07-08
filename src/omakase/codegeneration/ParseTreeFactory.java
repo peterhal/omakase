@@ -34,6 +34,6 @@ public final class ParseTreeFactory {
   }
   
   public static ParseTree createFunction(FormalParameterListTree parameters, BlockTree body) {
-    return new FunctionExpressionTree(null, parameters, body);
+    return new FunctionExpressionTree(null, null, parameters, body);
   }
 }

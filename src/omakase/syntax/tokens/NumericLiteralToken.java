@@ -30,7 +30,7 @@ public class NumericLiteralToken extends Token {
   }
 
   @Override
-  public String toString() {
-    return super.toString() + String.format(" %d", value);
+  public String valueString() {
+    return String.format("%d", value);
   }
 }

@@ -517,6 +517,7 @@ public class ParseTreeTransformer {
     }
     return new omakase.syntax.trees.javascript.FunctionExpressionTree(
         null,
+        null,
         tree.parameters,
         tree.body);
   }

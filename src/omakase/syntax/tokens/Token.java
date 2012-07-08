@@ -35,7 +35,31 @@ public class Token {
 
   @Override
   public String toString() {
-    return String.format("%s: %s", location, kind.name());
+    return String.format("%s: %s", location, kind.name())
+      + (hasValue() ? " " + valueString() : "");
+  }
+
+  public String toValueString() {
+    if (hasValue()) {
+      return valueString();
+    } else {
+      return kind.name();
+    }
+  }
+  
+  public boolean hasValue() {
+    switch (kind) {
+    case IDENTIFIER:
+    case STRING:
+    case NUMBER:
+      return true;
+    default:
+      return false;
+    }
+  }
+  
+  public String valueString() {
+    throw new RuntimeException("No value string.");
   }
 
   public SourceLocation start() {

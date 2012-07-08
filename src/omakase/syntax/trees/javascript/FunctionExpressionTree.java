@@ -25,11 +25,13 @@ import omakase.util.SourceRange;
  *
  */
 public class FunctionExpressionTree extends ParseTree {
+  public final IdentifierToken name;
   public final FormalParameterListTree parameters;
   public final BlockTree body;
 
-  public FunctionExpressionTree(SourceRange location, FormalParameterListTree parameters, BlockTree body) {
+  public FunctionExpressionTree(SourceRange location, IdentifierToken name, FormalParameterListTree parameters, BlockTree body) {
     super(location, ParseTreeKind.JAVASCRIPT_FUNCTION_EXPRESSION);
+    this.name = name;
     this.parameters = parameters;
     this.body = body;
   }

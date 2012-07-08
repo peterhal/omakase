@@ -30,7 +30,7 @@ public class IdentifierToken extends Token {
   }
 
   @Override
-  public String toString() {
-    return super.toString() + String.format(" %s", value);
+  public String valueString() {
+    return value;
   }
 }
