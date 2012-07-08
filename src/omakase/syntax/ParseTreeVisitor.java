@@ -16,7 +16,6 @@ package omakase.syntax;
 
 import com.google.common.collect.ImmutableList;
 import omakase.syntax.trees.*;
-import omakase.syntax.trees.javascript.IdentifierExpressionTree;
 
 /**
  *
@@ -92,14 +91,14 @@ public class ParseTreeVisitor {
     case JAVASCRIPT_FUNCTION_EXPRESSION:
       visit(tree.asJavascriptFunctionExpression());
       break;
+    case JAVASCRIPT_IDENTIFIER_EXPRESSION:
+      visit(tree.asJavascriptIdentifierExpression());
+      break;
     case JAVASCRIPT_PAREN_EXPRESSION:
       visit(tree.asJavascriptParenExpression());
       break;
     case JAVASCRIPT_PROGRAM:
       visit(tree.asJavascriptProgram());
-      break;
-    case JAVASCRIPT_IDENTIFIER_EXPRESSION:
-      visit(tree.asJavascriptSimpleNameExpression());
       break;
     }
   }
@@ -184,14 +183,14 @@ public class ParseTreeVisitor {
     visitAny(tree.body);
   }
 
+  protected void visit(omakase.syntax.trees.javascript.IdentifierExpressionTree tree) {
+  }
+
   protected void visit(omakase.syntax.trees.javascript.ParenExpressionTree tree) {
     visitAny(tree.expression);
   }
 
   protected void visit(omakase.syntax.trees.javascript.ProgramTree tree) {
     visitList(tree.sourceElements);
-  }
-
-  protected void visit(IdentifierExpressionTree tree) {
   }
 }

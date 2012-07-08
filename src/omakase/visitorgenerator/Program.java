@@ -209,12 +209,11 @@ public class Program {
 
       try {
         info.clazz = Class.forName(fullClassName);
+        result.add(info);
       } catch (ClassNotFoundException e) {
-        e.printStackTrace();
+        System.out.printf("Missing Class Definition: %s\n", fullClassName);
       }
       // TODO: Validate
-
-      result.add(info);
     }
     Collections.sort(result, new Comparator<TreeInfo>() {
       public int compare(TreeInfo a, TreeInfo b) {

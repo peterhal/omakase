@@ -16,7 +16,6 @@ package omakase.syntax;
 
 import com.google.common.collect.ImmutableList;
 import omakase.syntax.trees.*;
-import omakase.syntax.trees.javascript.IdentifierExpressionTree;
 
 /**
  * Base class for transformation compiler passes.
@@ -87,12 +86,12 @@ public class ParseTreeTransformer {
       return transform(tree.asJavascriptFormalParameterList());
     case JAVASCRIPT_FUNCTION_EXPRESSION:
       return transform(tree.asJavascriptFunctionExpression());
+    case JAVASCRIPT_IDENTIFIER_EXPRESSION:
+      return transform(tree.asJavascriptIdentifierExpression());
     case JAVASCRIPT_PAREN_EXPRESSION:
       return transform(tree.asJavascriptParenExpression());
     case JAVASCRIPT_PROGRAM:
       return transform(tree.asJavascriptProgram());
-    case JAVASCRIPT_IDENTIFIER_EXPRESSION:
-      return transform(tree.asJavascriptSimpleNameExpression());
     default:
       throw new RuntimeException("Unexpected tree kind.");
     }
@@ -295,6 +294,10 @@ public class ParseTreeTransformer {
         tree.body);
   }
 
+  protected ParseTree transform(omakase.syntax.trees.javascript.IdentifierExpressionTree tree) {
+    return tree;
+  }
+
   protected ParseTree transform(omakase.syntax.trees.javascript.ParenExpressionTree tree) {
     ParseTree expression = transformAny(tree.expression);
     if (expression == tree.expression) {
@@ -313,9 +316,5 @@ public class ParseTreeTransformer {
     return new omakase.syntax.trees.javascript.ProgramTree(
         null,
         sourceElements);
-  }
-
-  protected ParseTree transform(IdentifierExpressionTree tree) {
-    return tree;
   }
 }

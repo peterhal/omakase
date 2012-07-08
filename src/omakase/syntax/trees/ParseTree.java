@@ -107,7 +107,7 @@ public class ParseTree {
     return (omakase.syntax.trees.javascript.ExpressionStatementTree) this;
   }
 
-  public IdentifierExpressionTree asJavascriptSimpleNameExpression() {
+  public IdentifierExpressionTree asJavascriptIdentifierExpression() {
     return (IdentifierExpressionTree) this;
   }
   public omakase.syntax.trees.javascript.FormalParameterListTree asJavascriptFormalParameterList() {
