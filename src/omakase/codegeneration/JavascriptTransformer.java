@@ -18,6 +18,9 @@ import omakase.syntax.ParseTreeTransformer;
 import omakase.syntax.trees.*;
 import omakase.syntax.trees.javascript.ProgramTree;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static omakase.codegeneration.JavascriptParseTreeFactory.*;
 
 /**
@@ -43,13 +46,34 @@ public class JavascriptTransformer extends ParseTreeTransformer {
       //  }());
       //
       public ParseTree transform(ClassDeclarationTree tree) {
-        ParseTree constructor = createAssignmentStatement(
+        ParseTree constructor = createConstructor(tree);
+        List<ParseTree> members = createMembers(tree);
+        members.add(0, constructor);
+        return createParenExpression(createCall(
+            createFunction(createFormalParameterList(), createBlock(members))
+        ));
+      }
+
+      private ParseTree createConstructor(ClassDeclarationTree tree) {
+        return createAssignmentStatement(
             createIdentifier(tree.name),
             createFunction(createFormalParameterList(), createBlock())
         );
-        return createParenExpression(createCall(
-            createFunction(createFormalParameterList(), createBlock(constructor))
-        ));
+      }
+      
+      private List<ParseTree> createMembers(ClassDeclarationTree tree) {
+        ArrayList<ParseTree> result = new ArrayList<ParseTree>();
+        for (ParseTree member: tree.members) {
+          result.add(createMember(tree.name.value, member.asMethodDeclaration()));
+        }
+        return result;
+      }
+
+      private ParseTree createMember(String className, MethodDeclarationTree method) {
+        //    C.prototype.member = ...;
+        return createAssignmentStatement(
+            createDottedName(className, "prototype", method.name.value),
+            createFunction(createFormalParameterList(), createBlock()));
       }
     }
 }

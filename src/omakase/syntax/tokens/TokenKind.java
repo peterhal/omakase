@@ -62,6 +62,7 @@ public enum TokenKind {
   CLASS("class"),
   FALSE("false"),
   LET("let"),
+  NATIVE("native"),
   NULL("null"),
   TRUE("true"),
   VAR("var"),

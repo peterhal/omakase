@@ -21,6 +21,8 @@ import omakase.syntax.tokens.TokenKind;
 import omakase.syntax.trees.ParseTree;
 import omakase.syntax.trees.javascript.*;
 
+import java.util.List;
+
 /**
  */
 public final class JavascriptParseTreeFactory {
@@ -43,11 +45,35 @@ public final class JavascriptParseTreeFactory {
   public static FormalParameterListTree createFormalParameterList() {
     return new FormalParameterListTree(null, ImmutableList.<ParseTree>of());
   }
-  
+
   public static BlockTree createBlock(ParseTree... statements) {
+    return createBlock(ImmutableList.<ParseTree>copyOf(statements));
+  }
+
+  public static BlockTree createBlock(ImmutableList<ParseTree> statements) {
+    return new BlockTree(null, statements);
+  }
+
+  public static BlockTree createBlock(List<ParseTree> statements) {
     return new BlockTree(null, ImmutableList.<ParseTree>copyOf(statements));
   }
-  
+
+  public static ParseTree createDottedName(String... names) {
+    ParseTree result = null;
+    for (String name: names) {
+      if (result == null) {
+        result = createIdentifier(name);
+      } else {
+        result = new MemberExpressionTree(null, result, new IdentifierToken(null, name));
+      }
+    }
+    return result;
+  }
+
+  private static ParseTree createIdentifier(String value) {
+    return createIdentifier(new IdentifierToken(null, value));
+  }
+
   public static ParseTree createAssignmentStatement(ParseTree left, ParseTree right) {
     return createExpressionStatement(
         createBinaryExpression(left, TokenKind.JAVASCRIPT_EQUAL, right)

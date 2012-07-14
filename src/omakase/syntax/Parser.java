@@ -76,10 +76,11 @@ public class Parser {
   }
 
   private ParseTree parseClassMember() {
+    boolean isNative = eatOpt(TokenKind.NATIVE);
     IdentifierToken name = eatId();
     ImmutableList<ParseTree> formals = parseParameterListDeclaration();
     BlockTree body = parseBlock();
-    return new MethodDeclarationTree(getRange(name), name, formals, body);
+    return new MethodDeclarationTree(getRange(name), name, formals, isNative, body);
   }
 
   private BlockTree parseBlock() {
@@ -204,7 +205,12 @@ public class Parser {
   }
 
   private boolean peekClassMember() {
-    return peek(TokenKind.IDENTIFIER);
+    switch (peekKind()) {
+    case IDENTIFIER:
+    case NATIVE:
+      return true;
+    }
+    return false;
   }
 
   /**
