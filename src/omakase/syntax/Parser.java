@@ -79,8 +79,17 @@ public class Parser {
     boolean isNative = eatOpt(TokenKind.NATIVE);
     IdentifierToken name = eatId();
     ImmutableList<ParseTree> formals = parseParameterListDeclaration();
-    BlockTree body = parseBlock();
+    ParseTree body = parseBlock(isNative);
     return new MethodDeclarationTree(getRange(name), name, formals, isNative, body);
+  }
+
+  private ParseTree parseBlock(boolean isNative) {
+    return isNative ? parseNativeBlock() : parseBlock();
+  }
+
+  private ParseTree parseNativeBlock() {
+    // TODO
+    return null;
   }
 
   private BlockTree parseBlock() {
