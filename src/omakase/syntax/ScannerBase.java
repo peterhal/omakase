@@ -38,6 +38,14 @@ public class ScannerBase {
     this.reporter = reporter;
   }
 
+  public void setPosition(int index) {
+    this.index = index;
+  }
+
+  public int getPosition() {
+    return this.index;
+  }
+
   /**
    * Report an error.
    * @param index The index in the source file to report the error at.
