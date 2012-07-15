@@ -147,18 +147,35 @@ public enum TokenKind {
   JAVASCRIPT_VOID("void"),
   JAVASCRIPT_WHILE("while"),
   JAVASCRIPT_WITH("with"),
+
+  JAVASCRIPT_IDENTIFIER("identifier"),
+  JAVASCRIPT_END_OF_FILE("End of file"),
+  JAVASCRIPT_ERROR("error"),
+  JAVASCRIPT_NUMBER("number literal"),
+  JAVASCRIPT_STRING("string literal"),
   ;
 
   /**
    * Map from string to TokenKind containing all the keywords.
    */
   private static final ImmutableMap<String, TokenKind> keywords;
+
+  /**
+   * Map from string to TokenKind containing all the keywords.
+   */
+  private static final ImmutableMap<String, TokenKind> javascriptKeywords;
+
   static {
+    keywords = buildKeywords(TokenKind.CLASS, TokenKind.VAR);
+    javascriptKeywords = buildKeywords(TokenKind.JAVASCRIPT_BREAK, TokenKind.JAVASCRIPT_WITH);
+  }
+
+  private static ImmutableMap<String, TokenKind> buildKeywords(TokenKind start, TokenKind end) {
     ImmutableMap.Builder<String, TokenKind> map = ImmutableMap.builder();
-    for (TokenKind keyword : EnumSet.range(TokenKind.CLASS, TokenKind.VAR)) {
+    for (TokenKind keyword : EnumSet.range(start, end)) {
       map.put(keyword.value, keyword);
     }
-    keywords = map.build();
+    return map.build();
   }
 
   private final String value;
@@ -182,5 +199,13 @@ public enum TokenKind {
    */
   public static TokenKind getKeyword(String value) {
     return keywords.get(value);
+  }
+
+  /**
+   * Returns the TokenKind of a string if the string is a keyword.
+   * Returns null if the value is not a keyword.
+   */
+  public static TokenKind getJavascriptKeyword(String value) {
+    return javascriptKeywords.get(value);
   }
 }

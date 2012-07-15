@@ -1,4 +1,4 @@
-// Copyright 2011 Peter Hallam
+// Copyright 2012 Peter Hallam
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -19,96 +19,138 @@ import omakase.syntax.tokens.*;
 import omakase.util.*;
 import static omakase.util.Characters.*;
 
+
 /**
  * Scanning is the first phase of compilation. The scanner takes the raw characters of a source
  * file and converts them to tokens. Tokens include punctuation, identifiers, keywords and literals.
  * While scanning for tokens, whitespace and comments are ignored.
  */
-public class Scanner extends ScannerBase {
-
+public class JavascriptScanner extends ScannerBase {
   /**
    * @param reporter Where to report errors during scanning.
    * @param file The file to scan.
    */
-  public Scanner(ErrorReporter reporter, SourceFile file) {
+  public JavascriptScanner(ErrorReporter reporter, SourceFile file) {
     super(file, reporter);
-  }
-
-  /**
-   * Scans the entire file.
-   * @return The list of tokens scanned.
-   */
-  public ImmutableList<Token> scanAll() {
-    ImmutableList.Builder<Token> tokens = ImmutableList.builder();
-    do {
-      tokens.add(scanToken());
-    } while(!atEnd());
-    return tokens.build();
-  }
-
-  /**
-   * Scans an entire source file into tokens.
-   * @param reporter The error reporter to use when reporting errors.
-   * @param file The file to scan.
-   * @return The scanned tokens.
-   */
-  public static ImmutableList<Token> scanFile(ErrorReporter reporter, SourceFile file) {
-    return new Scanner(reporter, file).scanAll();
   }
 
   /**
    * Scans a single token.
    * @return The token scanned.
    */
-  private Token scanToken() {
+  public Token scanToken() {
     skipWhitespaceAndComments();
     int startIndex = index;
     char ch = nextChar();
     switch (ch) {
-    case '\0': return createToken(TokenKind.END_OF_FILE, startIndex);
-    case '{': return createToken(TokenKind.OPEN_CURLY, startIndex);
-    case '}': return createToken(TokenKind.CLOSE_CURLY, startIndex);
-    case '(': return createToken(TokenKind.OPEN_PAREN, startIndex);
-    case ')': return createToken(TokenKind.CLOSE_PAREN, startIndex);
-    case '.': return createToken(TokenKind.PERIOD, startIndex);
-    case ';': return createToken(TokenKind.SEMI_COLON, startIndex);
-    case ',': return createToken(TokenKind.COMMA, startIndex);
+    case '\0': return createToken(TokenKind.JAVASCRIPT_END_OF_FILE, startIndex);
+    case '{': return createToken(TokenKind.JAVASCRIPT_OPEN_CURLY, startIndex);
+    case '}': return createToken(TokenKind.JAVASCRIPT_CLOSE_CURLY, startIndex);
+    case '(': return createToken(TokenKind.JAVASCRIPT_OPEN_PAREN, startIndex);
+    case ')': return createToken(TokenKind.JAVASCRIPT_CLOSE_PAREN, startIndex);
+    case '.': return createToken(TokenKind.JAVASCRIPT_PERIOD, startIndex);
+    case ';': return createToken(TokenKind.JAVASCRIPT_SEMI_COLON, startIndex);
+    case ',': return createToken(TokenKind.JAVASCRIPT_COMMA, startIndex);
     case '<':
-      if (eatOpt('=')) {
-        return createToken(TokenKind.LESS_EQUAL, startIndex);
+      if (eatOpt('<')) {
+        if (eatOpt('=')) {
+          return createToken(TokenKind.JAVASCRIPT_LEFT_SHIFT_EQUAL, startIndex);
+        }
+        return createToken(TokenKind.JAVASCRIPT_SHIFT_LEFT, startIndex);
       }
-      return createToken(TokenKind.OPEN_ANGLE, startIndex);
+      if (eatOpt('=')) {
+        return createToken(TokenKind.JAVASCRIPT_LESS_EQUAL, startIndex);
+      }
+      return createToken(TokenKind.JAVASCRIPT_OPEN_ANGLE, startIndex);
     case '>':
-      if (eatOpt('=')) {
-        return createToken(TokenKind.GREATER_EQUAL, startIndex);
+      if (eatOpt('>')) {
+        if (eatOpt('=')) {
+          return createToken(TokenKind.JAVASCRIPT_RIGHT_SHIFT_EQUAL, startIndex);
+        }
+        if (eatOpt('>')) {
+          if (eatOpt('=')) {
+            return createToken(TokenKind.JAVASCRIPT_UNSIGNED_RIGHT_SHIFT_EQUAL, startIndex);
+          }
+          return createToken(TokenKind.JAVASCRIPT_UNSIGNED_SHIFT_RIGHT, startIndex);
+        }
+        return createToken(TokenKind.JAVASCRIPT_SHIFT_RIGHT, startIndex);
       }
-      return createToken(TokenKind.CLOSE_ANGLE, startIndex);
+      if (eatOpt('=')) {
+        return createToken(TokenKind.JAVASCRIPT_GREATER_EQUAL, startIndex);
+      }
+      return createToken(TokenKind.JAVASCRIPT_CLOSE_ANGLE, startIndex);
     case '=':
       if (eatOpt('=')) {
-        return createToken(TokenKind.EQUAL_EQUAL, startIndex);
+        if (eatOpt('=')) {
+          return createToken(TokenKind.JAVASCRIPT_EQUAL_EQUAL_EQUAL, startIndex);
+        }
+        return createToken(TokenKind.JAVASCRIPT_EQUAL_EQUAL, startIndex);
       }
-      return createToken(TokenKind.EQUAL, startIndex);
+      return createToken(TokenKind.JAVASCRIPT_EQUAL, startIndex);
     case '!':
       if (eatOpt('=')) {
-        return createToken(TokenKind.NOT_EQUAL, startIndex);
+        if (eatOpt('=')) {
+          return createToken(TokenKind.JAVASCRIPT_NOT_EQUAL_EQUAL, startIndex);
+        }
+        return createToken(TokenKind.JAVASCRIPT_NOT_EQUAL, startIndex);
       }
-      return createToken(TokenKind.BANG, startIndex);
-    case '+': return createToken(TokenKind.PLUS, startIndex);
-    case '-': return createToken(TokenKind.MINUS, startIndex);
-    case '*': return createToken(TokenKind.STAR, startIndex);
+      return createToken(TokenKind.JAVASCRIPT_BANG, startIndex);
+    case '^':
+      if (eatOpt('=')) {
+        return createToken(TokenKind.JAVASCRIPT_HAT_EQUAL, startIndex);
+      }
+      return createToken(TokenKind.JAVASCRIPT_HAT, startIndex);
+    case '~':
+      return createToken(TokenKind.JAVASCRIPT_TILDE, startIndex);
+    case '+':
+      if (eatOpt('+')) {
+        return createToken(TokenKind.JAVASCRIPT_PLUS_PLUS, startIndex);
+      }
+      if (eatOpt('=')) {
+        return createToken(TokenKind.JAVASCRIPT_PLUS_EQUAL, startIndex);
+      }
+      return createToken(TokenKind.JAVASCRIPT_PLUS, startIndex);
+    case '-':
+      if (eatOpt('-')) {
+        return createToken(TokenKind.JAVASCRIPT_MINUS_MINUS, startIndex);
+      }
+      if (eatOpt('=')) {
+        return createToken(TokenKind.JAVASCRIPT_MINUS_EQUAL, startIndex);
+      }
+      return createToken(TokenKind.JAVASCRIPT_MINUS, startIndex);
+    case '*':
+      if (eatOpt('=')) {
+        return createToken(TokenKind.JAVASCRIPT_STAR_EQUAL, startIndex);
+      }
+      return createToken(TokenKind.JAVASCRIPT_STAR, startIndex);
+    case '%':
+      if (eatOpt('=')) {
+        return createToken(TokenKind.JAVASCRIPT_PERCENT_EQUAL, startIndex);
+      }
+      return createToken(TokenKind.JAVASCRIPT_PERCENT, startIndex);
     case '&':
+      if (eatOpt('=')) {
+        return createToken(TokenKind.JAVASCRIPT_AMPERSAND_EQUAL, startIndex);
+      }
       if (eatOpt('&')) {
-        return createToken(TokenKind.AMPERSAND_AMPERSAND, startIndex);
+        return createToken(TokenKind.JAVASCRIPT_AMPERSAND_AMPERSAND, startIndex);
       }
-      return createToken(TokenKind.AMPERSAND, startIndex);
+      return createToken(TokenKind.JAVASCRIPT_AMPERSAND, startIndex);
     case '|':
-      if (eatOpt('|')) {
-        return createToken(TokenKind.BAR_BAR, startIndex);
+      if (eatOpt('=')) {
+        return createToken(TokenKind.JAVASCRIPT_BAR_EQUAL, startIndex);
       }
-      return createToken(TokenKind.BAR, startIndex);
-    case '?': return createToken(TokenKind.QUESTION, startIndex);
-    case ':': return createToken(TokenKind.COLON, startIndex);
-    case '/': return createToken(TokenKind.SLASH, startIndex);
+      if (eatOpt('|')) {
+        return createToken(TokenKind.JAVASCRIPT_BAR_BAR, startIndex);
+      }
+      return createToken(TokenKind.JAVASCRIPT_BAR, startIndex);
+    case '?': return createToken(TokenKind.JAVASCRIPT_QUESTION, startIndex);
+    case ':': return createToken(TokenKind.JAVASCRIPT_COLON, startIndex);
+    case '/':
+      if (eatOpt('=')) {
+        return createToken(TokenKind.JAVASCRIPT_SLASH_EQUAL, startIndex);
+      }
+      return createToken(TokenKind.JAVASCRIPT_SLASH, startIndex);
     case '\"': return scanStringLiteral(startIndex);
     case '0': case '1': case '2': case '3': case '4':
     case '5': case '6': case '7': case '8': case '9':
@@ -118,7 +160,7 @@ public class Scanner extends ScannerBase {
         return scanIdentifierOrKeyword(startIndex, ch);
       }
       reportError(startIndex, "Unexpected character '%s'.", ch);
-      return createToken(TokenKind.ERROR, startIndex);
+      return createToken(TokenKind.JAVASCRIPT_ERROR, startIndex);
     }
   }
 
@@ -137,7 +179,7 @@ public class Scanner extends ScannerBase {
       buffer.append(nextChar());
     }
     String value = buffer.toString();
-    TokenKind keyword = TokenKind.getKeyword(value);
+    TokenKind keyword = TokenKind.getJavascriptKeyword(value);
     if (keyword != null) {
       return createToken(keyword, startIndex);
     }
@@ -318,5 +360,4 @@ public class Scanner extends ScannerBase {
 
     return new Token(kind, getRange(start));
   }
-
 }
