@@ -32,14 +32,12 @@ import java.util.List;
  */
 public class Parser {
   private final ErrorReporter reporter;
-  private final SourceFile file;
   private final ArrayList<Token> tokens;
   private final Scanner scanner;
   private Token lastToken = null;
 
   public Parser(ErrorReporter reporter, SourceFile file) {
     this.reporter = reporter;
-    this.file = file;
     this.tokens = new ArrayList<Token>(5);
     this.scanner = new Scanner(reporter, file);
   }
