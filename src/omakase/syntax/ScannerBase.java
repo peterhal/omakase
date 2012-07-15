@@ -14,6 +14,7 @@
 
 package omakase.syntax;
 
+import omakase.syntax.tokens.Token;
 import omakase.util.ErrorReporter;
 import omakase.util.SourceFile;
 import omakase.util.SourceLocation;
@@ -22,7 +23,7 @@ import omakase.util.SourceRange;
 /**
  * Base class for building scanners.
  */
-public class ScannerBase {
+public abstract class ScannerBase {
   protected final ErrorReporter reporter;
   protected final SourceRange source;
   protected int index;
@@ -37,6 +38,8 @@ public class ScannerBase {
     this.file = source.file();
     this.reporter = reporter;
   }
+
+  public abstract Token scanToken();
 
   public void setPosition(int index) {
     this.index = index;

@@ -30,16 +30,13 @@ import java.util.List;
 /**
  *
  */
-public class Parser {
-  private final ErrorReporter reporter;
-  private final ArrayList<Token> tokens;
+public class Parser extends ParserBase {
+
   private final Scanner scanner;
-  private Token lastToken = null;
 
   public Parser(ErrorReporter reporter, SourceFile file) {
-    this.reporter = reporter;
-    this.tokens = new ArrayList<Token>(5);
-    this.scanner = new Scanner(reporter, file);
+    super(reporter, file, new Scanner(reporter, file));
+    this.scanner = (Scanner) super.scanner;
   }
 
   public static ParseTree parse(ErrorReporter reporter, SourceFile file) {
@@ -225,67 +222,8 @@ public class Parser {
     return false;
   }
 
-  /**
-   * Report an error.
-   * @param token The token in the source file to report the error at.
-   * @param format A format message to report.
-   * @param args The arguments of the format.
-   */
-  private void reportError(Token token, String format, Object... args) {
-    this.reporter.reportError(token.start(), format, args);
-  }
-
-  private SourceRange getRange(Token startToken) {
-    return getRange(startToken.start());
-  }
-
-  private SourceRange getRange(SourceLocation start) {
-    SourceLocation end = (lastToken != null) ? lastToken.end() : peek().start();
-    return new SourceRange(start, end);
-  }
-
-  private Token eat(TokenKind kind) {
-    Token result = nextToken();
-    if (result.kind != kind) {
-      reportError(result, "%s expected.", kind);
-    }
-    return result;
-  }
-
   private IdentifierToken eatId() {
     return eat(TokenKind.IDENTIFIER).asIdentifier();
   }
 
-  private boolean eatOpt(TokenKind kind) {
-    if (peek(kind)) {
-      nextToken();
-      return true;
-    }
-    return false;
-  }
-
-  private Token nextToken() {
-    this.lastToken = peek();
-    tokens.remove(0);
-    return this.lastToken;
-  }
-
-  private boolean peek(TokenKind kind) {
-    return peek().kind == kind;
-  }
-
-  private TokenKind peekKind() {
-    return peek().kind;
-  }
-
-  private Token peek(int offset) {
-    while (offset >= tokens.size()) {
-      tokens.add(scanner.scanToken());
-    }
-    return tokens.get(offset);
-  }
-
-  private Token peek() {
-    return peek(0);
-  }
 }
