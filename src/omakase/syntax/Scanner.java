@@ -299,9 +299,9 @@ public class Scanner extends ScannerBase {
   public static ImmutableList<Token> scanFile(ErrorReporter reporter, SourceFile file) {
     ImmutableList.Builder<Token> tokens = new ImmutableList.Builder<Token>();
     Scanner scanner = new Scanner(reporter, file);
-    while (!scanner.atEnd()) {
+    do {
       tokens.add(scanner.scanToken());
-    }
+    } while (!scanner.atEnd());
     return tokens.build();
   }
 }

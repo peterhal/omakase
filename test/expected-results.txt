@@ -1,50 +1,65 @@
 Running Omakase Tests ...
-scanner/all-tokens.oma (1, 1): identifier
-scanner/all-tokens.oma (2, 1): 0
-scanner/all-tokens.oma (3, 1): "string"
-scanner/all-tokens.oma (4, 1): {
-scanner/all-tokens.oma (5, 1): }
-scanner/all-tokens.oma (6, 1): (
-scanner/all-tokens.oma (7, 1): )
-scanner/all-tokens.oma (8, 1): .
-scanner/all-tokens.oma (9, 1): ;
-scanner/all-tokens.oma (10, 1): ,
-scanner/all-tokens.oma (11, 1): <
-scanner/all-tokens.oma (12, 1): >
-scanner/all-tokens.oma (13, 1): <=
-scanner/all-tokens.oma (14, 1): >=
-scanner/all-tokens.oma (15, 1): ==
-scanner/all-tokens.oma (16, 1): !=
-scanner/all-tokens.oma (17, 1): +
-scanner/all-tokens.oma (18, 1): -
-scanner/all-tokens.oma (19, 1): *
-scanner/all-tokens.oma (20, 1): !
-scanner/all-tokens.oma (21, 1): &
-scanner/all-tokens.oma (22, 1): &&
-scanner/all-tokens.oma (23, 1): |
-scanner/all-tokens.oma (24, 1): ||
-scanner/all-tokens.oma (25, 1): ?
-scanner/all-tokens.oma (26, 1): :
-scanner/all-tokens.oma (27, 1): =
-scanner/all-tokens.oma (28, 1): /
-scanner/all-tokens.oma (29, 1): class
-scanner/all-tokens.oma (30, 1): false
-scanner/all-tokens.oma (31, 1): let
-scanner/all-tokens.oma (32, 1): null
-scanner/all-tokens.oma (33, 1): true
-scanner/all-tokens.oma (34, 1): var
-scanner/all-tokens.oma (37, 1): End of file
-scanner/empty.oma (1, 1): End of file
-scanner/test.oma (4, 1): class
-scanner/test.oma (4, 7): Program
-scanner/test.oma (4, 15): {
-scanner/test.oma (6, 3): main
-scanner/test.oma (6, 7): (
-scanner/test.oma (6, 8): )
-scanner/test.oma (6, 10): {
-scanner/test.oma (7, 3): }
-scanner/test.oma (8, 1): }
-scanner/test.oma (9, 2): End of file
+scanner/all-tokens.oma (1, 1): IDENTIFIER identifier
+scanner/all-tokens.oma (2, 1): NUMBER 0
+scanner/all-tokens.oma (3, 1): STRING "string"
+scanner/all-tokens.oma (4, 1): OPEN_CURLY
+scanner/all-tokens.oma (5, 1): CLOSE_CURLY
+scanner/all-tokens.oma (6, 1): OPEN_PAREN
+scanner/all-tokens.oma (7, 1): CLOSE_PAREN
+scanner/all-tokens.oma (8, 1): PERIOD
+scanner/all-tokens.oma (9, 1): SEMI_COLON
+scanner/all-tokens.oma (10, 1): COMMA
+scanner/all-tokens.oma (11, 1): OPEN_ANGLE
+scanner/all-tokens.oma (12, 1): CLOSE_ANGLE
+scanner/all-tokens.oma (13, 1): LESS_EQUAL
+scanner/all-tokens.oma (14, 1): GREATER_EQUAL
+scanner/all-tokens.oma (15, 1): EQUAL_EQUAL
+scanner/all-tokens.oma (16, 1): NOT_EQUAL
+scanner/all-tokens.oma (17, 1): PLUS
+scanner/all-tokens.oma (18, 1): MINUS
+scanner/all-tokens.oma (19, 1): STAR
+scanner/all-tokens.oma (20, 1): BANG
+scanner/all-tokens.oma (21, 1): AMPERSAND
+scanner/all-tokens.oma (22, 1): AMPERSAND_AMPERSAND
+scanner/all-tokens.oma (23, 1): BAR
+scanner/all-tokens.oma (24, 1): BAR_BAR
+scanner/all-tokens.oma (25, 1): QUESTION
+scanner/all-tokens.oma (26, 1): COLON
+scanner/all-tokens.oma (27, 1): EQUAL
+scanner/all-tokens.oma (28, 1): SLASH
+scanner/all-tokens.oma (29, 1): CLASS
+scanner/all-tokens.oma (30, 1): FALSE
+scanner/all-tokens.oma (31, 1): LET
+scanner/all-tokens.oma (32, 1): NULL
+scanner/all-tokens.oma (33, 1): TRUE
+scanner/all-tokens.oma (34, 1): VAR
+scanner/all-tokens.oma (37, 1): END_OF_FILE
+scanner/empty.oma (1, 1): END_OF_FILE
+scanner/hello.oma (2, 1): CLASS
+scanner/hello.oma (2, 7): IDENTIFIER Program
+scanner/hello.oma (2, 15): OPEN_CURLY
+scanner/hello.oma (3, 3): IDENTIFIER main
+scanner/hello.oma (3, 7): OPEN_PAREN
+scanner/hello.oma (3, 8): CLOSE_PAREN
+scanner/hello.oma (3, 10): OPEN_CURLY
+scanner/hello.oma (4, 5): IDENTIFIER print
+scanner/hello.oma (4, 10): OPEN_PAREN
+scanner/hello.oma (4, 11): STRING "Hello World!"
+scanner/hello.oma (4, 25): CLOSE_PAREN
+scanner/hello.oma (4, 26): SEMI_COLON
+scanner/hello.oma (5, 3): CLOSE_CURLY
+scanner/hello.oma (6, 1): CLOSE_CURLY
+scanner/hello.oma (7, 1): END_OF_FILE
+scanner/test.oma (4, 1): CLASS
+scanner/test.oma (4, 7): IDENTIFIER Program
+scanner/test.oma (4, 15): OPEN_CURLY
+scanner/test.oma (6, 3): IDENTIFIER main
+scanner/test.oma (6, 7): OPEN_PAREN
+scanner/test.oma (6, 8): CLOSE_PAREN
+scanner/test.oma (6, 10): OPEN_CURLY
+scanner/test.oma (7, 3): CLOSE_CURLY
+scanner/test.oma (8, 1): CLOSE_CURLY
+scanner/test.oma (9, 2): END_OF_FILE
 errors/missing-hex-escape.oma (1, 4): Missing hex digit in hex escape sequence.
 errors/number-too-large.oma (1, 1): Integer literal too large.
 errors/unexpected-char.oma (1, 1): Unexpected character '@'.
