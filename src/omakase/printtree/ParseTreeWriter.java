@@ -18,11 +18,6 @@ import com.google.common.collect.ImmutableList;
 import omakase.syntax.ParseTreeVisitor;
 import omakase.syntax.tokens.*;
 import omakase.syntax.trees.*;
-import omakase.syntax.trees.BlockTree;
-import omakase.syntax.trees.CallExpressionTree;
-import omakase.syntax.trees.ExpressionStatementTree;
-import omakase.syntax.trees.SimpleNameExpressionTree;
-import omakase.syntax.trees.*;
 
 import java.io.PrintStream;
 
@@ -99,7 +94,7 @@ public class ParseTreeWriter extends ParseTreeVisitor {
     writeCommaSeparatedList(tree.formals);
     write(TokenKind.CLOSE_PAREN);
 
-    visit(tree.body);
+    visitAny(tree.body);
   }
 
   @Override

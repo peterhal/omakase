@@ -20,9 +20,11 @@ import omakase.syntax.tokens.Token;
 import omakase.syntax.tokens.TokenKind;
 import omakase.syntax.trees.*;
 import omakase.util.ErrorReporter;
+import omakase.util.SourceFile;
 import omakase.util.SourceLocation;
 import omakase.util.SourceRange;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -30,17 +32,20 @@ import java.util.List;
  */
 public class Parser {
   private final ErrorReporter reporter;
-  private final List<Token> tokens;
-  private int index = 0;
+  private final SourceFile file;
+  private final ArrayList<Token> tokens;
+  private final Scanner scanner;
+  private Token lastToken = null;
 
-  public Parser(ErrorReporter reporter, List<Token> tokens) {
-
+  public Parser(ErrorReporter reporter, SourceFile file) {
     this.reporter = reporter;
-    this.tokens = tokens;
+    this.file = file;
+    this.tokens = new ArrayList<Token>(5);
+    this.scanner = new Scanner(reporter, file);
   }
 
-  public static ParseTree parse(ErrorReporter reporter, List<Token> tokens) {
-    return new Parser(reporter, tokens).parseFile();
+  public static ParseTree parse(ErrorReporter reporter, SourceFile file) {
+    return new Parser(reporter, file).parseFile();
   }
 
   private ParseTree parseFile() {
@@ -237,7 +242,7 @@ public class Parser {
   }
 
   private SourceRange getRange(SourceLocation start) {
-    SourceLocation end = (index > 0) ? peek(-1).end() : peek().start();
+    SourceLocation end = (lastToken != null) ? lastToken.end() : peek().start();
     return new SourceRange(start, end);
   }
 
@@ -262,11 +267,9 @@ public class Parser {
   }
 
   private Token nextToken() {
-    Token result = peek();
-    if ((index + 1)< tokens.size()) {
-      index++;
-    }
-    return result;
+    this.lastToken = peek();
+    tokens.remove(0);
+    return this.lastToken;
   }
 
   private boolean peek(TokenKind kind) {
@@ -278,7 +281,10 @@ public class Parser {
   }
 
   private Token peek(int offset) {
-    return tokens.get(Math.min(this.index + offset, tokens.size() - 1));
+    while (offset >= tokens.size()) {
+      tokens.add(scanner.scanToken());
+    }
+    return tokens.get(offset);
   }
 
   private Token peek() {

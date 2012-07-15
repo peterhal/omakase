@@ -263,6 +263,7 @@ public class ParseTreeTransformer {
         null,
         tree.name,
         formals,
+        tree.isNative,
         tree.body);
   }
 

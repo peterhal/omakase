@@ -24,13 +24,17 @@ import omakase.util.SourceRange;
  */
 public class ScannerBase {
   protected final ErrorReporter reporter;
-  protected final SourceFile file;
+  protected final SourceRange source;
   protected int index;
+  protected final SourceFile file;
+  protected final int end;
   protected final StringBuilder buffer = new StringBuilder();
 
-  public ScannerBase(SourceFile file, ErrorReporter reporter) {
-    this.file = file;
-    this.index = 0;
+  public ScannerBase(SourceRange source, ErrorReporter reporter) {
+    this.source = source;
+    this.index = source.start.offset;
+    this.end = source.end.offset;
+    this.file = source.file();
     this.reporter = reporter;
   }
 
@@ -109,7 +113,7 @@ public class ScannerBase {
    */
   protected char peekChar(int index) {
     int offset = index + this.index;
-    if (offset >= file.length()) {
+    if (offset >= end) {
       return '\0';
     }
     return file.contents.charAt(offset);
@@ -126,6 +130,6 @@ public class ScannerBase {
    * @return Is this scanner at the end of the file.
    */
   protected boolean atEnd() {
-    return index >= file.length();
+    return index >= end;
   }
 }

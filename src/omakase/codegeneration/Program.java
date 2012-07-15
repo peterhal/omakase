@@ -51,9 +51,8 @@ public class Program {
     }
 
     SourceFile file = new SourceFile(filename, source);
-    ImmutableList<Token> tokens = Scanner.scanFile(ConsoleErrorReporter.reporter, file);
     if (!ConsoleErrorReporter.reporter.hadError()) {
-      ParseTree tree = Parser.parse(ConsoleErrorReporter.reporter, tokens);
+      ParseTree tree = Parser.parse(ConsoleErrorReporter.reporter, file);
       if (!ConsoleErrorReporter.reporter.hadError()) {
         JavascriptTransformer transformer = new JavascriptTransformer();
         ParseTree result = transformer.transformAny(tree);

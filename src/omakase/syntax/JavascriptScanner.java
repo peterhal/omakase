@@ -31,7 +31,11 @@ public class JavascriptScanner extends ScannerBase {
    * @param file The file to scan.
    */
   public JavascriptScanner(ErrorReporter reporter, SourceFile file) {
-    super(file, reporter);
+    this(reporter, new SourceRange(file));
+  }
+
+  public JavascriptScanner(ErrorReporter reporter, SourceRange source) {
+    super(source, reporter);
   }
 
   /**

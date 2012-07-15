@@ -25,42 +25,19 @@ import static omakase.util.Characters.*;
  * While scanning for tokens, whitespace and comments are ignored.
  */
 public class Scanner extends ScannerBase {
-
   /**
    * @param reporter Where to report errors during scanning.
    * @param file The file to scan.
    */
   public Scanner(ErrorReporter reporter, SourceFile file) {
-    super(file, reporter);
-  }
-
-  /**
-   * Scans the entire file.
-   * @return The list of tokens scanned.
-   */
-  public ImmutableList<Token> scanAll() {
-    ImmutableList.Builder<Token> tokens = ImmutableList.builder();
-    do {
-      tokens.add(scanToken());
-    } while(!atEnd());
-    return tokens.build();
-  }
-
-  /**
-   * Scans an entire source file into tokens.
-   * @param reporter The error reporter to use when reporting errors.
-   * @param file The file to scan.
-   * @return The scanned tokens.
-   */
-  public static ImmutableList<Token> scanFile(ErrorReporter reporter, SourceFile file) {
-    return new Scanner(reporter, file).scanAll();
+    super(new SourceRange(file), reporter);
   }
 
   /**
    * Scans a single token.
    * @return The token scanned.
    */
-  private Token scanToken() {
+  public Token scanToken() {
     skipWhitespaceAndComments();
     int startIndex = index;
     char ch = nextChar();
@@ -319,4 +296,12 @@ public class Scanner extends ScannerBase {
     return new Token(kind, getRange(start));
   }
 
+  public static ImmutableList<Token> scanFile(ErrorReporter reporter, SourceFile file) {
+    ImmutableList.Builder<Token> tokens = new ImmutableList.Builder<Token>();
+    Scanner scanner = new Scanner(reporter, file);
+    while (!scanner.atEnd()) {
+      tokens.add(scanner.scanToken());
+    }
+    return tokens.build();
+  }
 }

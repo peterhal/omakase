@@ -25,6 +25,10 @@ public class SourceRange {
   public final SourceLocation start;
   public final SourceLocation end;
 
+  public SourceRange(SourceFile file) {
+    this(new SourceLocation(file, 0), new SourceLocation(file, file.length()));
+  }
+
   /**
    * Start and end of a source range must be in the same file.
    * Start offset must be before the end offset in a source range.
@@ -35,6 +39,10 @@ public class SourceRange {
 
     this.start = start;
     this.end = end;
+  }
+
+  public SourceFile file() {
+    return this.start.file;
   }
 
   @Override

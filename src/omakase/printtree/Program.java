@@ -50,9 +50,8 @@ public class Program {
     }
 
     SourceFile file = new SourceFile(filename, source);
-    ImmutableList<Token> tokens = Scanner.scanFile(ConsoleErrorReporter.reporter, file);
     if (!ConsoleErrorReporter.reporter.hadError()) {
-      ParseTree tree = Parser.parse(ConsoleErrorReporter.reporter, tokens);
+      ParseTree tree = Parser.parse(ConsoleErrorReporter.reporter, file);
       ParseTreeWriter writer = new ParseTreeWriter(System.out);
       writer.visitAny(tree);
     }
