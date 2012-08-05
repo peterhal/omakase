@@ -18,6 +18,7 @@ import com.google.common.collect.ImmutableList;
 import omakase.syntax.tokens.IdentifierToken;
 import omakase.syntax.tokens.Token;
 import omakase.syntax.tokens.TokenKind;
+import omakase.syntax.tokens.javascript.JavascriptIdentifierToken;
 import omakase.syntax.trees.ParseTree;
 import omakase.syntax.trees.javascript.*;
 
@@ -70,17 +71,21 @@ public final class JavascriptParseTreeFactory {
     return result;
   }
 
-  private static ParseTree createIdentifier(String value) {
-    return createIdentifier(new IdentifierToken(null, value));
-  }
-
   public static ParseTree createAssignmentStatement(ParseTree left, ParseTree right) {
     return createExpressionStatement(
         createBinaryExpression(left, TokenKind.JAVASCRIPT_EQUAL, right)
     );
   }
-  
+
+  private static ParseTree createIdentifier(String value) {
+    return createIdentifier(new JavascriptIdentifierToken(null, value));
+  }
+
   public static ParseTree createIdentifier(IdentifierToken identifier) {
+    return createIdentifier(identifier.value);
+  }
+
+  public static ParseTree createIdentifier(JavascriptIdentifierToken identifier) {
     return new IdentifierExpressionTree(null, identifier);
   }
 

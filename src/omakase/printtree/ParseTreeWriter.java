@@ -89,6 +89,9 @@ public class ParseTreeWriter extends ParseTreeVisitor {
 
   @Override
   protected void visit(MethodDeclarationTree tree) {
+    if (tree.isNative) {
+      write(TokenKind.NATIVE);
+    }
     write(tree.name);
     write(TokenKind.OPEN_PAREN);
     writeCommaSeparatedList(tree.formals);

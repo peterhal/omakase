@@ -18,9 +18,10 @@ import com.google.common.collect.ImmutableList;
 import omakase.syntax.tokens.IdentifierToken;
 import omakase.syntax.tokens.Token;
 import omakase.syntax.tokens.TokenKind;
-import omakase.syntax.trees.*;
+import omakase.syntax.tokens.javascript.*;
+import omakase.syntax.trees.ParseTree;
+import omakase.syntax.trees.javascript.*;
 import omakase.util.ErrorReporter;
-import omakase.util.SourceFile;
 import omakase.util.SourceRange;
 
 /**
@@ -37,11 +38,11 @@ public class JavascriptParser extends ParserBase {
   public BlockTree parseBlock() {
     Token start = peek();
     ImmutableList.Builder<ParseTree> statements = new ImmutableList.Builder<ParseTree>();
-    eat(TokenKind.OPEN_CURLY);
+    eat(TokenKind.JAVASCRIPT_OPEN_CURLY);
     while (peekStatement()) {
       statements.add(parseStatement());
     }
-    eat(TokenKind.CLOSE_CURLY);
+    eat(TokenKind.JAVASCRIPT_CLOSE_CURLY);
     return new BlockTree(getRange(start), statements.build());
   }
 
@@ -75,8 +76,8 @@ public class JavascriptParser extends ParserBase {
   }
 
   private ParseTree parseSimpleName() {
-    IdentifierToken name = eatId();
-    return new SimpleNameExpressionTree(getRange(name), name);
+    JavascriptIdentifierToken name = eatId();
+    return new IdentifierExpressionTree(getRange(name), name);
   }
 
   private ParseTree parsePostfixExpression() {
@@ -133,29 +134,11 @@ public class JavascriptParser extends ParserBase {
     }
   }
 
-  private ImmutableList<ParseTree> parseParameterListDeclaration() {
-    ImmutableList.Builder<ParseTree> result = new ImmutableList.Builder<ParseTree>();
-    eat(TokenKind.JAVASCRIPT_OPEN_PAREN);
-    if (peekParameter()) {
-      result.add(parseParameter());
-      while (eatOpt(TokenKind.JAVASCRIPT_COMMA)) {
-        result.add(parseParameter());
-      }
-    }
-    eat(TokenKind.JAVASCRIPT_CLOSE_PAREN);
-    return result.build();
-  }
-
-  private ParseTree parseParameter() {
-    IdentifierToken name = eatId();
-    return new ParameterDeclarationTree(getRange(name), name);
-  }
-
   private boolean peekParameter() {
     return peek(TokenKind.JAVASCRIPT_IDENTIFIER);
   }
 
-  private IdentifierToken eatId() {
-    return eat(TokenKind.JAVASCRIPT_IDENTIFIER).asIdentifier();
+  private JavascriptIdentifierToken eatId() {
+    return eat(TokenKind.JAVASCRIPT_IDENTIFIER).asJavascriptIdentifier();
   }
 }

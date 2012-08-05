@@ -12,22 +12,27 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package omakase.syntax.trees.javascript;
+package omakase.syntax.tokens.javascript;
 
-import omakase.syntax.tokens.IdentifierToken;
-import omakase.syntax.tokens.javascript.JavascriptIdentifierToken;
-import omakase.syntax.trees.ParseTree;
-import omakase.syntax.trees.ParseTreeKind;
+import omakase.syntax.tokens.Token;
+import omakase.syntax.tokens.TokenKind;
 import omakase.util.SourceRange;
 
 /**
+ * A token representing a number.
  *
+ * NumericLiteralTokens are immutable.
  */
-public class IdentifierExpressionTree extends ParseTree {
-  public final JavascriptIdentifierToken name;
+public class JavascriptNumericLiteralToken extends Token {
+  public final int value;
 
-  public IdentifierExpressionTree(SourceRange location, JavascriptIdentifierToken name) {
-    super(location, ParseTreeKind.JAVASCRIPT_IDENTIFIER_EXPRESSION);
-    this.name = name;
+  public JavascriptNumericLiteralToken(SourceRange range, int value) {
+    super(TokenKind.JAVASCRIPT_NUMBER, range);
+    this.value = value;
+  }
+
+  @Override
+  public String valueString() {
+    return String.format("%d", value);
   }
 }

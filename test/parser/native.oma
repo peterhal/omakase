@@ -1,0 +1,6 @@
+// Hello World
+class Program {
+  native main() {
+    print("Hello World!");
+  }
+}

@@ -14,8 +14,10 @@
 
 package omakase.syntax;
 
-import com.google.common.collect.ImmutableList;
 import omakase.syntax.tokens.*;
+import omakase.syntax.tokens.javascript.JavascriptIdentifierToken;
+import omakase.syntax.tokens.javascript.JavascriptNumericLiteralToken;
+import omakase.syntax.tokens.javascript.JavascriptStringLiteralToken;
 import omakase.util.*;
 import static omakase.util.Characters.*;
 
@@ -187,17 +189,18 @@ public class JavascriptScanner extends ScannerBase {
     if (keyword != null) {
       return createToken(keyword, startIndex);
     }
-    return new IdentifierToken(getRange(startIndex), value);
+    return new JavascriptIdentifierToken(getRange(startIndex), value);
   }
 
   /**
    * Scan a Numeric literal. Note that the current position will be immediately after the first
    * digit of the number when this method is called.
+   *
    * @param startIndex The index of the first digit in the number.
    * @param firstDigit The first digit in the number.
    * @return A token representing the scanned number.
    */
-  private NumericLiteralToken scanNumber(int startIndex, char firstDigit) {
+  private JavascriptNumericLiteralToken scanNumber(int startIndex, char firstDigit) {
     buffer.setLength(0);
     buffer.append(firstDigit);
     while (isDigit(peekChar())) {
@@ -210,17 +213,18 @@ public class JavascriptScanner extends ScannerBase {
       reportError(startIndex, "Integer literal too large.");
       value = 0;
     }
-    return new NumericLiteralToken(getRange(startIndex), value);
+    return new JavascriptNumericLiteralToken(getRange(startIndex), value);
   }
 
   /**
    * Scan a string literal token. Note the current position will be immediately after the opening
    * " character when this method is called.
    *
+   *
    * @param startIndex The index of the opening " character.
    * @return The token scanned.
    */
-  private StringLiteralToken scanStringLiteral(int startIndex) {
+  private JavascriptStringLiteralToken scanStringLiteral(int startIndex) {
     buffer.setLength(0);
     while (!atEnd()) {
       char ch = nextChar();
@@ -229,14 +233,14 @@ public class JavascriptScanner extends ScannerBase {
         buffer.append(scanCharacterEscapeSequence());
         break;
       case '\"':
-        return new StringLiteralToken(this.getRange(startIndex), buffer.toString());
+        return new JavascriptStringLiteralToken(this.getRange(startIndex), buffer.toString());
       default:
         buffer.append(ch);
         break;
       }
     }
     reportError(startIndex, "Unterminated string literal");
-    return new StringLiteralToken(this.getRange(startIndex), buffer.toString());
+    return new JavascriptStringLiteralToken(this.getRange(startIndex), buffer.toString());
   }
 
   /**

@@ -14,6 +14,9 @@
 
 package omakase.syntax.tokens;
 
+import omakase.syntax.tokens.javascript.JavascriptIdentifierToken;
+import omakase.syntax.tokens.javascript.JavascriptNumericLiteralToken;
+import omakase.syntax.tokens.javascript.JavascriptStringLiteralToken;
 import omakase.util.SourceLocation;
 import omakase.util.SourceRange;
 
@@ -52,6 +55,9 @@ public class Token {
     case IDENTIFIER:
     case STRING:
     case NUMBER:
+    case JAVASCRIPT_IDENTIFIER:
+    case JAVASCRIPT_STRING:
+    case JAVASCRIPT_NUMBER:
       return true;
     default:
       return false;
@@ -80,5 +86,17 @@ public class Token {
 
   public StringLiteralToken asStringLiteral() {
     return (StringLiteralToken) this;
+  }
+
+  public JavascriptIdentifierToken asJavascriptIdentifier() {
+    return (JavascriptIdentifierToken) this;
+  }
+
+  public JavascriptNumericLiteralToken asJavascriptNumericLiteral() {
+    return (JavascriptNumericLiteralToken) this;
+  }
+
+  public JavascriptStringLiteralToken asJavascriptStringLiteral() {
+    return (JavascriptStringLiteralToken) this;
   }
 }

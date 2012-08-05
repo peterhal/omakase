@@ -1,4 +1,4 @@
-// Copyright 2012 Peter Hallam
+// Copyright 2011 Peter Hallam
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,22 +12,27 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package omakase.syntax.trees.javascript;
+package omakase.syntax.tokens.javascript;
 
-import omakase.syntax.tokens.IdentifierToken;
-import omakase.syntax.tokens.javascript.JavascriptIdentifierToken;
-import omakase.syntax.trees.ParseTree;
-import omakase.syntax.trees.ParseTreeKind;
+import omakase.syntax.tokens.Token;
+import omakase.syntax.tokens.TokenKind;
 import omakase.util.SourceRange;
 
 /**
+ * A token representing an identifier. Identifiers are the user defined names in the program.
  *
+ * IdentifierTokens are immutable.
  */
-public class IdentifierExpressionTree extends ParseTree {
-  public final JavascriptIdentifierToken name;
+public class JavascriptIdentifierToken extends Token {
+  public final String value;
 
-  public IdentifierExpressionTree(SourceRange location, JavascriptIdentifierToken name) {
-    super(location, ParseTreeKind.JAVASCRIPT_IDENTIFIER_EXPRESSION);
-    this.name = name;
+  public JavascriptIdentifierToken(SourceRange range, String value) {
+    super(TokenKind.JAVASCRIPT_IDENTIFIER, range);
+    this.value = value;
+  }
+
+  @Override
+  public String valueString() {
+    return value;
   }
 }
