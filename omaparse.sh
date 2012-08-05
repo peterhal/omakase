@@ -2,5 +2,5 @@
 
 OUT_DIR=$(dirname $0)/out
 
-java -jar "$OUT_DIR/omascan.jar" $*
+java -jar "$OUT_DIR/omaparse.jar" $*
 

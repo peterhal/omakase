@@ -1,0 +1,6 @@
+// Hello World
+class Program {
+  main() {
+    print("Hello World!");
+  }
+}

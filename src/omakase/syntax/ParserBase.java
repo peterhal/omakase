@@ -93,7 +93,7 @@ public class ParserBase {
     return tokens.get(offset);
   }
 
-  private int getPosition() {
+  protected int getPosition() {
     if (tokens.size() > 0) {
       return tokens.get(0).start().offset;
     } else {
@@ -101,7 +101,7 @@ public class ParserBase {
     }
   }
 
-  private void setPosition(int newPosition) {
+  protected void setPosition(int newPosition) {
     if (newPosition != getPosition()) {
       tokens.clear();
       scanner.setPosition(newPosition);
@@ -110,5 +110,9 @@ public class ParserBase {
 
   protected Token peek() {
     return peek(0);
+  }
+
+  protected SourceFile file() {
+    return scanner.file;
   }
 }

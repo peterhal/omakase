@@ -21,77 +21,20 @@ import omakase.syntax.tokens.TokenKind;
 import omakase.syntax.trees.*;
 import omakase.util.ErrorReporter;
 import omakase.util.SourceFile;
-import omakase.util.SourceLocation;
 import omakase.util.SourceRange;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  *
  */
-public class Parser extends ParserBase {
-  public Parser(ErrorReporter reporter, SourceFile file) {
-    super(reporter, file, new Scanner(reporter, file));
+public class JavascriptParser extends ParserBase {
+  private final JavascriptScanner scanner;
+
+  public JavascriptParser(ErrorReporter reporter, SourceRange source) {
+    super(reporter, source.file(), new JavascriptScanner(reporter, source));
+    this.scanner = (JavascriptScanner) super.scanner;
   }
 
-  public static ParseTree parse(ErrorReporter reporter, SourceFile file) {
-    return new Parser(reporter, file).parseFile();
-  }
-
-  private ParseTree parseFile() {
-    Token start = peek();
-    ImmutableList.Builder<ParseTree> declarations = new ImmutableList.Builder<ParseTree>();
-    while (peekClass()) {
-      declarations.add(parseClass());
-    }
-    eat(TokenKind.END_OF_FILE);
-
-    return new SourceFileTree(getRange(start), declarations.build());
-  }
-
-  private boolean peekClass() {
-    return peek(TokenKind.CLASS);
-  }
-
-  private ParseTree parseClass() {
-    Token start = eat(TokenKind.CLASS);
-    IdentifierToken name = eatId();
-    eat(TokenKind.OPEN_CURLY);
-    ImmutableList<ParseTree> members = parseClassMembers();
-    eat(TokenKind.CLOSE_CURLY);
-    return new ClassDeclarationTree(getRange(start), name, members);
-  }
-
-  private ImmutableList<ParseTree> parseClassMembers() {
-    ImmutableList.Builder<ParseTree> members = new ImmutableList.Builder<ParseTree>();
-    while (peekClassMember()) {
-      members.add(parseClassMember());
-    }
-    return members.build();
-  }
-
-  private ParseTree parseClassMember() {
-    boolean isNative = eatOpt(TokenKind.NATIVE);
-    IdentifierToken name = eatId();
-    ImmutableList<ParseTree> formals = parseParameterListDeclaration();
-    ParseTree body = parseBlock(isNative);
-    return new MethodDeclarationTree(getRange(name), name, formals, isNative, body);
-  }
-
-  private ParseTree parseBlock(boolean isNative) {
-    return isNative ? parseNativeBlock() : parseBlock();
-  }
-
-  private ParseTree parseNativeBlock() {
-    JavascriptParser nativeParser = new JavascriptParser(reporter,
-        new SourceRange(this.file(), this.getPosition(), this.file().length()));
-    ParseTree result = nativeParser.parseBlock();
-    this.setPosition(nativeParser.getPosition());
-    return result;
-  }
-
-  private BlockTree parseBlock() {
+  public BlockTree parseBlock() {
     Token start = peek();
     ImmutableList.Builder<ParseTree> statements = new ImmutableList.Builder<ParseTree>();
     eat(TokenKind.OPEN_CURLY);
@@ -110,7 +53,7 @@ public class Parser extends ParserBase {
   private ParseTree parseExpressionStatement() {
     Token start = peek();
     ParseTree expression = parseExpression();
-    eat(TokenKind.SEMI_COLON);
+    eat(TokenKind.JAVASCRIPT_SEMI_COLON);
     return new ExpressionStatementTree(getRange(start), expression);
   }
 
@@ -120,10 +63,10 @@ public class Parser extends ParserBase {
 
   private ParseTree parsePrimaryExpression() {
     switch (peekKind()) {
-    case IDENTIFIER:
+    case JAVASCRIPT_IDENTIFIER:
       return parseSimpleName();
-    case NUMBER:
-    case STRING:
+    case JAVASCRIPT_NUMBER:
+    case JAVASCRIPT_STRING:
       return parseLiteral();
     default:
       reportError(nextToken(), "Expected expression.");
@@ -140,7 +83,7 @@ public class Parser extends ParserBase {
     ParseTree primary = parsePrimaryExpression();
     while (peekPostfixOperator()) {
       switch(peekKind()) {
-      case OPEN_PAREN:
+      case JAVASCRIPT_OPEN_PAREN:
         primary = parseCallExpression(primary);
       }
     }
@@ -149,20 +92,20 @@ public class Parser extends ParserBase {
 
   private ParseTree parseCallExpression(ParseTree primary) {
     ImmutableList.Builder<ParseTree> arguments = new ImmutableList.Builder<ParseTree>();
-    eat(TokenKind.OPEN_PAREN);
+    eat(TokenKind.JAVASCRIPT_OPEN_PAREN);
     if (peekExpression()) {
       arguments.add(parseExpression());
-      while (eatOpt(TokenKind.COMMA)) {
+      while (eatOpt(TokenKind.JAVASCRIPT_COMMA)) {
         arguments.add(parseExpression());
       }
     }
-    eat(TokenKind.CLOSE_PAREN);
+    eat(TokenKind.JAVASCRIPT_CLOSE_PAREN);
     return new CallExpressionTree(getRange(primary.start()), primary, arguments.build());
   }
 
   private boolean peekPostfixOperator() {
     switch (peekKind()) {
-    case OPEN_PAREN:
+    case JAVASCRIPT_OPEN_PAREN:
       return true;
     default:
       return false;
@@ -180,10 +123,10 @@ public class Parser extends ParserBase {
 
   private boolean peekExpression() {
     switch (peekKind()) {
-    case IDENTIFIER:
-    case NUMBER:
-    case STRING:
-    // TODO: others
+    case JAVASCRIPT_IDENTIFIER:
+    case JAVASCRIPT_NUMBER:
+    case JAVASCRIPT_STRING:
+      // TODO: others
       return true;
     default:
       return false;
@@ -192,14 +135,14 @@ public class Parser extends ParserBase {
 
   private ImmutableList<ParseTree> parseParameterListDeclaration() {
     ImmutableList.Builder<ParseTree> result = new ImmutableList.Builder<ParseTree>();
-    eat(TokenKind.OPEN_PAREN);
+    eat(TokenKind.JAVASCRIPT_OPEN_PAREN);
     if (peekParameter()) {
       result.add(parseParameter());
-      while (eatOpt(TokenKind.COMMA)) {
+      while (eatOpt(TokenKind.JAVASCRIPT_COMMA)) {
         result.add(parseParameter());
       }
     }
-    eat(TokenKind.CLOSE_PAREN);
+    eat(TokenKind.JAVASCRIPT_CLOSE_PAREN);
     return result.build();
   }
 
@@ -209,20 +152,10 @@ public class Parser extends ParserBase {
   }
 
   private boolean peekParameter() {
-    return peek(TokenKind.IDENTIFIER);
-  }
-
-  private boolean peekClassMember() {
-    switch (peekKind()) {
-    case IDENTIFIER:
-    case NATIVE:
-      return true;
-    }
-    return false;
+    return peek(TokenKind.JAVASCRIPT_IDENTIFIER);
   }
 
   private IdentifierToken eatId() {
-    return eat(TokenKind.IDENTIFIER).asIdentifier();
+    return eat(TokenKind.JAVASCRIPT_IDENTIFIER).asIdentifier();
   }
-
 }

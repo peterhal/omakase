@@ -1,9 +1,9 @@
 #!/bin/bash
 
-# Clean all generated build and test files.
-
 pushd $(dirname $0) > /dev/null
 
-rm -rf out
+echo Cleaning Omakase...
+
+rm -rf out > /dev/null
 
 popd > /dev/null

@@ -26,7 +26,11 @@ public class SourceRange {
   public final SourceLocation end;
 
   public SourceRange(SourceFile file) {
-    this(new SourceLocation(file, 0), new SourceLocation(file, file.length()));
+    this(file, 0, file.length());
+  }
+
+  public SourceRange(SourceFile file, int startOffset, int endOffset) {
+    this(new SourceLocation(file, startOffset), new SourceLocation(file, endOffset));
   }
 
   /**
