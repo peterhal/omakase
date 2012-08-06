@@ -70,7 +70,7 @@ public class ParseTreeTransformer {
       return transform(tree.asParameterDeclaration());
     case PAREN_EXPRESSION:
       return transform(tree.asParenExpression());
-    case SIMPLE_NAME_EXPRESSION:
+    case IDENTIFIER_EXPRESSION:
       return transform(tree.asSimpleNameExpression());
     case SOURCE_FILE:
       return transform(tree.asSourceFile());
@@ -281,7 +281,7 @@ public class ParseTreeTransformer {
         tree.expression);
   }
 
-  protected ParseTree transform(SimpleNameExpressionTree tree) {
+  protected ParseTree transform(IdentifierExpressionTree tree) {
     return tree;
   }
 

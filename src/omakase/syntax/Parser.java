@@ -21,11 +21,7 @@ import omakase.syntax.tokens.TokenKind;
 import omakase.syntax.trees.*;
 import omakase.util.ErrorReporter;
 import omakase.util.SourceFile;
-import omakase.util.SourceLocation;
 import omakase.util.SourceRange;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  *
@@ -133,7 +129,7 @@ public class Parser extends ParserBase {
 
   private ParseTree parseSimpleName() {
     IdentifierToken name = eatId();
-    return new SimpleNameExpressionTree(getRange(name), name);
+    return new IdentifierExpressionTree(getRange(name), name);
   }
 
   private ParseTree parsePostfixExpression() {

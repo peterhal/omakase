@@ -77,8 +77,8 @@ public class ParseTree {
     return (ParenExpressionTree) this;
   }
 
-  public SimpleNameExpressionTree asSimpleNameExpression() {
-    return (SimpleNameExpressionTree) this;
+  public IdentifierExpressionTree asSimpleNameExpression() {
+    return (IdentifierExpressionTree) this;
   }
 
   public SourceFileTree asSourceFile() {

@@ -53,7 +53,7 @@ public class ParseTreeWriter extends ParseTreeVisitor {
   }
 
   @Override
-  protected void visit(SimpleNameExpressionTree tree) {
+  protected void visit(IdentifierExpressionTree tree) {
     write(tree.name);
   }
 

@@ -25,7 +25,7 @@ public class MemberExpressionTree extends ParseTree {
   public final IdentifierToken name;
 
   public MemberExpressionTree(SourceRange location, IdentifierToken name, ParseTree object) {
-    super(location, ParseTreeKind.SIMPLE_NAME_EXPRESSION);
+    super(location, ParseTreeKind.IDENTIFIER_EXPRESSION);
     this.name = name;
     this.object = object;
   }

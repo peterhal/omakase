@@ -67,7 +67,7 @@ public class ParseTreeVisitor {
     case PAREN_EXPRESSION:
       visit(tree.asParenExpression());
       break;
-    case SIMPLE_NAME_EXPRESSION:
+    case IDENTIFIER_EXPRESSION:
       visit(tree.asSimpleNameExpression());
       break;
     case SOURCE_FILE:
@@ -254,7 +254,7 @@ public class ParseTreeVisitor {
     visitAny(tree.expression);
   }
 
-  protected void visit(SimpleNameExpressionTree tree) {
+  protected void visit(IdentifierExpressionTree tree) {
   }
 
   protected void visit(SourceFileTree tree) {

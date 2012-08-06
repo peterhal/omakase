@@ -20,11 +20,11 @@ import omakase.util.SourceRange;
 /**
  *
  */
-public class SimpleNameExpressionTree extends ParseTree {
+public class IdentifierExpressionTree extends ParseTree {
   public final IdentifierToken name;
 
-  public SimpleNameExpressionTree(SourceRange location, IdentifierToken name) {
-    super(location, ParseTreeKind.SIMPLE_NAME_EXPRESSION);
+  public IdentifierExpressionTree(SourceRange location, IdentifierToken name) {
+    super(location, ParseTreeKind.IDENTIFIER_EXPRESSION);
     this.name = name;
   }
 }
