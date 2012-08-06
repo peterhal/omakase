@@ -153,7 +153,9 @@ public class ParseTreeWriter extends ParseTreeVisitor {
 
   protected void visit(omakase.syntax.trees.javascript.CallExpressionTree tree) {
     visitAny(tree.function);
-    visitList(tree.arguments);
+    write(TokenKind.JAVASCRIPT_OPEN_PAREN);
+    writeCommaSeparatedList(tree.arguments);
+    write(TokenKind.JAVASCRIPT_CLOSE_PAREN);
   }
 
   protected void visit(omakase.syntax.trees.javascript.CaseClauseTree tree) {
