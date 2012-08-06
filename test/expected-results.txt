@@ -72,4 +72,7 @@ class Program {
   }
 }
 class Program {
-  native main ( ) { print ( "Hello World!" ) ; } }
+  native main ( ) {
+    print ( "Hello World!" ) ;
+  }
+}

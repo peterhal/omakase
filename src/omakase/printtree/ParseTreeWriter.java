@@ -142,8 +142,14 @@ public class ParseTreeWriter extends ParseTreeVisitor {
 
   protected void visit(omakase.syntax.trees.javascript.BlockTree tree) {
     write(TokenKind.JAVASCRIPT_OPEN_CURLY);
+    writeLine();
+    indent();
+
     visitList(tree.statements);
+
+    outdent();
     write(TokenKind.JAVASCRIPT_CLOSE_CURLY);
+    writeLine();
   }
 
   protected void visit(omakase.syntax.trees.javascript.BreakStatementTree tree) {
@@ -218,6 +224,7 @@ public class ParseTreeWriter extends ParseTreeVisitor {
   protected void visit(omakase.syntax.trees.javascript.ExpressionStatementTree tree) {
     visitAny(tree.expression);
     write(TokenKind.JAVASCRIPT_SEMI_COLON);
+    writeLine();
   }
 
   protected void visit(omakase.syntax.trees.javascript.ForInStatementTree tree) {
