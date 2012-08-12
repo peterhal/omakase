@@ -1,0 +1,24 @@
+TODO
+----
+
+- marketing
+  - mission
+  - samples
+  - posts
+- javascript compat
+  - complete scanning
+  - complete parsing
+  - jsdoc
+- language features
+  - statements
+  - expressions
+  - classes
+  - type system
+  - iterators
+  - await
+- compiler
+  - in browser
+  - self host
+  - source maps
+- ide
+
