@@ -14,22 +14,20 @@
 
 package omakase.syntax.trees.javascript;
 
-import com.google.common.collect.ImmutableList;
-import omakase.syntax.tokens.IdentifierToken;
+import omakase.syntax.tokens.javascript.JavascriptIdentifierToken;
 import omakase.syntax.trees.ParseTree;
 import omakase.syntax.trees.ParseTreeKind;
-import omakase.syntax.trees.javascript.BlockTree;
 import omakase.util.SourceRange;
 
 /**
  *
  */
 public class FunctionExpressionTree extends ParseTree {
-  public final IdentifierToken name;
+  public final JavascriptIdentifierToken name;
   public final FormalParameterListTree parameters;
   public final BlockTree body;
 
-  public FunctionExpressionTree(SourceRange location, IdentifierToken name, FormalParameterListTree parameters, BlockTree body) {
+  public FunctionExpressionTree(SourceRange location, JavascriptIdentifierToken name, FormalParameterListTree parameters, BlockTree body) {
     super(location, ParseTreeKind.JAVASCRIPT_FUNCTION_EXPRESSION);
     this.name = name;
     this.parameters = parameters;

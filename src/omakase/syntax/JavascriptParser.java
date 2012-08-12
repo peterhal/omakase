@@ -46,6 +46,53 @@ public class JavascriptParser extends ParserBase {
     return new BlockTree(getRange(start), statements.build());
   }
 
+  public ProgramTree parseProgram() {
+    Token start = peek();
+    ImmutableList.Builder<ParseTree> elements = new ImmutableList.Builder<ParseTree>();
+    while (peekSourceElement()) {
+      elements.add(parseSourceElement());
+    }
+    return new ProgramTree(getRange(start), elements.build());
+  }
+
+  private ParseTree parseSourceElement() {
+    if (peekFunction()) {
+      return parseFunction();
+    } else {
+      return parseStatement();
+    }
+  }
+
+  private ParseTree parseFunction() {
+    Token start = peek();
+    eat(TokenKind.JAVASCRIPT_FUNCTION);
+    JavascriptIdentifierToken id = eatOptId();
+
+    return new FunctionExpressionTree(getRange(start), id, parseFormalParameterList(), parseBlock());
+  }
+
+  private FormalParameterListTree parseFormalParameterList() {
+    Token start = peek();
+    ImmutableList.Builder<JavascriptIdentifierToken> parameters = new ImmutableList.Builder<JavascriptIdentifierToken>();
+    eat(TokenKind.JAVASCRIPT_OPEN_PAREN);
+    if (peekParameter()) {
+      parameters.add(eatId());
+      while (eatOpt(TokenKind.JAVASCRIPT_COMMA)) {
+        parameters.add(eatId());
+      }
+    }
+    eat(TokenKind.JAVASCRIPT_CLOSE_PAREN);
+    return new FormalParameterListTree(getRange(start), parameters.build());
+  }
+
+  private boolean peekSourceElement() {
+    return peekFunction() || peekStatement();
+  }
+
+  private boolean peekFunction() {
+    return peek(TokenKind.JAVASCRIPT_FUNCTION);
+  }
+
   private ParseTree parseStatement() {
     // TODO: Other statements.
     return parseExpressionStatement();
@@ -140,5 +187,12 @@ public class JavascriptParser extends ParserBase {
 
   private JavascriptIdentifierToken eatId() {
     return eat(TokenKind.JAVASCRIPT_IDENTIFIER).asJavascriptIdentifier();
+  }
+
+  private JavascriptIdentifierToken eatOptId() {
+    if (peek(TokenKind.JAVASCRIPT_IDENTIFIER)) {
+      return eatId();
+    }
+    return null;
   }
 }
