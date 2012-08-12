@@ -426,7 +426,8 @@ public class JavascriptParser extends ParserBase {
   }
 
   private ParseTree parseAssignmentExpression() {
-
+    // TODO
+    return parsePostfixExpression();
   }
 
   private ParseTree parsePrimaryExpression() {
