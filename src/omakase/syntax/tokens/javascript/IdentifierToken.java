@@ -23,10 +23,10 @@ import omakase.util.SourceRange;
  *
  * IdentifierTokens are immutable.
  */
-public class JavascriptIdentifierToken extends Token {
+public class IdentifierToken extends Token {
   public final String value;
 
-  public JavascriptIdentifierToken(SourceRange range, String value) {
+  public IdentifierToken(SourceRange range, String value) {
     super(TokenKind.JAVASCRIPT_IDENTIFIER, range);
     this.value = value;
   }

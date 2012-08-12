@@ -14,8 +14,7 @@
 
 package omakase.syntax.trees.javascript;
 
-import omakase.syntax.tokens.IdentifierToken;
-import omakase.syntax.tokens.javascript.JavascriptIdentifierToken;
+import omakase.syntax.tokens.javascript.IdentifierToken;
 import omakase.syntax.trees.ParseTree;
 import omakase.syntax.trees.ParseTreeKind;
 import omakase.util.SourceRange;
@@ -24,9 +23,9 @@ import omakase.util.SourceRange;
  *
  */
 public class IdentifierExpressionTree extends ParseTree {
-  public final JavascriptIdentifierToken name;
+  public final IdentifierToken name;
 
-  public IdentifierExpressionTree(SourceRange location, JavascriptIdentifierToken name) {
+  public IdentifierExpressionTree(SourceRange location, IdentifierToken name) {
     super(location, ParseTreeKind.JAVASCRIPT_IDENTIFIER_EXPRESSION);
     this.name = name;
   }

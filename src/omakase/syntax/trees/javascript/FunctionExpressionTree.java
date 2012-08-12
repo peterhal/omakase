@@ -14,7 +14,7 @@
 
 package omakase.syntax.trees.javascript;
 
-import omakase.syntax.tokens.javascript.JavascriptIdentifierToken;
+import omakase.syntax.tokens.javascript.IdentifierToken;
 import omakase.syntax.trees.ParseTree;
 import omakase.syntax.trees.ParseTreeKind;
 import omakase.util.SourceRange;
@@ -23,11 +23,11 @@ import omakase.util.SourceRange;
  *
  */
 public class FunctionExpressionTree extends ParseTree {
-  public final JavascriptIdentifierToken name;
+  public final IdentifierToken name;
   public final FormalParameterListTree parameters;
   public final BlockTree body;
 
-  public FunctionExpressionTree(SourceRange location, JavascriptIdentifierToken name, FormalParameterListTree parameters, BlockTree body) {
+  public FunctionExpressionTree(SourceRange location, IdentifierToken name, FormalParameterListTree parameters, BlockTree body) {
     super(location, ParseTreeKind.JAVASCRIPT_FUNCTION_EXPRESSION);
     this.name = name;
     this.parameters = parameters;

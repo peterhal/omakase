@@ -23,10 +23,10 @@ import omakase.util.SourceRange;
  *
  * NumericLiteralTokens are immutable.
  */
-public class JavascriptNumericLiteralToken extends Token {
+public class NumericLiteralToken extends Token {
   public final int value;
 
-  public JavascriptNumericLiteralToken(SourceRange range, int value) {
+  public NumericLiteralToken(SourceRange range, int value) {
     super(TokenKind.JAVASCRIPT_NUMBER, range);
     this.value = value;
   }

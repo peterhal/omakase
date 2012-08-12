@@ -15,7 +15,7 @@
 package omakase.syntax.trees.javascript;
 
 import com.google.common.collect.ImmutableList;
-import omakase.syntax.tokens.javascript.JavascriptIdentifierToken;
+import omakase.syntax.tokens.javascript.IdentifierToken;
 import omakase.syntax.trees.ParseTree;
 import omakase.syntax.trees.ParseTreeKind;
 import omakase.util.SourceRange;
@@ -24,9 +24,9 @@ import omakase.util.SourceRange;
  *
  */
 public class FormalParameterListTree extends ParseTree {
-  public final ImmutableList<JavascriptIdentifierToken> parameters;
+  public final ImmutableList<IdentifierToken> parameters;
 
-  public FormalParameterListTree(SourceRange location, ImmutableList<JavascriptIdentifierToken> parameters) {
+  public FormalParameterListTree(SourceRange location, ImmutableList<IdentifierToken> parameters) {
     super(location, ParseTreeKind.JAVASCRIPT_FORMAL_PARAMETER_LIST);
     this.parameters = parameters;
   }

@@ -23,10 +23,10 @@ import omakase.util.SourceRange;
  *
  * StringLiteralTokens are immutable.
  */
-public class JavascriptStringLiteralToken extends Token {
+public class StringLiteralToken extends Token {
   public final String value;
 
-  public JavascriptStringLiteralToken(SourceRange range, String value) {
+  public StringLiteralToken(SourceRange range, String value) {
     super(TokenKind.JAVASCRIPT_STRING, range);
     this.value = value;
   }

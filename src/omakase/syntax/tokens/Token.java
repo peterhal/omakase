@@ -14,9 +14,6 @@
 
 package omakase.syntax.tokens;
 
-import omakase.syntax.tokens.javascript.JavascriptIdentifierToken;
-import omakase.syntax.tokens.javascript.JavascriptNumericLiteralToken;
-import omakase.syntax.tokens.javascript.JavascriptStringLiteralToken;
 import omakase.util.SourceLocation;
 import omakase.util.SourceRange;
 
@@ -76,27 +73,27 @@ public class Token {
     return this.location.end;
   }
 
-  public IdentifierToken asIdentifier() {
-    return (IdentifierToken) this;
+  public omakase.syntax.tokens.IdentifierToken asIdentifier() {
+    return (omakase.syntax.tokens.IdentifierToken) this;
   }
 
-  public NumericLiteralToken asNumericLiteral() {
-    return (NumericLiteralToken) this;
+  public omakase.syntax.tokens.NumericLiteralToken asNumericLiteral() {
+    return (omakase.syntax.tokens.NumericLiteralToken) this;
   }
 
-  public StringLiteralToken asStringLiteral() {
-    return (StringLiteralToken) this;
+  public omakase.syntax.tokens.StringLiteralToken asStringLiteral() {
+    return (omakase.syntax.tokens.StringLiteralToken) this;
   }
 
-  public JavascriptIdentifierToken asJavascriptIdentifier() {
-    return (JavascriptIdentifierToken) this;
+  public omakase.syntax.tokens.javascript.IdentifierToken asJavascriptIdentifier() {
+    return (omakase.syntax.tokens.javascript.IdentifierToken) this;
   }
 
-  public JavascriptNumericLiteralToken asJavascriptNumericLiteral() {
-    return (JavascriptNumericLiteralToken) this;
+  public omakase.syntax.tokens.javascript.NumericLiteralToken asJavascriptNumericLiteral() {
+    return (omakase.syntax.tokens.javascript.NumericLiteralToken) this;
   }
 
-  public JavascriptStringLiteralToken asJavascriptStringLiteral() {
-    return (JavascriptStringLiteralToken) this;
+  public omakase.syntax.tokens.javascript.StringLiteralToken asJavascriptStringLiteral() {
+    return (omakase.syntax.tokens.javascript.StringLiteralToken) this;
   }
 }

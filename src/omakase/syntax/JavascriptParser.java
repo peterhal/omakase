@@ -15,7 +15,6 @@
 package omakase.syntax;
 
 import com.google.common.collect.ImmutableList;
-import omakase.syntax.tokens.IdentifierToken;
 import omakase.syntax.tokens.Token;
 import omakase.syntax.tokens.TokenKind;
 import omakase.syntax.tokens.javascript.*;
@@ -66,14 +65,14 @@ public class JavascriptParser extends ParserBase {
   private ParseTree parseFunction() {
     Token start = peek();
     eat(TokenKind.JAVASCRIPT_FUNCTION);
-    JavascriptIdentifierToken id = eatOptId();
+    IdentifierToken id = eatOptId();
 
     return new FunctionExpressionTree(getRange(start), id, parseFormalParameterList(), parseBlock());
   }
 
   private FormalParameterListTree parseFormalParameterList() {
     Token start = peek();
-    ImmutableList.Builder<JavascriptIdentifierToken> parameters = new ImmutableList.Builder<JavascriptIdentifierToken>();
+    ImmutableList.Builder<IdentifierToken> parameters = new ImmutableList.Builder<IdentifierToken>();
     eat(TokenKind.JAVASCRIPT_OPEN_PAREN);
     if (peekParameter()) {
       parameters.add(eatId());
@@ -123,7 +122,7 @@ public class JavascriptParser extends ParserBase {
   }
 
   private ParseTree parseSimpleName() {
-    JavascriptIdentifierToken name = eatId();
+    IdentifierToken name = eatId();
     return new IdentifierExpressionTree(getRange(name), name);
   }
 
@@ -185,11 +184,11 @@ public class JavascriptParser extends ParserBase {
     return peek(TokenKind.JAVASCRIPT_IDENTIFIER);
   }
 
-  private JavascriptIdentifierToken eatId() {
+  private IdentifierToken eatId() {
     return eat(TokenKind.JAVASCRIPT_IDENTIFIER).asJavascriptIdentifier();
   }
 
-  private JavascriptIdentifierToken eatOptId() {
+  private IdentifierToken eatOptId() {
     if (peek(TokenKind.JAVASCRIPT_IDENTIFIER)) {
       return eatId();
     }

@@ -16,7 +16,6 @@ package omakase.syntax;
 
 import omakase.syntax.tokens.Token;
 import omakase.syntax.tokens.TokenKind;
-import omakase.syntax.tokens.javascript.JavascriptIdentifierToken;
 import omakase.util.ErrorReporter;
 import omakase.util.SourceFile;
 import omakase.util.SourceLocation;

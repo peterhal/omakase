@@ -15,10 +15,9 @@
 package omakase.codegeneration;
 
 import com.google.common.collect.ImmutableList;
-import omakase.syntax.tokens.IdentifierToken;
 import omakase.syntax.tokens.Token;
 import omakase.syntax.tokens.TokenKind;
-import omakase.syntax.tokens.javascript.JavascriptIdentifierToken;
+import omakase.syntax.tokens.javascript.IdentifierToken;
 import omakase.syntax.trees.ParseTree;
 import omakase.syntax.trees.javascript.*;
 
@@ -65,7 +64,7 @@ public final class JavascriptParseTreeFactory {
       if (result == null) {
         result = createIdentifier(name);
       } else {
-        result = new MemberExpressionTree(null, result, new IdentifierToken(null, name));
+        result = new MemberExpressionTree(null, result, new omakase.syntax.tokens.IdentifierToken(null, name));
       }
     }
     return result;
@@ -78,14 +77,14 @@ public final class JavascriptParseTreeFactory {
   }
 
   private static ParseTree createIdentifier(String value) {
-    return createIdentifier(new JavascriptIdentifierToken(null, value));
+    return createIdentifier(new IdentifierToken(null, value));
   }
 
-  public static ParseTree createIdentifier(IdentifierToken identifier) {
+  public static ParseTree createIdentifier(omakase.syntax.tokens.IdentifierToken identifier) {
     return createIdentifier(identifier.value);
   }
 
-  public static ParseTree createIdentifier(JavascriptIdentifierToken identifier) {
+  public static ParseTree createIdentifier(IdentifierToken identifier) {
     return new IdentifierExpressionTree(null, identifier);
   }
 
