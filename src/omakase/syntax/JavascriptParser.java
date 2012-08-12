@@ -123,7 +123,11 @@ public class JavascriptParser extends ParserBase {
 
     // expression or statement
     case JS_FUNCTION:
+      // TODO: Ambiguity with expression statement.
+      return parseFunction();
     case JS_OPEN_CURLY:
+      // TODO: Ambiguity with object literal.
+      return parseBlock();
 
       // statements
     case JS_VAR:
@@ -236,7 +240,7 @@ public class JavascriptParser extends ParserBase {
     eat(TokenKind.JS_FOR);
     eat(TokenKind.JS_OPEN_PAREN);
     switch (peekKind()) {
-    // TODO: NoIn 
+    // TODO: NoIn
     case VAR:
       Token variableStart = peek();
       eat(TokenKind.VAR);
@@ -403,7 +407,26 @@ public class JavascriptParser extends ParserBase {
   }
 
   private ParseTree parseExpression() {
-    return parsePostfixExpression();
+    return parseCommaExpression();
+  }
+
+  private ParseTree parseCommaExpression() {
+    Token start = peek();
+    ParseTree expression = parseAssignmentExpression();
+    if (!peek(TokenKind.COMMA)) {
+      return expression;
+    }
+
+    ImmutableList.Builder<ParseTree> expressions = new ImmutableList.Builder<ParseTree>();
+    expressions.add(expression);
+    while (eatOpt(TokenKind.JS_COMMA)) {
+      expressions.add(parseAssignmentExpression());
+    }
+    return new CommaExpressionTree(getRange(start), expressions.build());
+  }
+
+  private ParseTree parseAssignmentExpression() {
+
   }
 
   private ParseTree parsePrimaryExpression() {
