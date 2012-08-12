@@ -22,3 +22,13 @@ TODO
   - source maps
 - ide
 
+Omakase is a language for developing large web applications.
+- interop with the browser DOM and JS (importing/exporting/inline JS)
+- types - non-optional, largely inferred rather than declared
+- targeted syntax/semantic fixes (classes, 'this' binding, ...)
+- async programming (await/async)
+- logical vs. physical code organization
+  - logical: namespaces/modules
+  - physical: units of distribution/download (think pinto modules)
+- debugging (via source maps)
+- IDE - code browsing, refactoring?
