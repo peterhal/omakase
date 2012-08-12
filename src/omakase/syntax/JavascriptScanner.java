@@ -48,114 +48,114 @@ public class JavascriptScanner extends ScannerBase {
     int startIndex = index;
     char ch = nextChar();
     switch (ch) {
-    case '\0': return createToken(TokenKind.JAVASCRIPT_END_OF_FILE, startIndex);
-    case '{': return createToken(TokenKind.JAVASCRIPT_OPEN_CURLY, startIndex);
-    case '}': return createToken(TokenKind.JAVASCRIPT_CLOSE_CURLY, startIndex);
-    case '(': return createToken(TokenKind.JAVASCRIPT_OPEN_PAREN, startIndex);
-    case ')': return createToken(TokenKind.JAVASCRIPT_CLOSE_PAREN, startIndex);
-    case '.': return createToken(TokenKind.JAVASCRIPT_PERIOD, startIndex);
-    case ';': return createToken(TokenKind.JAVASCRIPT_SEMI_COLON, startIndex);
-    case ',': return createToken(TokenKind.JAVASCRIPT_COMMA, startIndex);
+    case '\0': return createToken(TokenKind.JS_END_OF_FILE, startIndex);
+    case '{': return createToken(TokenKind.JS_OPEN_CURLY, startIndex);
+    case '}': return createToken(TokenKind.JS_CLOSE_CURLY, startIndex);
+    case '(': return createToken(TokenKind.JS_OPEN_PAREN, startIndex);
+    case ')': return createToken(TokenKind.JS_CLOSE_PAREN, startIndex);
+    case '.': return createToken(TokenKind.JS_PERIOD, startIndex);
+    case ';': return createToken(TokenKind.JS_SEMI_COLON, startIndex);
+    case ',': return createToken(TokenKind.JS_COMMA, startIndex);
     case '<':
       if (eatOpt('<')) {
         if (eatOpt('=')) {
-          return createToken(TokenKind.JAVASCRIPT_LEFT_SHIFT_EQUAL, startIndex);
+          return createToken(TokenKind.JS_LEFT_SHIFT_EQUAL, startIndex);
         }
-        return createToken(TokenKind.JAVASCRIPT_SHIFT_LEFT, startIndex);
+        return createToken(TokenKind.JS_SHIFT_LEFT, startIndex);
       }
       if (eatOpt('=')) {
-        return createToken(TokenKind.JAVASCRIPT_LESS_EQUAL, startIndex);
+        return createToken(TokenKind.JS_LESS_EQUAL, startIndex);
       }
-      return createToken(TokenKind.JAVASCRIPT_OPEN_ANGLE, startIndex);
+      return createToken(TokenKind.JS_OPEN_ANGLE, startIndex);
     case '>':
       if (eatOpt('>')) {
         if (eatOpt('=')) {
-          return createToken(TokenKind.JAVASCRIPT_RIGHT_SHIFT_EQUAL, startIndex);
+          return createToken(TokenKind.JS_RIGHT_SHIFT_EQUAL, startIndex);
         }
         if (eatOpt('>')) {
           if (eatOpt('=')) {
-            return createToken(TokenKind.JAVASCRIPT_UNSIGNED_RIGHT_SHIFT_EQUAL, startIndex);
+            return createToken(TokenKind.JS_UNSIGNED_RIGHT_SHIFT_EQUAL, startIndex);
           }
-          return createToken(TokenKind.JAVASCRIPT_UNSIGNED_SHIFT_RIGHT, startIndex);
+          return createToken(TokenKind.JS_UNSIGNED_SHIFT_RIGHT, startIndex);
         }
-        return createToken(TokenKind.JAVASCRIPT_SHIFT_RIGHT, startIndex);
+        return createToken(TokenKind.JS_SHIFT_RIGHT, startIndex);
       }
       if (eatOpt('=')) {
-        return createToken(TokenKind.JAVASCRIPT_GREATER_EQUAL, startIndex);
+        return createToken(TokenKind.JS_GREATER_EQUAL, startIndex);
       }
-      return createToken(TokenKind.JAVASCRIPT_CLOSE_ANGLE, startIndex);
+      return createToken(TokenKind.JS_CLOSE_ANGLE, startIndex);
     case '=':
       if (eatOpt('=')) {
         if (eatOpt('=')) {
-          return createToken(TokenKind.JAVASCRIPT_EQUAL_EQUAL_EQUAL, startIndex);
+          return createToken(TokenKind.JS_EQUAL_EQUAL_EQUAL, startIndex);
         }
-        return createToken(TokenKind.JAVASCRIPT_EQUAL_EQUAL, startIndex);
+        return createToken(TokenKind.JS_EQUAL_EQUAL, startIndex);
       }
-      return createToken(TokenKind.JAVASCRIPT_EQUAL, startIndex);
+      return createToken(TokenKind.JS_EQUAL, startIndex);
     case '!':
       if (eatOpt('=')) {
         if (eatOpt('=')) {
-          return createToken(TokenKind.JAVASCRIPT_NOT_EQUAL_EQUAL, startIndex);
+          return createToken(TokenKind.JS_NOT_EQUAL_EQUAL, startIndex);
         }
-        return createToken(TokenKind.JAVASCRIPT_NOT_EQUAL, startIndex);
+        return createToken(TokenKind.JS_NOT_EQUAL, startIndex);
       }
-      return createToken(TokenKind.JAVASCRIPT_BANG, startIndex);
+      return createToken(TokenKind.JS_BANG, startIndex);
     case '^':
       if (eatOpt('=')) {
-        return createToken(TokenKind.JAVASCRIPT_HAT_EQUAL, startIndex);
+        return createToken(TokenKind.JS_HAT_EQUAL, startIndex);
       }
-      return createToken(TokenKind.JAVASCRIPT_HAT, startIndex);
+      return createToken(TokenKind.JS_HAT, startIndex);
     case '~':
-      return createToken(TokenKind.JAVASCRIPT_TILDE, startIndex);
+      return createToken(TokenKind.JS_TILDE, startIndex);
     case '+':
       if (eatOpt('+')) {
-        return createToken(TokenKind.JAVASCRIPT_PLUS_PLUS, startIndex);
+        return createToken(TokenKind.JS_PLUS_PLUS, startIndex);
       }
       if (eatOpt('=')) {
-        return createToken(TokenKind.JAVASCRIPT_PLUS_EQUAL, startIndex);
+        return createToken(TokenKind.JS_PLUS_EQUAL, startIndex);
       }
-      return createToken(TokenKind.JAVASCRIPT_PLUS, startIndex);
+      return createToken(TokenKind.JS_PLUS, startIndex);
     case '-':
       if (eatOpt('-')) {
-        return createToken(TokenKind.JAVASCRIPT_MINUS_MINUS, startIndex);
+        return createToken(TokenKind.JS_MINUS_MINUS, startIndex);
       }
       if (eatOpt('=')) {
-        return createToken(TokenKind.JAVASCRIPT_MINUS_EQUAL, startIndex);
+        return createToken(TokenKind.JS_MINUS_EQUAL, startIndex);
       }
-      return createToken(TokenKind.JAVASCRIPT_MINUS, startIndex);
+      return createToken(TokenKind.JS_MINUS, startIndex);
     case '*':
       if (eatOpt('=')) {
-        return createToken(TokenKind.JAVASCRIPT_STAR_EQUAL, startIndex);
+        return createToken(TokenKind.JS_STAR_EQUAL, startIndex);
       }
-      return createToken(TokenKind.JAVASCRIPT_STAR, startIndex);
+      return createToken(TokenKind.JS_STAR, startIndex);
     case '%':
       if (eatOpt('=')) {
-        return createToken(TokenKind.JAVASCRIPT_PERCENT_EQUAL, startIndex);
+        return createToken(TokenKind.JS_PERCENT_EQUAL, startIndex);
       }
-      return createToken(TokenKind.JAVASCRIPT_PERCENT, startIndex);
+      return createToken(TokenKind.JS_PERCENT, startIndex);
     case '&':
       if (eatOpt('=')) {
-        return createToken(TokenKind.JAVASCRIPT_AMPERSAND_EQUAL, startIndex);
+        return createToken(TokenKind.JS_AMPERSAND_EQUAL, startIndex);
       }
       if (eatOpt('&')) {
-        return createToken(TokenKind.JAVASCRIPT_AMPERSAND_AMPERSAND, startIndex);
+        return createToken(TokenKind.JS_AMPERSAND_AMPERSAND, startIndex);
       }
-      return createToken(TokenKind.JAVASCRIPT_AMPERSAND, startIndex);
+      return createToken(TokenKind.JS_AMPERSAND, startIndex);
     case '|':
       if (eatOpt('=')) {
-        return createToken(TokenKind.JAVASCRIPT_BAR_EQUAL, startIndex);
+        return createToken(TokenKind.JS_BAR_EQUAL, startIndex);
       }
       if (eatOpt('|')) {
-        return createToken(TokenKind.JAVASCRIPT_BAR_BAR, startIndex);
+        return createToken(TokenKind.JS_BAR_BAR, startIndex);
       }
-      return createToken(TokenKind.JAVASCRIPT_BAR, startIndex);
-    case '?': return createToken(TokenKind.JAVASCRIPT_QUESTION, startIndex);
-    case ':': return createToken(TokenKind.JAVASCRIPT_COLON, startIndex);
+      return createToken(TokenKind.JS_BAR, startIndex);
+    case '?': return createToken(TokenKind.JS_QUESTION, startIndex);
+    case ':': return createToken(TokenKind.JS_COLON, startIndex);
     case '/':
       if (eatOpt('=')) {
-        return createToken(TokenKind.JAVASCRIPT_SLASH_EQUAL, startIndex);
+        return createToken(TokenKind.JS_SLASH_EQUAL, startIndex);
       }
-      return createToken(TokenKind.JAVASCRIPT_SLASH, startIndex);
+      return createToken(TokenKind.JS_SLASH, startIndex);
     case '\"': return scanStringLiteral(startIndex);
     case '0': case '1': case '2': case '3': case '4':
     case '5': case '6': case '7': case '8': case '9':
@@ -165,7 +165,7 @@ public class JavascriptScanner extends ScannerBase {
         return scanIdentifierOrKeyword(startIndex, ch);
       }
       reportError(startIndex, "Unexpected character '%s'.", ch);
-      return createToken(TokenKind.JAVASCRIPT_ERROR, startIndex);
+      return createToken(TokenKind.JS_ERROR, startIndex);
     }
   }
 

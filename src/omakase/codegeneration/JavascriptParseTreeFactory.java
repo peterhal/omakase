@@ -72,7 +72,7 @@ public final class JavascriptParseTreeFactory {
 
   public static ParseTree createAssignmentStatement(ParseTree left, ParseTree right) {
     return createExpressionStatement(
-        createBinaryExpression(left, TokenKind.JAVASCRIPT_EQUAL, right)
+        createBinaryExpression(left, TokenKind.JS_EQUAL, right)
     );
   }
 

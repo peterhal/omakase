@@ -27,7 +27,7 @@ public class IdentifierToken extends Token {
   public final String value;
 
   public IdentifierToken(SourceRange range, String value) {
-    super(TokenKind.JAVASCRIPT_IDENTIFIER, range);
+    super(TokenKind.JS_IDENTIFIER, range);
     this.value = value;
   }
 

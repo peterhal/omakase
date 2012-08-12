@@ -52,9 +52,9 @@ public class Token {
     case IDENTIFIER:
     case STRING:
     case NUMBER:
-    case JAVASCRIPT_IDENTIFIER:
-    case JAVASCRIPT_STRING:
-    case JAVASCRIPT_NUMBER:
+    case JS_IDENTIFIER:
+    case JS_STRING:
+    case JS_NUMBER:
       return true;
     default:
       return false;

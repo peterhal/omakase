@@ -27,7 +27,7 @@ public class StringLiteralToken extends Token {
   public final String value;
 
   public StringLiteralToken(SourceRange range, String value) {
-    super(TokenKind.JAVASCRIPT_STRING, range);
+    super(TokenKind.JS_STRING, range);
     this.value = value;
   }
 

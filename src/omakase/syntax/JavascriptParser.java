@@ -37,11 +37,11 @@ public class JavascriptParser extends ParserBase {
   public BlockTree parseBlock() {
     Token start = peek();
     ImmutableList.Builder<ParseTree> statements = new ImmutableList.Builder<ParseTree>();
-    eat(TokenKind.JAVASCRIPT_OPEN_CURLY);
+    eat(TokenKind.JS_OPEN_CURLY);
     while (peekStatement()) {
       statements.add(parseStatement());
     }
-    eat(TokenKind.JAVASCRIPT_CLOSE_CURLY);
+    eat(TokenKind.JS_CLOSE_CURLY);
     return new BlockTree(getRange(start), statements.build());
   }
 
@@ -64,7 +64,7 @@ public class JavascriptParser extends ParserBase {
 
   private ParseTree parseFunction() {
     Token start = peek();
-    eat(TokenKind.JAVASCRIPT_FUNCTION);
+    eat(TokenKind.JS_FUNCTION);
     IdentifierToken id = eatOptId();
 
     return new FunctionExpressionTree(getRange(start), id, parseFormalParameterList(), parseBlock());
@@ -73,14 +73,14 @@ public class JavascriptParser extends ParserBase {
   private FormalParameterListTree parseFormalParameterList() {
     Token start = peek();
     ImmutableList.Builder<IdentifierToken> parameters = new ImmutableList.Builder<IdentifierToken>();
-    eat(TokenKind.JAVASCRIPT_OPEN_PAREN);
+    eat(TokenKind.JS_OPEN_PAREN);
     if (peekParameter()) {
       parameters.add(eatId());
-      while (eatOpt(TokenKind.JAVASCRIPT_COMMA)) {
+      while (eatOpt(TokenKind.JS_COMMA)) {
         parameters.add(eatId());
       }
     }
-    eat(TokenKind.JAVASCRIPT_CLOSE_PAREN);
+    eat(TokenKind.JS_CLOSE_PAREN);
     return new FormalParameterListTree(getRange(start), parameters.build());
   }
 
@@ -89,7 +89,7 @@ public class JavascriptParser extends ParserBase {
   }
 
   private boolean peekFunction() {
-    return peek(TokenKind.JAVASCRIPT_FUNCTION);
+    return peek(TokenKind.JS_FUNCTION);
   }
 
   private ParseTree parseStatement() {
@@ -100,7 +100,7 @@ public class JavascriptParser extends ParserBase {
   private ParseTree parseExpressionStatement() {
     Token start = peek();
     ParseTree expression = parseExpression();
-    eat(TokenKind.JAVASCRIPT_SEMI_COLON);
+    eat(TokenKind.JS_SEMI_COLON);
     return new ExpressionStatementTree(getRange(start), expression);
   }
 
@@ -110,10 +110,10 @@ public class JavascriptParser extends ParserBase {
 
   private ParseTree parsePrimaryExpression() {
     switch (peekKind()) {
-    case JAVASCRIPT_IDENTIFIER:
+    case JS_IDENTIFIER:
       return parseSimpleName();
-    case JAVASCRIPT_NUMBER:
-    case JAVASCRIPT_STRING:
+    case JS_NUMBER:
+    case JS_STRING:
       return parseLiteral();
     default:
       reportError(nextToken(), "Expected expression.");
@@ -130,7 +130,7 @@ public class JavascriptParser extends ParserBase {
     ParseTree primary = parsePrimaryExpression();
     while (peekPostfixOperator()) {
       switch(peekKind()) {
-      case JAVASCRIPT_OPEN_PAREN:
+      case JS_OPEN_PAREN:
         primary = parseCallExpression(primary);
       }
     }
@@ -139,20 +139,20 @@ public class JavascriptParser extends ParserBase {
 
   private ParseTree parseCallExpression(ParseTree primary) {
     ImmutableList.Builder<ParseTree> arguments = new ImmutableList.Builder<ParseTree>();
-    eat(TokenKind.JAVASCRIPT_OPEN_PAREN);
+    eat(TokenKind.JS_OPEN_PAREN);
     if (peekExpression()) {
       arguments.add(parseExpression());
-      while (eatOpt(TokenKind.JAVASCRIPT_COMMA)) {
+      while (eatOpt(TokenKind.JS_COMMA)) {
         arguments.add(parseExpression());
       }
     }
-    eat(TokenKind.JAVASCRIPT_CLOSE_PAREN);
+    eat(TokenKind.JS_CLOSE_PAREN);
     return new CallExpressionTree(getRange(primary.start()), primary, arguments.build());
   }
 
   private boolean peekPostfixOperator() {
     switch (peekKind()) {
-    case JAVASCRIPT_OPEN_PAREN:
+    case JS_OPEN_PAREN:
       return true;
     default:
       return false;
@@ -170,9 +170,9 @@ public class JavascriptParser extends ParserBase {
 
   private boolean peekExpression() {
     switch (peekKind()) {
-    case JAVASCRIPT_IDENTIFIER:
-    case JAVASCRIPT_NUMBER:
-    case JAVASCRIPT_STRING:
+    case JS_IDENTIFIER:
+    case JS_NUMBER:
+    case JS_STRING:
       // TODO: others
       return true;
     default:
@@ -181,15 +181,15 @@ public class JavascriptParser extends ParserBase {
   }
 
   private boolean peekParameter() {
-    return peek(TokenKind.JAVASCRIPT_IDENTIFIER);
+    return peek(TokenKind.JS_IDENTIFIER);
   }
 
   private IdentifierToken eatId() {
-    return eat(TokenKind.JAVASCRIPT_IDENTIFIER).asJavascriptIdentifier();
+    return eat(TokenKind.JS_IDENTIFIER).asJavascriptIdentifier();
   }
 
   private IdentifierToken eatOptId() {
-    if (peek(TokenKind.JAVASCRIPT_IDENTIFIER)) {
+    if (peek(TokenKind.JS_IDENTIFIER)) {
       return eatId();
     }
     return null;
