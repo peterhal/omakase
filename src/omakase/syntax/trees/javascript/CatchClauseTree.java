@@ -14,7 +14,7 @@
 
 package omakase.syntax.trees.javascript;
 
-import omakase.syntax.tokens.IdentifierToken;
+import omakase.syntax.tokens.javascript.IdentifierToken;
 import omakase.syntax.trees.ParseTree;
 import omakase.syntax.trees.ParseTreeKind;
 import omakase.util.SourceRange;

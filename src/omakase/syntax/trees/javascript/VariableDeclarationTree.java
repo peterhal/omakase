@@ -14,7 +14,7 @@
 
 package omakase.syntax.trees.javascript;
 
-import omakase.syntax.tokens.IdentifierToken;
+import omakase.syntax.tokens.javascript.IdentifierToken;
 import omakase.syntax.trees.ParseTree;
 import omakase.syntax.trees.ParseTreeKind;
 import omakase.util.SourceRange;
@@ -25,8 +25,7 @@ public class VariableDeclarationTree extends ParseTree {
   public final IdentifierToken name;
   public final ParseTree initializer;
 
-  public VariableDeclarationTree(SourceRange location, IdentifierToken name, ParseTree initializer
-  ) {
+  public VariableDeclarationTree(SourceRange location, IdentifierToken name, ParseTree initializer) {
     super(location, ParseTreeKind.JAVASCRIPT_VARIABLE_DECLARATION);
     this.name = name;
     this.initializer = initializer;

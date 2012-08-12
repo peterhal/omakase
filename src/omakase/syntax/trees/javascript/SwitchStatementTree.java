@@ -22,10 +22,12 @@ import omakase.util.SourceRange;
 /**
  */
 public class SwitchStatementTree extends ParseTree {
+  public final ParseTree expression;
   public final ImmutableList<ParseTree> caseClauses;
 
-  public SwitchStatementTree(SourceRange location, ImmutableList<ParseTree> caseClauses) {
+  public SwitchStatementTree(SourceRange location, ParseTree expression, ImmutableList<ParseTree> caseClauses) {
     super(location, ParseTreeKind.JAVASCRIPT_SWITCH_STATEMENT);
+    this.expression = expression;
     this.caseClauses = caseClauses;
   }
 }
