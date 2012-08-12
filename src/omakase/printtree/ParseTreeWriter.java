@@ -250,7 +250,7 @@ public class ParseTreeWriter extends ParseTreeVisitor {
   }
 
   protected void visit(omakase.syntax.trees.javascript.FormalParameterListTree tree) {
-    writeCommaSeparatedList(tree.parameters);
+    writeCommaSeparatedTokenList(tree.parameters);
   }
 
   protected void visit(omakase.syntax.trees.javascript.FunctionExpressionTree tree) {
@@ -412,9 +412,13 @@ public class ParseTreeWriter extends ParseTreeVisitor {
     write(TokenKind.JAVASCRIPT_CLOSE_PAREN);
     visitAny(tree.body);
   }
-  
+
   private void writeCommaSeparatedList(ImmutableList<ParseTree> trees) {
     writeList(trees, TokenKind.COMMA.toString());
+  }
+
+  private void writeCommaSeparatedTokenList(ImmutableList<? extends Token> trees) {
+    writeTokenList(trees, TokenKind.COMMA.toString());
   }
 
   private void writeList(ImmutableList<ParseTree> trees, String separator) {
@@ -422,8 +426,20 @@ public class ParseTreeWriter extends ParseTreeVisitor {
     for (ParseTree tree: trees) {
       if (!first) {
         write(separator);
+        first = false;
       }
       visitAny(tree);
+    }
+  }
+
+  private void writeTokenList(ImmutableList<? extends Token> tokens, String separator) {
+    boolean first = true;
+    for (Token token: tokens) {
+      if (!first) {
+        write(separator);
+        first = false;
+      }
+      write(token);
     }
   }
 

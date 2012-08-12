@@ -346,7 +346,6 @@ public class ParseTreeVisitor {
   }
 
   protected void visit(omakase.syntax.trees.javascript.FormalParameterListTree tree) {
-    visitList(tree.parameters);
   }
 
   protected void visit(omakase.syntax.trees.javascript.FunctionExpressionTree tree) {

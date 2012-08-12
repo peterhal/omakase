@@ -43,7 +43,7 @@ public final class JavascriptParseTreeFactory {
   }
   
   public static FormalParameterListTree createFormalParameterList() {
-    return new FormalParameterListTree(null, ImmutableList.<ParseTree>of());
+    return new FormalParameterListTree(null, ImmutableList.<IdentifierToken>of());
   }
 
   public static BlockTree createBlock(ParseTree... statements) {

@@ -500,13 +500,7 @@ public class ParseTreeTransformer {
   }
 
   protected ParseTree transform(omakase.syntax.trees.javascript.FormalParameterListTree tree) {
-    ImmutableList<ParseTree> parameters = transformList(tree.parameters);
-    if (parameters == tree.parameters) {
-      return tree;
-    }
-    return new omakase.syntax.trees.javascript.FormalParameterListTree(
-        null,
-        parameters);
+    return tree;
   }
 
   protected ParseTree transform(omakase.syntax.trees.javascript.FunctionExpressionTree tree) {
