@@ -205,9 +205,6 @@ public class ParseTreeVisitor {
     case JAVASCRIPT_WHILE_STATEMENT:
       visit(tree.asJavascriptWhileStatement());
       break;
-    case JAVASCRIPT_WITH_STATEMENT:
-      visit(tree.asJavascriptWithStatement());
-      break;
     }
   }
 
@@ -352,6 +349,7 @@ public class ParseTreeVisitor {
   }
 
   protected void visit(omakase.syntax.trees.javascript.FormalParameterListTree tree) {
+    visitList(tree.parameters);
   }
 
   protected void visit(omakase.syntax.trees.javascript.FunctionExpressionTree tree) {
@@ -448,11 +446,6 @@ public class ParseTreeVisitor {
 
   protected void visit(omakase.syntax.trees.javascript.WhileStatementTree tree) {
     visitAny(tree.condition);
-    visitAny(tree.body);
-  }
-
-  protected void visit(omakase.syntax.trees.javascript.WithStatementTree tree) {
-    visitAny(tree.expression);
     visitAny(tree.body);
   }
 }

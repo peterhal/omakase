@@ -246,8 +246,8 @@ public class ParseTreeTransformer {
     }
     return new FunctionExpressionTree(
         null,
-        parameters,
-        body);
+        parameters.asFormalParameterList(),
+        body.asBlock());
   }
 
   protected ParseTree transform(IdentifierExpressionTree tree) {
@@ -368,7 +368,7 @@ public class ParseTreeTransformer {
     return new omakase.syntax.trees.javascript.CallExpressionTree(
         null,
         function,
-        arguments);
+        arguments.asJavascriptArguments());
   }
 
   protected ParseTree transform(omakase.syntax.trees.javascript.CaseClauseTree tree) {
@@ -392,7 +392,7 @@ public class ParseTreeTransformer {
     return new omakase.syntax.trees.javascript.CatchClauseTree(
         null,
         tree.identifier,
-        block);
+        block.asJavascriptBlock());
   }
 
   protected ParseTree transform(omakase.syntax.trees.javascript.CommaExpressionTree tree) {
@@ -506,13 +506,7 @@ public class ParseTreeTransformer {
   }
 
   protected ParseTree transform(omakase.syntax.trees.javascript.FormalParameterListTree tree) {
-    ImmutableList<ParseTree> parameters = transformList(tree.parameters);
-    if (parameters == tree.parameters) {
-      return tree;
-    }
-    return new omakase.syntax.trees.javascript.FormalParameterListTree(
-        null,
-        parameters);
+    return tree;
   }
 
   protected ParseTree transform(omakase.syntax.trees.javascript.FunctionExpressionTree tree) {
@@ -525,8 +519,8 @@ public class ParseTreeTransformer {
     return new omakase.syntax.trees.javascript.FunctionExpressionTree(
         null,
         tree.name,
-        parameters,
-        body);
+        parameters.asJavascriptFormalParameterList(),
+        body.asJavascriptBlock());
   }
 
   protected ParseTree transform(omakase.syntax.trees.javascript.GetAccessorTree tree) {
@@ -537,7 +531,7 @@ public class ParseTreeTransformer {
     return new omakase.syntax.trees.javascript.GetAccessorTree(
         null,
         tree.propertyName,
-        body);
+        body.asJavascriptBlock());
   }
 
   protected ParseTree transform(omakase.syntax.trees.javascript.IdentifierExpressionTree tree) {
@@ -596,7 +590,7 @@ public class ParseTreeTransformer {
     return new omakase.syntax.trees.javascript.NewExpressionTree(
         null,
         constructor,
-        arguments);
+        arguments.asJavascriptArguments());
   }
 
   protected ParseTree transform(omakase.syntax.trees.javascript.ObjectLiteralExpressionTree tree) {
@@ -670,7 +664,7 @@ public class ParseTreeTransformer {
         null,
         tree.propertyName,
         tree.parameterName,
-        body);
+        body.asJavascriptBlock());
   }
 
   protected ParseTree transform(omakase.syntax.trees.javascript.SwitchStatementTree tree) {
@@ -711,9 +705,9 @@ public class ParseTreeTransformer {
     }
     return new omakase.syntax.trees.javascript.TryStatementTree(
         null,
-        body,
-        catchClause,
-        finallyClause);
+        body.asJavascriptBlock(),
+        catchClause.asJavascriptCatchClause(),
+        finallyClause.asJavascriptBlock());
   }
 
   protected ParseTree transform(omakase.syntax.trees.javascript.UnaryExpressionTree tree) {

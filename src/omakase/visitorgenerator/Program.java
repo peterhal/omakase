@@ -23,9 +23,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintStream;
 import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
+import java.util.*;
 
 /**
  * Generates ParseTreeVisitor and ParseTreeTransformer from the ParseTree class declarations.
@@ -90,6 +88,11 @@ public class Program {
   }
 
   private static void printTreeTransforms(PrintStream out, ArrayList<TreeInfo> trees) {
+    Map<Class, TreeInfo> classMap = new HashMap<Class, TreeInfo>();
+
+    for (TreeInfo tree: trees) {
+      classMap.put(tree.clazz, tree);
+    }
     for (TreeInfo tree: trees) {
       out.println();
       out.printf("  protected ParseTree transform(%s tree) {\n", tree.className);
@@ -132,6 +135,9 @@ public class Program {
             out.printf("        ");
             if (isParseTreeOrListType(field)){
               out.printf("%s", field.getName());
+              if (isParseTreeType(field) && field.getType() != ParseTree.class) {
+                out.printf(".%s()", classMap.get(field.getType()).asName);
+              }
             } else {
               out.printf("tree.%s", field.getName());
             }
