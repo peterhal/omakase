@@ -24,7 +24,7 @@ import omakase.util.ErrorReporter;
 import omakase.util.SourceRange;
 
 /**
- *
+ * TODO: Automatic semi-colon insertion.
  */
 public class JavascriptParser extends ParserBase {
   private final JavascriptScanner scanner;
@@ -407,118 +407,122 @@ public class JavascriptParser extends ParserBase {
   }
 
   private ParseTree parseExpression() {
-    return parseCommaExpression();
+    return parseExpression(Expression.NORMAL);
   }
 
-  private ParseTree parseCommaExpression() {
+  private ParseTree parseExpression(Expression expression) {
+      return parseCommaExpression(expression);
+  }
+
+  private ParseTree parseCommaExpression(Expression expression) {
     Token start = peek();
-    ParseTree expression = parseAssignmentExpression();
+    ParseTree assignment = parseAssignmentExpression(expression);
     if (!peek(TokenKind.COMMA)) {
-      return expression;
+      return assignment;
     }
 
     ImmutableList.Builder<ParseTree> expressions = new ImmutableList.Builder<ParseTree>();
-    expressions.add(expression);
+    expressions.add(assignment);
     while (eatOpt(TokenKind.JS_COMMA)) {
-      expressions.add(parseAssignmentExpression());
+      expressions.add(parseAssignmentExpression(expression));
     }
     return new CommaExpressionTree(getRange(start), expressions.build());
   }
 
-  private ParseTree parseAssignmentExpression() {
+  private ParseTree parseAssignmentExpression(Expression expression) {
     Token start = peek();
-    ParseTree left = parseConditionalExpression();
+    ParseTree left = parseConditionalExpression(expression);
     if (!peekAssignmentOperator()) {
       return left;
     }
     // TODO: Check for LHS.
     Token operator = nextToken();
-    ParseTree right = parseAssignmentExpression();
+    ParseTree right = parseAssignmentExpression(expression);
     return new BinaryExpressionTree(getRange(start), left, operator, right);
   }
 
-  private ParseTree parseConditionalExpression() {
+  private ParseTree parseConditionalExpression(Expression expression) {
     Token start = peek();
-    ParseTree condition = parseLogicalOrExpression();
+    ParseTree condition = parseLogicalOrExpression(expression);
     if (!eatOpt(TokenKind.QUESTION)) {
       return condition;
     }
-    ParseTree trueCase = parseAssignmentExpression();
+    ParseTree trueCase = parseAssignmentExpression(expression);
     eat(TokenKind.COLON);
-    ParseTree falseCase = parseAssignmentExpression();
+    ParseTree falseCase = parseAssignmentExpression(expression);
     return new ConditionalExpressionTree(getRange(start), condition, trueCase, falseCase);
   }
 
-  private ParseTree parseLogicalOrExpression() {
+  private ParseTree parseLogicalOrExpression(Expression expression) {
     Token start = peek();
-    ParseTree left = parseLogicalAndExpression();
+    ParseTree left = parseLogicalAndExpression(expression);
     while (peek(TokenKind.JS_BAR_BAR)) {
       Token operator = nextToken();
-      ParseTree right = parseLogicalAndExpression();
+      ParseTree right = parseLogicalAndExpression(expression);
       left = new BinaryExpressionTree(getRange(start), left, operator, right);
     }
     return left;
   }
 
-  private ParseTree parseLogicalAndExpression() {
+  private ParseTree parseLogicalAndExpression(Expression expression) {
     Token start = peek();
-    ParseTree left = parseBitwiseOrExpression();
+    ParseTree left = parseBitwiseOrExpression(expression);
     while (peek(TokenKind.JS_AMPERSAND_AMPERSAND)) {
       Token operator = nextToken();
-      ParseTree right = parseBitwiseOrExpression();
+      ParseTree right = parseBitwiseOrExpression(expression);
       left = new BinaryExpressionTree(getRange(start), left, operator, right);
     }
     return left;
   }
 
-  private ParseTree parseBitwiseOrExpression() {
+  private ParseTree parseBitwiseOrExpression(Expression expression) {
     Token start = peek();
-    ParseTree left = parseBitwiseXorExpression();
+    ParseTree left = parseBitwiseXorExpression(expression);
     while (peek(TokenKind.JS_BAR)) {
       Token operator = nextToken();
-      ParseTree right = parseBitwiseXorExpression();
+      ParseTree right = parseBitwiseXorExpression(expression);
       left = new BinaryExpressionTree(getRange(start), left, operator, right);
     }
     return left;
   }
 
-  private ParseTree parseBitwiseXorExpression() {
+  private ParseTree parseBitwiseXorExpression(Expression expression) {
     Token start = peek();
-    ParseTree left = parseBitwiseAndExpression();
+    ParseTree left = parseBitwiseAndExpression(expression);
     while (peek(TokenKind.JS_BAR)) {
       Token operator = nextToken();
-      ParseTree right = parseBitwiseAndExpression();
+      ParseTree right = parseBitwiseAndExpression(expression);
       left = new BinaryExpressionTree(getRange(start), left, operator, right);
     }
     return left;
   }
 
-  private ParseTree parseBitwiseAndExpression() {
+  private ParseTree parseBitwiseAndExpression(Expression expression) {
     Token start = peek();
-    ParseTree left = parseEqualityExpression();
+    ParseTree left = parseEqualityExpression(expression);
     while (peek(TokenKind.JS_BAR)) {
       Token operator = nextToken();
-      ParseTree right = parseEqualityExpression();
+      ParseTree right = parseEqualityExpression(expression);
       left = new BinaryExpressionTree(getRange(start), left, operator, right);
     }
     return left;
   }
 
-  private ParseTree parseEqualityExpression() {
+  private ParseTree parseEqualityExpression(Expression expression) {
     Token start = peek();
-    ParseTree left = parseRelationalExpression();
+    ParseTree left = parseRelationalExpression(expression);
     while (peekEqualityOperator()) {
       Token operator = nextToken();
-      ParseTree right = parseRelationalExpression();
+      ParseTree right = parseRelationalExpression(expression);
       left = new BinaryExpressionTree(getRange(start), left, operator, right);
     }
     return left;
   }
 
-  private ParseTree parseRelationalExpression() {
+  private ParseTree parseRelationalExpression(Expression expression) {
     Token start = peek();
     ParseTree left = parseShiftExpression();
-    while (peekRelationalOperator()) {
+    while (peekRelationalOperator(expression)) {
       Token operator = nextToken();
       ParseTree right = parseShiftExpression();
       left = new BinaryExpressionTree(getRange(start), left, operator, right);
@@ -617,8 +621,12 @@ public class JavascriptParser extends ParserBase {
     }
   }
 
-  private boolean peekRelationalOperator() {
-    // TODO: NoIn
+  private static enum Expression {
+    NO_IN,
+    NORMAL,
+  }
+
+  private boolean peekRelationalOperator(Expression expression) {
     switch (peekKind()) {
     case JS_OPEN_ANGLE:
     case JS_CLOSE_ANGLE:
@@ -626,6 +634,8 @@ public class JavascriptParser extends ParserBase {
     case JS_LESS_EQUAL:
     case JS_INSTANCEOF:
       return true;
+    case JS_IN:
+      return expression == Expression.NORMAL;
     default:
       return false;
     }
@@ -680,6 +690,7 @@ public class JavascriptParser extends ParserBase {
     case JS_FALSE:
     case JS_NUMBER:
     case JS_STRING:
+      // TODO: Regular Expression literals go here.
       return parseLiteral();
     default:
       reportError(nextToken(), "Expected expression.");
@@ -715,7 +726,7 @@ public class JavascriptParser extends ParserBase {
     Token start = peek();
     Token property = nextToken();
     eat(TokenKind.JS_COLON);
-    return new PropertyAssignmentTree(getRange(start), property, parseAssignmentExpression());
+    return new PropertyAssignmentTree(getRange(start), property, parseAssignmentExpression(Expression.NORMAL));
   }
 
   private ParseTree parseSetProperty() {
@@ -782,7 +793,7 @@ public class JavascriptParser extends ParserBase {
       if (peek(TokenKind.JS_COMMA)) {
         elements.add(new ElisionTree(getRange(eat(TokenKind.JS_COMMA))));
       } else {
-        elements.add(parseAssignmentExpression());
+        elements.add(parseAssignmentExpression(Expression.NORMAL));
       }
     }
     eat(TokenKind.JS_CLOSE_SQUARE);
@@ -928,7 +939,7 @@ public class JavascriptParser extends ParserBase {
     ImmutableList.Builder<ParseTree> arguments = new ImmutableList.Builder<ParseTree>();
     if (peekExpression()) {
       do {
-        arguments.add(parseAssignmentExpression());
+        arguments.add(parseAssignmentExpression(Expression.NORMAL));
       } while (eatOpt(TokenKind.JS_COMMA));
     }
     eat(TokenKind.JS_CLOSE_PAREN);

@@ -27,9 +27,13 @@ import java.util.List;
  */
 public final class JavascriptParseTreeFactory {
   public static ParseTree createCall(ParseTree function, ParseTree... arguments) {
-    return new CallExpressionTree(null, function, createList(arguments));
+    return new CallExpressionTree(null, function, createArguments(arguments));
   }
-  
+
+  private static ArgumentsTree createArguments(ParseTree... arguments) {
+    return new ArgumentsTree(null, ImmutableList.copyOf(arguments));
+  }
+
   public static ParseTree createParenExpression(ParseTree expression) {
     return new ParenExpressionTree(null, expression);
   }
@@ -64,7 +68,7 @@ public final class JavascriptParseTreeFactory {
       if (result == null) {
         result = createIdentifier(name);
       } else {
-        result = new MemberExpressionTree(null, result, new omakase.syntax.tokens.IdentifierToken(null, name));
+        result = new MemberExpressionTree(null, result, new omakase.syntax.tokens.javascript.IdentifierToken(null, name));
       }
     }
     return result;

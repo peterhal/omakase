@@ -118,6 +118,9 @@ public class ParseTreeVisitor {
     case JAVASCRIPT_DO_STATEMENT:
       visit(tree.asJavascriptDoStatement());
       break;
+    case JAVASCRIPT_ELISION:
+      visit(tree.asJavascriptElision());
+      break;
     case JAVASCRIPT_EMPTY_STATEMENT:
       visit(tree.asJavascriptEmptyStatement());
       break;
@@ -288,7 +291,7 @@ public class ParseTreeVisitor {
 
   protected void visit(omakase.syntax.trees.javascript.CallExpressionTree tree) {
     visitAny(tree.function);
-    visitList(tree.arguments);
+    visitAny(tree.arguments);
   }
 
   protected void visit(omakase.syntax.trees.javascript.CaseClauseTree tree) {
@@ -323,6 +326,9 @@ public class ParseTreeVisitor {
   protected void visit(omakase.syntax.trees.javascript.DoStatementTree tree) {
     visitAny(tree.statement);
     visitAny(tree.condition);
+  }
+
+  protected void visit(omakase.syntax.trees.javascript.ElisionTree tree) {
   }
 
   protected void visit(omakase.syntax.trees.javascript.EmptyStatementTree tree) {

@@ -358,15 +358,15 @@ public class ParseTreeTransformer {
 
   protected ParseTree transform(omakase.syntax.trees.javascript.CallExpressionTree tree) {
     ParseTree function = transformAny(tree.function);
-    ImmutableList<ParseTree> arguments = transformList(tree.arguments);
+    ParseTree arguments = transform(tree.arguments);
     if (function == tree.function &&
         arguments == tree.arguments) {
       return tree;
     }
     return new omakase.syntax.trees.javascript.CallExpressionTree(
         null,
-        tree.function,
-        arguments);
+        function,
+        arguments.asJavascriptArguments());
   }
 
   protected ParseTree transform(omakase.syntax.trees.javascript.CaseClauseTree tree) {
@@ -662,12 +662,14 @@ public class ParseTreeTransformer {
   }
 
   protected ParseTree transform(omakase.syntax.trees.javascript.SwitchStatementTree tree) {
+    ParseTree expression = transformAny(tree.expression);
     ImmutableList<ParseTree> caseClauses = transformList(tree.caseClauses);
-    if (caseClauses == tree.caseClauses) {
+    if (expression == tree.expression && caseClauses == tree.caseClauses) {
       return tree;
     }
     return new omakase.syntax.trees.javascript.SwitchStatementTree(
         null,
+        expression,
         caseClauses);
   }
 
