@@ -130,7 +130,7 @@ public class Program {
           if (field.getDeclaringClass() == tree.clazz) {
             out.println(",");
             out.printf("        ");
-            if (isParseTreeListType(field)){
+            if (isParseTreeOrListType(field)){
               out.printf("%s", field.getName());
             } else {
               out.printf("tree.%s", field.getName());

@@ -61,6 +61,10 @@ public class ParseTree {
     return (FunctionExpressionTree) this;
   }
 
+  public IdentifierExpressionTree asIdentifierExpression() {
+    return (IdentifierExpressionTree) this;
+  }
+
   public LiteralExpressionTree asLiteralExpression() {
     return (LiteralExpressionTree) this;
   }
@@ -75,10 +79,6 @@ public class ParseTree {
 
   public ParenExpressionTree asParenExpression() {
     return (ParenExpressionTree) this;
-  }
-
-  public IdentifierExpressionTree asSimpleNameExpression() {
-    return (IdentifierExpressionTree) this;
   }
 
   public SourceFileTree asSourceFile() {

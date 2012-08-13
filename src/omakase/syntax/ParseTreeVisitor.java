@@ -55,6 +55,9 @@ public class ParseTreeVisitor {
     case FUNCTION_EXPRESSION:
       visit(tree.asFunctionExpression());
       break;
+    case IDENTIFIER_EXPRESSION:
+      visit(tree.asIdentifierExpression());
+      break;
     case LITERAL_EXPRESSION:
       visit(tree.asLiteralExpression());
       break;
@@ -66,9 +69,6 @@ public class ParseTreeVisitor {
       break;
     case PAREN_EXPRESSION:
       visit(tree.asParenExpression());
-      break;
-    case IDENTIFIER_EXPRESSION:
-      visit(tree.asSimpleNameExpression());
       break;
     case SOURCE_FILE:
       visit(tree.asSourceFile());
@@ -242,6 +242,9 @@ public class ParseTreeVisitor {
     visitAny(tree.body);
   }
 
+  protected void visit(IdentifierExpressionTree tree) {
+  }
+
   protected void visit(LiteralExpressionTree tree) {
   }
 
@@ -255,9 +258,6 @@ public class ParseTreeVisitor {
 
   protected void visit(ParenExpressionTree tree) {
     visitAny(tree.expression);
-  }
-
-  protected void visit(IdentifierExpressionTree tree) {
   }
 
   protected void visit(SourceFileTree tree) {
@@ -417,6 +417,7 @@ public class ParseTreeVisitor {
   }
 
   protected void visit(omakase.syntax.trees.javascript.SwitchStatementTree tree) {
+    visitAny(tree.expression);
     visitList(tree.caseClauses);
   }
 
