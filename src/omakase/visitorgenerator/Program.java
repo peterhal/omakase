@@ -23,6 +23,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintStream;
 import java.lang.reflect.Field;
+import java.lang.reflect.ParameterizedType;
 import java.util.*;
 
 /**
@@ -198,11 +199,16 @@ public class Program {
   }
 
   private static boolean isParseTreeListType(Field field) {
-    return ImmutableList.class.isAssignableFrom((field.getType()));
+    return ImmutableList.class.isAssignableFrom((field.getType()))
+        && isParseTreeType((Class<?>)((ParameterizedType)field.getGenericType()).getActualTypeArguments()[0]);
   }
 
   private static boolean isParseTreeType(Field field) {
-    return ParseTree.class.isAssignableFrom(field.getType());
+    return isParseTreeType(field.getType());
+  }
+
+  private static boolean isParseTreeType(Class<?> fieldType) {
+    return ParseTree.class.isAssignableFrom(fieldType);
   }
 
   private static void printVisitAny(PrintStream out, ArrayList<TreeInfo> trees) {
