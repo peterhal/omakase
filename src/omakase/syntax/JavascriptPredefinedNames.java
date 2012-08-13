@@ -12,22 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package omakase.syntax.trees.javascript;
+package omakase.syntax;
 
-import omakase.syntax.tokens.Token;
-import omakase.syntax.trees.ParseTree;
-import omakase.syntax.trees.ParseTreeKind;
-import omakase.util.SourceRange;
+public final class JavascriptPredefinedNames {
+  private JavascriptPredefinedNames() {}
 
-/**
- */
-public class UnaryExpressionTree extends ParseTree {
-  public final Token operator;
-  public final ParseTree operand;
-
-  public UnaryExpressionTree(SourceRange location, Token operator, ParseTree operand) {
-    super(location, ParseTreeKind.JAVASCRIPT_UNARY_EXPRESSION);
-    this.operator = operator;
-    this.operand = operand;
-  }
+  public static final String GET = "get";
+  public static final String SET = "set";
 }

@@ -14,7 +14,7 @@
 
 package omakase.syntax.trees.javascript;
 
-import omakase.syntax.tokens.TokenKind;
+import omakase.syntax.tokens.Token;
 import omakase.syntax.trees.ParseTree;
 import omakase.syntax.trees.ParseTreeKind;
 import omakase.util.SourceRange;
@@ -23,9 +23,9 @@ import omakase.util.SourceRange;
  */
 public class PostfixExpressionTree extends ParseTree {
   public final ParseTree operand;
-  public final TokenKind operator;
+  public final Token operator;
 
-  public PostfixExpressionTree(SourceRange location, ParseTree operand, TokenKind operator) {
+  public PostfixExpressionTree(SourceRange location, ParseTree operand, Token operator) {
     super(location, ParseTreeKind.JAVASCRIPT_POSTFIX_EXPRESSION);
     this.operand = operand;
     this.operator = operator;

@@ -145,6 +145,10 @@ public class ParseTree {
     return (omakase.syntax.trees.javascript.DoStatementTree) this;
   }
 
+  public omakase.syntax.trees.javascript.ElisionTree asJavascriptElision() {
+    return (omakase.syntax.trees.javascript.ElisionTree) this;
+  }
+
   public omakase.syntax.trees.javascript.EmptyStatementTree asJavascriptEmptyStatement() {
     return (omakase.syntax.trees.javascript.EmptyStatementTree) this;
   }

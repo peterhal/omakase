@@ -83,7 +83,11 @@ public class ParserBase {
   }
 
   protected TokenKind peekKind() {
-    return peek().kind;
+    return peekKind(0);
+  }
+
+  protected TokenKind peekKind(int index) {
+      return peek(index).kind;
   }
 
   private Token peek(int offset) {

@@ -14,23 +14,14 @@
 
 package omakase.syntax.trees.javascript;
 
-import omakase.syntax.tokens.javascript.IdentifierToken;
-import omakase.syntax.tokens.Token;
 import omakase.syntax.trees.ParseTree;
 import omakase.syntax.trees.ParseTreeKind;
 import omakase.util.SourceRange;
 
 /**
  */
-public class SetAccessorTree extends ParseTree {
-  public final Token propertyName;
-  public final IdentifierToken parameterName;
-  public final BlockTree body;
-
-  public SetAccessorTree(SourceRange location, Token propertyName, IdentifierToken parameterName, BlockTree body) {
-    super(location, ParseTreeKind.JAVASCRIPT_SET_ACCESSOR);
-    this.propertyName = propertyName;
-    this.parameterName = parameterName;
-    this.body = body;
+public class ElisionTree extends ParseTree {
+  public ElisionTree(SourceRange range) {
+    super(range, ParseTreeKind.JAVASCRIPT_ELISION);
   }
 }

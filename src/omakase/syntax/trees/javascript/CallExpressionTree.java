@@ -14,7 +14,6 @@
 
 package omakase.syntax.trees.javascript;
 
-import com.google.common.collect.ImmutableList;
 import omakase.syntax.trees.ParseTree;
 import omakase.syntax.trees.ParseTreeKind;
 import omakase.util.SourceRange;
@@ -24,9 +23,9 @@ import omakase.util.SourceRange;
  */
 public class CallExpressionTree extends ParseTree {
   public final ParseTree function;
-  public final ImmutableList<ParseTree> arguments;
+  public final ArgumentsTree arguments;
 
-  public CallExpressionTree(SourceRange location, ParseTree function, ImmutableList<ParseTree> arguments) {
+  public CallExpressionTree(SourceRange location, ParseTree function, ArgumentsTree arguments) {
     super(location, ParseTreeKind.JAVASCRIPT_CALL_EXPRESSION);
     this.function = function;
     this.arguments = arguments;

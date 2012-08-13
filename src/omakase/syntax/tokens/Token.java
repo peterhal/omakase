@@ -89,6 +89,10 @@ public class Token {
     return (omakase.syntax.tokens.javascript.IdentifierToken) this;
   }
 
+  public boolean isJavascriptIdentifier() {
+    return kind == TokenKind.JS_IDENTIFIER;
+  }
+
   public omakase.syntax.tokens.javascript.NumericLiteralToken asJavascriptNumericLiteral() {
     return (omakase.syntax.tokens.javascript.NumericLiteralToken) this;
   }
