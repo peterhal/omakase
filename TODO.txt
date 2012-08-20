@@ -7,7 +7,9 @@ TODO
   - posts
 - javascript compat
   - complete scanning
+    - regex
   - complete parsing
+    - automatic semi-colon insertion
   - jsdoc
 - language features
   - statements

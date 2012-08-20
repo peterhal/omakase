@@ -154,6 +154,9 @@ public class ParseTreeWriter extends ParseTreeVisitor {
 
   protected void visit(omakase.syntax.trees.javascript.BreakStatementTree tree) {
     write(TokenKind.JS_BREAK);
+    if (tree.label != null) {
+      write(tree.label);
+    }
     write(TokenKind.JS_SEMI_COLON);
   }
 
@@ -191,6 +194,9 @@ public class ParseTreeWriter extends ParseTreeVisitor {
 
   protected void visit(omakase.syntax.trees.javascript.ContinueStatementTree tree) {
     write(TokenKind.JS_CONTINUE);
+    if (tree.label != null) {
+      write(tree.label);
+    }
     write(TokenKind.JS_SEMI_COLON);
   }
 

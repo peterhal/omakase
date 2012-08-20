@@ -14,6 +14,7 @@
 
 package omakase.syntax.trees.javascript;
 
+import omakase.syntax.tokens.javascript.IdentifierToken;
 import omakase.syntax.trees.ParseTree;
 import omakase.syntax.trees.ParseTreeKind;
 import omakase.util.SourceRange;
@@ -21,7 +22,10 @@ import omakase.util.SourceRange;
 /**
  */
 public class BreakStatementTree extends ParseTree {
-  public BreakStatementTree(SourceRange location) {
+  public final IdentifierToken label;
+
+  public BreakStatementTree(SourceRange location, IdentifierToken label) {
     super(location, ParseTreeKind.JAVASCRIPT_BREAK_STATEMENT);
+    this.label = label;
   }
 }

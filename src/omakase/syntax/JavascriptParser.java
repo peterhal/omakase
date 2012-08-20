@@ -70,7 +70,7 @@ public class JavascriptParser extends ParserBase {
   private ParseTree parseFunction() {
     Token start = peek();
     eat(TokenKind.JS_FUNCTION);
-    IdentifierToken id = eatOptId();
+    IdentifierToken id = eatIdOpt();
 
     return new FunctionExpressionTree(getRange(start), id, parseFormalParameterList(), parseBlock());
   }
@@ -281,15 +281,17 @@ public class JavascriptParser extends ParserBase {
   private ParseTree parseContinueStatement() {
     Token start = peek();
     eat(TokenKind.JS_CONTINUE);
+    IdentifierToken label = eatIdOpt();
     eat(TokenKind.JS_SEMI_COLON);
-    return new ContinueStatementTree(getRange(start));
+    return new ContinueStatementTree(getRange(start), label);
   }
 
   private ParseTree parseBreakStatement() {
     Token start = peek();
     eat(TokenKind.JS_BREAK);
+    IdentifierToken label = eatIdOpt();
     eat(TokenKind.JS_SEMI_COLON);
-    return new BreakStatementTree(getRange(start));
+    return new BreakStatementTree(getRange(start), label);
   }
 
   private ParseTree parseReturnStatement() {
@@ -1045,7 +1047,7 @@ public class JavascriptParser extends ParserBase {
     return eat(TokenKind.JS_IDENTIFIER).asJavascriptIdentifier();
   }
 
-  private IdentifierToken eatOptId() {
+  private IdentifierToken eatIdOpt() {
     if (peek(TokenKind.JS_IDENTIFIER)) {
       return eatId();
     }

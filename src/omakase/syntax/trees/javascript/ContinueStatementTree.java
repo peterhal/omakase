@@ -14,6 +14,7 @@
 
 package omakase.syntax.trees.javascript;
 
+import omakase.syntax.tokens.javascript.IdentifierToken;
 import omakase.syntax.trees.ParseTree;
 import omakase.syntax.trees.ParseTreeKind;
 import omakase.util.SourceRange;
@@ -21,7 +22,10 @@ import omakase.util.SourceRange;
 /**
  */
 public class ContinueStatementTree extends ParseTree {
-  public ContinueStatementTree(SourceRange location) {
+  public final IdentifierToken label;
+
+  public ContinueStatementTree(SourceRange location, IdentifierToken label) {
     super(location, ParseTreeKind.JAVASCRIPT_CONTINUE_STATEMENT);
+    this.label = label;
   }
 }
