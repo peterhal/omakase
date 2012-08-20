@@ -16,6 +16,8 @@ TODO
   - type system
   - iterators
   - await
+- libs
+  - reflection
 - compiler
   - in browser
   - self host
