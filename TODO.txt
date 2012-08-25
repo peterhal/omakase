@@ -11,6 +11,11 @@ TODO
   - complete parsing
     - automatic semi-colon insertion
   - jsdoc
+- scanning
+  - unicode escapes
+  - floating point numbers
+  - verbatim string literals
+  - char literals
 - language features
   - statements
   - expressions
@@ -18,12 +23,14 @@ TODO
   - type system
   - iterators
   - await
+  - attributes
 - libs
   - reflection
 - compiler
   - in browser
   - self host
   - source maps
+  - optimization
 - ide
 
 Omakase is a language for developing large web applications.
