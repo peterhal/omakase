@@ -1,6 +1,7 @@
 Native Blocks
 
 Types
+-----
 
 Context
 - variable declarations
@@ -9,3 +10,24 @@ Context
 - parameter lists
 - typeof/is/as
 -
+
+Expressions
+-----------
+
+primary
+- literal
+- id
+- paren
+- this/super
+- new
+- member access
+- lambda
+
+- unary
+- post
+    - inc/dec
+    - call
+    - array access
+- binary
+- assignment
+- conditional

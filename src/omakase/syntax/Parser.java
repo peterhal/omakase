@@ -454,7 +454,46 @@ public class Parser extends ParserBase {
   }
 
   private boolean peekStatement() {
-    return peekExpression();
+    switch (peekKind()) {
+    // expression
+    case OPEN_PAREN:
+    case OPEN_SQUARE:
+    case NULL:
+    case THIS:
+    case TRUE:
+    case FALSE:
+    case IDENTIFIER:
+    case NUMBER:
+    case STRING:
+    case NEW:
+    case TYPEOF:
+    case VOID:
+    case PLUS_PLUS:
+    case MINUS_MINUS:
+    case PLUS:
+    case MINUS:
+    case BANG:
+    case TILDE:
+      return true;
+
+    // statements
+    case VAR:
+    case SEMI_COLON:
+    case IF:
+    case DO:
+    case WHILE:
+    case FOR:
+    case CONTINUE:
+    case BREAK:
+    case RETURN:
+    case SWITCH:
+    case THROW:
+    case TRY:
+    case DEBUGGER:
+      return true;
+    default:
+      return false;
+    }
   }
 
   private boolean peekExpression() {
