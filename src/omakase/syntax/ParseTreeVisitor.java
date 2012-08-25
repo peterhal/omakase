@@ -40,14 +40,44 @@ public class ParseTreeVisitor {
     case BLOCK:
       visit(tree.asBlock());
       break;
+    case BREAK_STATEMENT:
+      visit(tree.asBreakStatement());
+      break;
     case CALL_EXPRESSION:
       visit(tree.asCallExpression());
+      break;
+    case CASE_CLAUSE:
+      visit(tree.asCaseClause());
+      break;
+    case CATCH_CLAUSE:
+      visit(tree.asCatchClause());
       break;
     case CLASS_DECLARATION:
       visit(tree.asClassDeclaration());
       break;
+    case CONTINUE_STATEMENT:
+      visit(tree.asContinueStatement());
+      break;
+    case DEBUGGER_STATEMENT:
+      visit(tree.asDebuggerStatement());
+      break;
+    case DEFAULT_CLAUSE:
+      visit(tree.asDefaultClause());
+      break;
+    case DO_STATEMENT:
+      visit(tree.asDoStatement());
+      break;
+    case EMPTY_STATEMENT:
+      visit(tree.asEmptyStatement());
+      break;
     case EXPRESSION_STATEMENT:
       visit(tree.asExpressionStatement());
+      break;
+    case FOR_IN_STATEMENT:
+      visit(tree.asForInStatement());
+      break;
+    case FOR_STATEMENT:
+      visit(tree.asForStatement());
       break;
     case FORMAL_PARAMETER_LIST:
       visit(tree.asFormalParameterList());
@@ -57,6 +87,9 @@ public class ParseTreeVisitor {
       break;
     case IDENTIFIER_EXPRESSION:
       visit(tree.asIdentifierExpression());
+      break;
+    case IF_STATEMENT:
+      visit(tree.asIfStatement());
       break;
     case LITERAL_EXPRESSION:
       visit(tree.asLiteralExpression());
@@ -70,8 +103,29 @@ public class ParseTreeVisitor {
     case PAREN_EXPRESSION:
       visit(tree.asParenExpression());
       break;
+    case RETURN_STATEMENT:
+      visit(tree.asReturnStatement());
+      break;
     case SOURCE_FILE:
       visit(tree.asSourceFile());
+      break;
+    case SWITCH_STATEMENT:
+      visit(tree.asSwitchStatement());
+      break;
+    case THROW_STATEMENT:
+      visit(tree.asThrowStatement());
+      break;
+    case TRY_STATEMENT:
+      visit(tree.asTryStatement());
+      break;
+    case VARIABLE_DECLARATION:
+      visit(tree.asVariableDeclaration());
+      break;
+    case VARIABLE_STATEMENT:
+      visit(tree.asVariableStatement());
+      break;
+    case WHILE_STATEMENT:
+      visit(tree.asWhileStatement());
       break;
     case JAVASCRIPT_ARGUMENTS:
       visit(tree.asJavascriptArguments());
@@ -220,17 +274,60 @@ public class ParseTreeVisitor {
     visitList(tree.statements);
   }
 
+  protected void visit(BreakStatementTree tree) {
+  }
+
   protected void visit(CallExpressionTree tree) {
     visitAny(tree.function);
     visitList(tree.arguments);
+  }
+
+  protected void visit(CaseClauseTree tree) {
+    visitAny(tree.expression);
+    visitList(tree.statements);
+  }
+
+  protected void visit(CatchClauseTree tree) {
+    visitAny(tree.block);
   }
 
   protected void visit(ClassDeclarationTree tree) {
     visitList(tree.members);
   }
 
+  protected void visit(ContinueStatementTree tree) {
+  }
+
+  protected void visit(DebuggerStatementTree tree) {
+  }
+
+  protected void visit(DefaultClauseTree tree) {
+    visitList(tree.statements);
+  }
+
+  protected void visit(DoStatementTree tree) {
+    visitAny(tree.statement);
+    visitAny(tree.condition);
+  }
+
+  protected void visit(EmptyStatementTree tree) {
+  }
+
   protected void visit(ExpressionStatementTree tree) {
     visitAny(tree.expression);
+  }
+
+  protected void visit(ForInStatementTree tree) {
+    visitAny(tree.element);
+    visitAny(tree.collection);
+    visitAny(tree.body);
+  }
+
+  protected void visit(ForStatementTree tree) {
+    visitAny(tree.initializer);
+    visitAny(tree.condition);
+    visitAny(tree.increment);
+    visitAny(tree.body);
   }
 
   protected void visit(FormalParameterListTree tree) {
@@ -243,6 +340,12 @@ public class ParseTreeVisitor {
   }
 
   protected void visit(IdentifierExpressionTree tree) {
+  }
+
+  protected void visit(IfStatementTree tree) {
+    visitAny(tree.condition);
+    visitAny(tree.ifClause);
+    visitAny(tree.elseClause);
   }
 
   protected void visit(LiteralExpressionTree tree) {
@@ -260,8 +363,40 @@ public class ParseTreeVisitor {
     visitAny(tree.expression);
   }
 
+  protected void visit(ReturnStatementTree tree) {
+    visitAny(tree.value);
+  }
+
   protected void visit(SourceFileTree tree) {
     visitList(tree.declarations);
+  }
+
+  protected void visit(SwitchStatementTree tree) {
+    visitAny(tree.expression);
+    visitList(tree.caseClauses);
+  }
+
+  protected void visit(ThrowStatementTree tree) {
+    visitAny(tree.expression);
+  }
+
+  protected void visit(TryStatementTree tree) {
+    visitAny(tree.body);
+    visitAny(tree.catchClause);
+    visitAny(tree.finallyClause);
+  }
+
+  protected void visit(VariableDeclarationTree tree) {
+    visitAny(tree.initializer);
+  }
+
+  protected void visit(VariableStatementTree tree) {
+    visitList(tree.declarations);
+  }
+
+  protected void visit(WhileStatementTree tree) {
+    visitAny(tree.condition);
+    visitAny(tree.body);
   }
 
   protected void visit(omakase.syntax.trees.javascript.ArgumentsTree tree) {

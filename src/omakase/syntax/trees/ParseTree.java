@@ -41,16 +41,56 @@ public class ParseTree {
     return (BlockTree) this;
   }
 
+  public BreakStatementTree asBreakStatement() {
+    return (BreakStatementTree) this;
+  }
+
   public CallExpressionTree asCallExpression() {
     return (CallExpressionTree) this;
+  }
+
+  public CaseClauseTree asCaseClause() {
+    return (CaseClauseTree) this;
+  }
+
+  public CatchClauseTree asCatchClause() {
+    return (CatchClauseTree) this;
   }
 
   public ClassDeclarationTree asClassDeclaration() {
     return (ClassDeclarationTree) this;
   }
 
+  public ContinueStatementTree asContinueStatement() {
+    return (ContinueStatementTree) this;
+  }
+
+  public DebuggerStatementTree asDebuggerStatement() {
+    return (DebuggerStatementTree) this;
+  }
+
+  public DefaultClauseTree asDefaultClause() {
+    return (DefaultClauseTree) this;
+  }
+
+  public DoStatementTree asDoStatement() {
+    return (DoStatementTree) this;
+  }
+
+  public EmptyStatementTree asEmptyStatement() {
+    return (EmptyStatementTree) this;
+  }
+
   public ExpressionStatementTree asExpressionStatement() {
     return (ExpressionStatementTree) this;
+  }
+
+  public ForInStatementTree asForInStatement() {
+    return (ForInStatementTree) this;
+  }
+
+  public ForStatementTree asForStatement() {
+    return (ForStatementTree) this;
   }
 
   public FormalParameterListTree asFormalParameterList() {
@@ -63,6 +103,10 @@ public class ParseTree {
 
   public IdentifierExpressionTree asIdentifierExpression() {
     return (IdentifierExpressionTree) this;
+  }
+
+  public IfStatementTree asIfStatement() {
+    return (IfStatementTree) this;
   }
 
   public LiteralExpressionTree asLiteralExpression() {
@@ -81,8 +125,36 @@ public class ParseTree {
     return (ParenExpressionTree) this;
   }
 
+  public ReturnStatementTree asReturnStatement() {
+    return (ReturnStatementTree) this;
+  }
+
   public SourceFileTree asSourceFile() {
     return (SourceFileTree) this;
+  }
+
+  public SwitchStatementTree asSwitchStatement() {
+    return (SwitchStatementTree) this;
+  }
+
+  public ThrowStatementTree asThrowStatement() {
+    return (ThrowStatementTree) this;
+  }
+
+  public TryStatementTree asTryStatement() {
+    return (TryStatementTree) this;
+  }
+
+  public VariableDeclarationTree asVariableDeclaration() {
+    return (VariableDeclarationTree) this;
+  }
+
+  public VariableStatementTree asVariableStatement() {
+    return (VariableStatementTree) this;
+  }
+
+  public WhileStatementTree asWhileStatement() {
+    return (WhileStatementTree) this;
   }
 
   public omakase.syntax.trees.javascript.ArgumentsTree asJavascriptArguments() {
