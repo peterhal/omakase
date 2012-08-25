@@ -10,6 +10,7 @@ TODO
     - regex
   - complete parsing
     - automatic semi-colon insertion
+    - Expression NoIn
   - jsdoc
 - scanning
   - unicode escapes
@@ -18,6 +19,7 @@ TODO
   - char literals
 - language features
   - statements
+    - resource acquisition
   - expressions
   - classes
   - type system
