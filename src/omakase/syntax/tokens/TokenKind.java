@@ -193,7 +193,7 @@ public enum TokenKind {
   private static final ImmutableMap<String, TokenKind> javascriptKeywords;
 
   static {
-    keywords = buildKeywords(TokenKind.CLASS, TokenKind.VAR);
+    keywords = buildKeywords(TokenKind.BREAK, TokenKind.WHILE);
     javascriptKeywords = buildKeywords(TokenKind.JS_BREAK, TokenKind.JS_WITH);
   }
 
