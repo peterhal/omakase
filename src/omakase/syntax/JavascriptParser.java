@@ -121,15 +121,11 @@ public class JavascriptParser extends ParserBase {
     case JS_TILDE:
       return parseExpressionStatement();
 
-    // expression or statement
+      // statements
     case JS_FUNCTION:
-      // TODO: Ambiguity with expression statement.
       return parseFunction();
     case JS_OPEN_CURLY:
-      // TODO: Ambiguity with object literal.
       return parseBlock();
-
-      // statements
     case JS_VAR:
       return parseVariableStatement();
     case JS_SEMI_COLON:
@@ -985,11 +981,9 @@ public class JavascriptParser extends ParserBase {
     case JS_BANG:
     case JS_TILDE:
 
-    // expression or statement
+    // statements
     case JS_FUNCTION:
     case JS_OPEN_CURLY:
-
-    // statements
     case JS_VAR:
     case JS_SEMI_COLON:
     case JS_IF:
