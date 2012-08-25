@@ -34,22 +34,7 @@ public class JavascriptParser extends ParserBase {
     this.scanner = (JavascriptScanner) super.scanner;
   }
 
-  public BlockTree parseBlock() {
-    Token start = peek();
-    eat(TokenKind.JS_OPEN_CURLY);
-    ImmutableList<ParseTree> statements = parseStatementList();
-    eat(TokenKind.JS_CLOSE_CURLY);
-    return new BlockTree(getRange(start), statements);
-  }
-
-  private ImmutableList<ParseTree> parseStatementList() {
-    ImmutableList.Builder<ParseTree> statements = new ImmutableList.Builder<ParseTree>();
-    while (peekStatement()) {
-      statements.add(parseStatement());
-    }
-    return statements.build();
-  }
-
+  // Program, Function
   public ProgramTree parseProgram() {
     Token start = peek();
     ImmutableList.Builder<ParseTree> elements = new ImmutableList.Builder<ParseTree>();
@@ -89,6 +74,10 @@ public class JavascriptParser extends ParserBase {
     return new FormalParameterListTree(getRange(start), parameters.build());
   }
 
+  private boolean peekParameter() {
+    return peek(TokenKind.JS_IDENTIFIER);
+  }
+
   private boolean peekSourceElement() {
     return peekFunction() || peekStatement();
   }
@@ -97,6 +86,7 @@ public class JavascriptParser extends ParserBase {
     return peek(TokenKind.JS_FUNCTION);
   }
 
+  // Statements
   private ParseTree parseStatement() {
     switch (peekKind()) {
     // expression
@@ -121,7 +111,7 @@ public class JavascriptParser extends ParserBase {
     case JS_TILDE:
       return parseExpressionStatement();
 
-      // statements
+    // statements
     case JS_FUNCTION:
       return parseFunction();
     case JS_OPEN_CURLY:
@@ -157,6 +147,68 @@ public class JavascriptParser extends ParserBase {
     default:
       throw new RuntimeException("Unexpected statement token.");
     }
+  }
+
+  private boolean peekStatement() {
+    switch (peekKind()) {
+    // expression
+    case JS_OPEN_PAREN:
+    case JS_OPEN_SQUARE:
+    case JS_NULL:
+    case JS_THIS:
+    case JS_TRUE:
+    case JS_FALSE:
+    case JS_IDENTIFIER:
+    case JS_NUMBER:
+    case JS_STRING:
+    case JS_NEW:
+    case JS_DELETE:
+    case JS_TYPEOF:
+    case JS_VOID:
+    case JS_PLUS_PLUS:
+    case JS_MINUS_MINUS:
+    case JS_PLUS:
+    case JS_MINUS:
+    case JS_BANG:
+    case JS_TILDE:
+
+      // statements
+    case JS_FUNCTION:
+    case JS_OPEN_CURLY:
+    case JS_VAR:
+    case JS_SEMI_COLON:
+    case JS_IF:
+    case JS_DO:
+    case JS_WHILE:
+    case JS_FOR:
+    case JS_CONTINUE:
+    case JS_BREAK:
+    case JS_RETURN:
+    case JS_WITH:
+    case JS_SWITCH:
+    case JS_THROW:
+    case JS_TRY:
+    case JS_DEBUGGER:
+      return true;
+
+    }
+    return peekExpression();
+  }
+
+  public BlockTree parseBlock() {
+    Token start = peek();
+    eat(TokenKind.JS_OPEN_CURLY);
+    ImmutableList<ParseTree> statements = parseStatementList();
+    eat(TokenKind.JS_CLOSE_CURLY);
+    return new BlockTree(getRange(start), statements);
+  }
+
+  private ImmutableList<ParseTree> parseStatementList() {
+    ImmutableList.Builder<ParseTree> statements = new ImmutableList.Builder<ParseTree>();
+    while (peekStatement()) {
+      statements.add(parseStatement());
+    }
+    return statements.build();
   }
 
   private ParseTree parseVariableStatement() {
@@ -404,6 +456,7 @@ public class JavascriptParser extends ParserBase {
     return new ExpressionStatementTree(getRange(start), expression);
   }
 
+  // Expressions
   private ParseTree parseExpression() {
     return parseExpression(Expression.NORMAL);
   }
@@ -758,16 +811,6 @@ public class JavascriptParser extends ParserBase {
     return peekPredefinedName(JavascriptPredefinedNames.GET) && peekPropertyAssignment(1);
   }
 
-  private boolean peekPredefinedName(String name) {
-    IdentifierToken identifier = peekIdentifier();
-    return identifier != null && identifier.value.equals(name);
-  }
-
-  private IdentifierToken peekIdentifier() {
-    Token token = peek();
-    return token.isJavascriptIdentifier() ? token.asJavascriptIdentifier() : null;
-  }
-
   private boolean peekPropertyAssignment() {
     return peekPropertyAssignment(0);
   }
@@ -927,23 +970,6 @@ public class JavascriptParser extends ParserBase {
     }
   }
 
-  private boolean peekArguments() {
-    return peek(TokenKind.JS_OPEN_PAREN);
-  }
-
-  private ArgumentsTree parseArguments() {
-    Token start = peek();
-    eat(TokenKind.JS_OPEN_PAREN);
-    ImmutableList.Builder<ParseTree> arguments = new ImmutableList.Builder<ParseTree>();
-    if (peekExpression()) {
-      do {
-        arguments.add(parseAssignmentExpression(Expression.NORMAL));
-      } while (eatOpt(TokenKind.JS_COMMA));
-    }
-    eat(TokenKind.JS_CLOSE_PAREN);
-    return new ArgumentsTree(getRange(start), arguments.build());
-  }
-
   private boolean peekPostfixOperator() {
     switch (peekKind()) {
     case JS_OPEN_PAREN:
@@ -956,52 +982,6 @@ public class JavascriptParser extends ParserBase {
   private ParseTree parseLiteral() {
     Token value = nextToken();
     return new LiteralExpressionTree(getRange(value), value);
-  }
-
-  private boolean peekStatement() {
-    switch (peekKind()) {
-    // expression
-    case JS_OPEN_PAREN:
-    case JS_OPEN_SQUARE:
-    case JS_NULL:
-    case JS_THIS:
-    case JS_TRUE:
-    case JS_FALSE:
-    case JS_IDENTIFIER:
-    case JS_NUMBER:
-    case JS_STRING:
-    case JS_NEW:
-    case JS_DELETE:
-    case JS_TYPEOF:
-    case JS_VOID:
-    case JS_PLUS_PLUS:
-    case JS_MINUS_MINUS:
-    case JS_PLUS:
-    case JS_MINUS:
-    case JS_BANG:
-    case JS_TILDE:
-
-    // statements
-    case JS_FUNCTION:
-    case JS_OPEN_CURLY:
-    case JS_VAR:
-    case JS_SEMI_COLON:
-    case JS_IF:
-    case JS_DO:
-    case JS_WHILE:
-    case JS_FOR:
-    case JS_CONTINUE:
-    case JS_BREAK:
-    case JS_RETURN:
-    case JS_WITH:
-    case JS_SWITCH:
-    case JS_THROW:
-    case JS_TRY:
-    case JS_DEBUGGER:
-      return true;
-
-    }
-    return peekExpression();
   }
 
   private boolean peekExpression() {
@@ -1033,8 +1013,32 @@ public class JavascriptParser extends ParserBase {
     }
   }
 
-  private boolean peekParameter() {
-    return peek(TokenKind.JS_IDENTIFIER);
+  private boolean peekArguments() {
+    return peek(TokenKind.JS_OPEN_PAREN);
+  }
+
+  private ArgumentsTree parseArguments() {
+    Token start = peek();
+    eat(TokenKind.JS_OPEN_PAREN);
+    ImmutableList.Builder<ParseTree> arguments = new ImmutableList.Builder<ParseTree>();
+    if (peekExpression()) {
+      do {
+        arguments.add(parseAssignmentExpression(Expression.NORMAL));
+      } while (eatOpt(TokenKind.JS_COMMA));
+    }
+    eat(TokenKind.JS_CLOSE_PAREN);
+    return new ArgumentsTree(getRange(start), arguments.build());
+  }
+
+  // Helpers
+  private boolean peekPredefinedName(String name) {
+    IdentifierToken identifier = peekIdentifier();
+    return identifier != null && identifier.value.equals(name);
+  }
+
+  private IdentifierToken peekIdentifier() {
+    Token token = peek();
+    return token.isJavascriptIdentifier() ? token.asJavascriptIdentifier() : null;
   }
 
   private IdentifierToken eatId() {
