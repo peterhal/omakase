@@ -172,24 +172,24 @@ public class JavascriptParser extends ParserBase {
   }
 
   private ImmutableList<ParseTree> parseVariableDeclarations() {
-    return parseRemainingVariableDeclarations(parseVariableDeclaration());
+    return parseRemainingVariableDeclarations(parseVariableDeclaration(Expression.NORMAL), Expression.NORMAL);
   }
 
-  private ImmutableList<ParseTree> parseRemainingVariableDeclarations(ParseTree element) {
+  private ImmutableList<ParseTree> parseRemainingVariableDeclarations(ParseTree element, Expression expression) {
     ImmutableList.Builder<ParseTree> declarations = new ImmutableList.Builder<ParseTree>();
     declarations.add(element);
     while (eatOpt(TokenKind.COMMA)) {
-      declarations.add(parseVariableDeclaration());
+      declarations.add(parseVariableDeclaration(expression));
     }
     return declarations.build();
   }
 
-  private ParseTree parseVariableDeclaration() {
+  private ParseTree parseVariableDeclaration(Expression expression) {
     Token start = peek();
     IdentifierToken identifier = eatId();
     ParseTree initializer = null;
     if (eatOpt(TokenKind.JS_EQUAL)) {
-      initializer = parseExpression();
+      initializer = parseExpression(expression);
     }
     return new VariableDeclarationTree(getRange(start), identifier, initializer);
   }
@@ -240,22 +240,22 @@ public class JavascriptParser extends ParserBase {
     eat(TokenKind.JS_FOR);
     eat(TokenKind.JS_OPEN_PAREN);
     switch (peekKind()) {
-    // TODO: NoIn
     case VAR:
       Token variableStart = peek();
       eat(TokenKind.VAR);
-      ParseTree variableDeclaration = parseVariableDeclaration();
+      ParseTree variableDeclaration = parseVariableDeclaration(Expression.NO_IN);
       if (eatOpt(TokenKind.JS_IN)) {
         return parseForIn(start, variableDeclaration);
       } else {
         return parseForStatement(start,
-            new VariableStatementTree(getRange(variableStart), parseRemainingVariableDeclarations(variableDeclaration)));
+            new VariableStatementTree(getRange(variableStart),
+                parseRemainingVariableDeclarations(variableDeclaration, Expression.NO_IN)));
       }
     case SEMI_COLON:
       eat(TokenKind.SEMI_COLON);
       return parseForStatement(start, null);
     default:
-      ParseTree initializer = parseExpression();
+      ParseTree initializer = parseExpression(Expression.NO_IN);
       if (eatOpt(TokenKind.JS_IN)) {
         return parseForIn(start, initializer);
       } else {

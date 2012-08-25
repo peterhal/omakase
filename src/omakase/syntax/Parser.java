@@ -46,6 +46,38 @@ public class Parser extends ParserBase {
     return new SourceFileTree(getRange(start), declarations.build());
   }
 
+  // Parse Class Members
+  private ImmutableList<ParseTree> parseParameterListDeclaration() {
+    ImmutableList.Builder<ParseTree> result = new ImmutableList.Builder<ParseTree>();
+    eat(TokenKind.OPEN_PAREN);
+    if (peekParameter()) {
+      result.add(parseParameter());
+      while (eatOpt(TokenKind.COMMA)) {
+        result.add(parseParameter());
+      }
+    }
+    eat(TokenKind.CLOSE_PAREN);
+    return result.build();
+  }
+
+  private ParseTree parseParameter() {
+    IdentifierToken name = eatId();
+    return new ParameterDeclarationTree(getRange(name), name);
+  }
+
+  private boolean peekParameter() {
+    return peek(TokenKind.IDENTIFIER);
+  }
+
+  private boolean peekClassMember() {
+    switch (peekKind()) {
+    case IDENTIFIER:
+    case NATIVE:
+      return true;
+    }
+    return false;
+  }
+
   private boolean peekClass() {
     return peek(TokenKind.CLASS);
   }
@@ -87,6 +119,7 @@ public class Parser extends ParserBase {
     return result;
   }
 
+  // Statements
   private BlockTree parseBlock() {
     Token start = peek();
     eat(TokenKind.OPEN_CURLY);
@@ -393,66 +426,6 @@ public class Parser extends ParserBase {
     return new ExpressionStatementTree(getRange(start), expression);
   }
 
-  private ParseTree parseExpression() {
-    return parsePostfixExpression();
-  }
-
-  private ParseTree parsePrimaryExpression() {
-    switch (peekKind()) {
-    case IDENTIFIER:
-      return parseSimpleName();
-    case NUMBER:
-    case STRING:
-      return parseLiteral();
-    default:
-      reportError(nextToken(), "Expected expression.");
-      return null;
-    }
-  }
-
-  private ParseTree parseSimpleName() {
-    IdentifierToken name = eatId();
-    return new IdentifierExpressionTree(getRange(name), name);
-  }
-
-  private ParseTree parsePostfixExpression() {
-    ParseTree primary = parsePrimaryExpression();
-    while (peekPostfixOperator()) {
-      switch(peekKind()) {
-      case OPEN_PAREN:
-        primary = parseCallExpression(primary);
-      }
-    }
-    return primary;
-  }
-
-  private ParseTree parseCallExpression(ParseTree primary) {
-    ImmutableList.Builder<ParseTree> arguments = new ImmutableList.Builder<ParseTree>();
-    eat(TokenKind.OPEN_PAREN);
-    if (peekExpression()) {
-      arguments.add(parseExpression());
-      while (eatOpt(TokenKind.COMMA)) {
-        arguments.add(parseExpression());
-      }
-    }
-    eat(TokenKind.CLOSE_PAREN);
-    return new CallExpressionTree(getRange(primary.start()), primary, arguments.build());
-  }
-
-  private boolean peekPostfixOperator() {
-    switch (peekKind()) {
-    case OPEN_PAREN:
-      return true;
-    default:
-      return false;
-    }
-  }
-
-  private ParseTree parseLiteral() {
-    Token value = nextToken();
-    return new LiteralExpressionTree(getRange(value), value);
-  }
-
   private boolean peekStatement() {
     switch (peekKind()) {
     // expression
@@ -496,6 +469,67 @@ public class Parser extends ParserBase {
     }
   }
 
+  // Parse Expressions
+  private ParseTree parseExpression() {
+    return parsePostfixExpression();
+  }
+
+  private ParseTree parsePrimaryExpression() {
+    switch (peekKind()) {
+    case IDENTIFIER:
+      return parseIdentifier();
+    case NUMBER:
+    case STRING:
+      return parseLiteral();
+    default:
+      reportError(nextToken(), "Expected expression.");
+      return null;
+    }
+  }
+
+  private ParseTree parseIdentifier() {
+    IdentifierToken name = eatId();
+    return new IdentifierExpressionTree(getRange(name), name);
+  }
+
+  private ParseTree parsePostfixExpression() {
+    ParseTree primary = parsePrimaryExpression();
+    while (peekPostfixOperator()) {
+      switch(peekKind()) {
+      case OPEN_PAREN:
+        primary = parseCallExpression(primary);
+      }
+    }
+    return primary;
+  }
+
+  private ParseTree parseCallExpression(ParseTree primary) {
+    ImmutableList.Builder<ParseTree> arguments = new ImmutableList.Builder<ParseTree>();
+    eat(TokenKind.OPEN_PAREN);
+    if (peekExpression()) {
+      arguments.add(parseExpression());
+      while (eatOpt(TokenKind.COMMA)) {
+        arguments.add(parseExpression());
+      }
+    }
+    eat(TokenKind.CLOSE_PAREN);
+    return new CallExpressionTree(getRange(primary.start()), primary, arguments.build());
+  }
+
+  private boolean peekPostfixOperator() {
+    switch (peekKind()) {
+    case OPEN_PAREN:
+      return true;
+    default:
+      return false;
+    }
+  }
+
+  private ParseTree parseLiteral() {
+    Token value = nextToken();
+    return new LiteralExpressionTree(getRange(value), value);
+  }
+
   private boolean peekExpression() {
     switch (peekKind()) {
     case IDENTIFIER:
@@ -506,37 +540,6 @@ public class Parser extends ParserBase {
     default:
       return false;
     }
-  }
-
-  private ImmutableList<ParseTree> parseParameterListDeclaration() {
-    ImmutableList.Builder<ParseTree> result = new ImmutableList.Builder<ParseTree>();
-    eat(TokenKind.OPEN_PAREN);
-    if (peekParameter()) {
-      result.add(parseParameter());
-      while (eatOpt(TokenKind.COMMA)) {
-        result.add(parseParameter());
-      }
-    }
-    eat(TokenKind.CLOSE_PAREN);
-    return result.build();
-  }
-
-  private ParseTree parseParameter() {
-    IdentifierToken name = eatId();
-    return new ParameterDeclarationTree(getRange(name), name);
-  }
-
-  private boolean peekParameter() {
-    return peek(TokenKind.IDENTIFIER);
-  }
-
-  private boolean peekClassMember() {
-    switch (peekKind()) {
-    case IDENTIFIER:
-    case NATIVE:
-      return true;
-    }
-    return false;
   }
 
   private IdentifierToken eatId() {
