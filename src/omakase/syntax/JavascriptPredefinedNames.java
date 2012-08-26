@@ -15,8 +15,10 @@
 package omakase.syntax;
 
 public final class JavascriptPredefinedNames {
+
   private JavascriptPredefinedNames() {}
 
   public static final String GET = "get";
   public static final String SET = "set";
+  public static final String PROTOTYPE = "prototype";
 }

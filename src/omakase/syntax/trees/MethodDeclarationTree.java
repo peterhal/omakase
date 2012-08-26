@@ -25,10 +25,10 @@ public class MethodDeclarationTree extends ParseTree {
   public final IdentifierToken name;
   public final ImmutableList<ParseTree> formals;
   public final boolean isNative;
-  public final ParseTree body;
+  public final BlockTree body;
 
   public MethodDeclarationTree(SourceRange range, IdentifierToken name, ImmutableList<ParseTree> formals,
-      boolean isNative, ParseTree body) {
+      boolean isNative, BlockTree body) {
     super(range, ParseTreeKind.METHOD_DECLARATION);
     this.name = name;
     this.isNative = isNative;

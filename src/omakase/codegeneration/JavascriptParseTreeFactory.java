@@ -15,6 +15,7 @@
 package omakase.codegeneration;
 
 import com.google.common.collect.ImmutableList;
+import omakase.syntax.JavascriptPredefinedNames;
 import omakase.syntax.tokens.Token;
 import omakase.syntax.tokens.TokenKind;
 import omakase.syntax.tokens.javascript.IdentifierToken;
@@ -26,6 +27,7 @@ import java.util.List;
 /**
  */
 public final class JavascriptParseTreeFactory {
+  // Expressions and Statements
   public static ArgumentsTree createArguments(ParseTree... arguments) {
     return createArguments(createList(arguments));
   }
@@ -267,6 +269,20 @@ public final class JavascriptParseTreeFactory {
     return new WhileStatementTree(null, condition, body);
   }
 
+  // Higher Level Helpers
+  public static ParseTree createProtoMember(String className, String memberName, ParseTree value) {
+    // class.prototype.memberName = value;
+    return createAssignmentStatement(
+        createDottedName(className, JavascriptPredefinedNames.PROTOTYPE, memberName),
+        value);
+  }
+
+  public static ParseTree createScopedBlock(List<ParseTree> statements) {
+    // (function() { statements; }())
+    return createParenExpression(createCall(createFunction(createFormalParameterList(), createBlock(statements))));
+  }
+
+  // Low-level Helpers
   public static ImmutableList<ParseTree> createList(ParseTree... arguments) {
     return ImmutableList.copyOf(arguments);
   }
