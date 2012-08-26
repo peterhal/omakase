@@ -23,9 +23,9 @@ import omakase.util.SourceRange;
  */
 public class FunctionExpressionTree extends ParseTree {
   public final FormalParameterListTree parameters;
-  public final BlockTree body;
+  public final ParseTree body;
 
-  public FunctionExpressionTree(SourceRange location, FormalParameterListTree parameters, BlockTree body) {
+  public FunctionExpressionTree(SourceRange location, FormalParameterListTree parameters, ParseTree body) {
     super(location, ParseTreeKind.FUNCTION_EXPRESSION);
     this.parameters = parameters;
     this.body = body;

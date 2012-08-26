@@ -395,7 +395,7 @@ public class ParseTreeVisitor {
   }
 
   protected void visit(MethodDeclarationTree tree) {
-    visitList(tree.formals);
+    visitAny(tree.formals);
     visitAny(tree.body);
   }
 

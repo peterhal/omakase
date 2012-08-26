@@ -79,7 +79,11 @@ public class ParserBase {
   }
 
   protected boolean peek(TokenKind kind) {
-    return peek().kind == kind;
+    return peek(0, kind);
+  }
+
+  protected boolean peek(int index, TokenKind kind) {
+    return peek(index).kind == kind;
   }
 
   protected TokenKind peekKind() {

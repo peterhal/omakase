@@ -47,7 +47,8 @@ public class Parser extends ParserBase {
   }
 
   // Parse Class Members
-  private ImmutableList<ParseTree> parseParameterListDeclaration() {
+  private FormalParameterListTree parseParameterListDeclaration() {
+    Token start = peek();
     ImmutableList.Builder<ParseTree> result = new ImmutableList.Builder<ParseTree>();
     eat(TokenKind.OPEN_PAREN);
     if (peekParameter()) {
@@ -57,7 +58,7 @@ public class Parser extends ParserBase {
       }
     }
     eat(TokenKind.CLOSE_PAREN);
-    return result.build();
+    return new FormalParameterListTree(getRange(start), result.build());
   }
 
   private ParseTree parseParameter() {
@@ -66,7 +67,11 @@ public class Parser extends ParserBase {
   }
 
   private boolean peekParameter() {
-    return peek(TokenKind.IDENTIFIER);
+    return peekParameter(0);
+  }
+
+  private boolean peekParameter(int index) {
+    return peek(index, TokenKind.IDENTIFIER);
   }
 
   private boolean peekClassMember() {
@@ -102,7 +107,7 @@ public class Parser extends ParserBase {
   private ParseTree parseClassMember() {
     boolean isNative = eatOpt(TokenKind.NATIVE);
     IdentifierToken name = eatId();
-    ImmutableList<ParseTree> formals = parseParameterListDeclaration();
+    FormalParameterListTree formals = parseParameterListDeclaration();
     ParseTree body = parseBlock(isNative);
     return new MethodDeclarationTree(getRange(name), name, formals, isNative, body);
   }
@@ -478,6 +483,9 @@ public class Parser extends ParserBase {
 
   private ParseTree parseAssignmentExpression() {
     Token start = peek();
+    if (peekFunction()) {
+      return parseFunction();
+    }
     ParseTree left = parseConditionalExpression();
     if (!peekAssignmentOperator()) {
       return left;
@@ -486,6 +494,41 @@ public class Parser extends ParserBase {
     Token operator = nextToken();
     ParseTree right = parseAssignmentExpression();
     return new BinaryExpressionTree(getRange(start), left, operator, right);
+  }
+
+  private ParseTree parseFunction() {
+    Token start = peek();
+    FormalParameterListTree parameters = parseParameterListDeclaration();
+    eat(TokenKind.ARROW);
+    ParseTree body;
+    if (peek(TokenKind.OPEN_CURLY)) {
+      body = parseBlock();
+    } else {
+      body = parseExpression();
+    }
+    return new FunctionExpressionTree(getRange(start), parameters, body);
+  }
+
+  private boolean peekFunction() {
+    if (!peek(TokenKind.OPEN_PAREN)) {
+      return false;
+    }
+    int index = 1;
+    if (peekParameter(index)) {
+      index++;
+      while (peek(index, TokenKind.COMMA)) {
+        index ++;
+        if (peekParameter(index)) {
+          index++;
+        } else {
+          return false;
+        }
+      }
+    }
+    if (!peek(index, TokenKind.CLOSE_PAREN)) {
+      return false;
+    }
+    return peek(index, TokenKind.ARROW);
   }
 
   private ParseTree parseConditionalExpression() {

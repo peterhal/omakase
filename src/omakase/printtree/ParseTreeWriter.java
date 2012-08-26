@@ -300,8 +300,8 @@ public class ParseTreeWriter extends ParseTreeVisitor {
   @Override
   protected void visit(FunctionExpressionTree tree) {
     visit(tree.parameters);
-    // TODO: write(->)
-    visit(tree.body);
+    write(TokenKind.ARROW);
+    visitAny(tree.body);
   }
 
   @Override
@@ -351,9 +351,7 @@ public class ParseTreeWriter extends ParseTreeVisitor {
       write(TokenKind.NATIVE);
     }
     write(tree.name);
-    write(TokenKind.OPEN_PAREN);
-    writeCommaSeparatedList(tree.formals);
-    write(TokenKind.CLOSE_PAREN);
+    visitAny(tree.formals);
 
     visitAny(tree.body);
   }

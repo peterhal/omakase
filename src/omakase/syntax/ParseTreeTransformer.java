@@ -446,7 +446,7 @@ public class ParseTreeTransformer {
     return new FunctionExpressionTree(
         null,
         parameters.asFormalParameterList(),
-        body.asBlock());
+        body);
   }
 
   protected ParseTree transform(IdentifierExpressionTree tree) {
@@ -474,7 +474,7 @@ public class ParseTreeTransformer {
   }
 
   protected ParseTree transform(MethodDeclarationTree tree) {
-    ImmutableList<ParseTree> formals = transformList(tree.formals);
+    ParseTree formals = transformAny(tree.formals);
     ParseTree body = transformAny(tree.body);
     if (formals == tree.formals &&
         body == tree.body) {
@@ -483,7 +483,7 @@ public class ParseTreeTransformer {
     return new MethodDeclarationTree(
         null,
         tree.name,
-        formals,
+        formals.asFormalParameterList(),
         tree.isNative,
         body);
   }

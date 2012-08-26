@@ -75,6 +75,7 @@ public enum TokenKind {
   HAT_EQUAL("^="),
   SLASH("/"),
   SLASH_EQUAL("/="),
+  ARROW("->"),
 
   // keywords
   BREAK("break"),
