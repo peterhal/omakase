@@ -17,10 +17,16 @@ TODO
   - floating point numbers
   - verbatim string literals
   - char literals
+- writer
+  - statements
+  - expressions
+- transformer
 - language features
   - statements
     - resource acquisition
   - expressions
+    - function literals
+    - object literals
   - classes
   - type system
   - iterators
