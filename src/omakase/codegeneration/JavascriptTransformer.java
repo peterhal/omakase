@@ -164,7 +164,7 @@ public class JavascriptTransformer extends ParseTreeTransformer {
   }
 
   @Override
-  protected ParseTree transform(FormalParameterListTree tree) {
+  protected omakase.syntax.trees.javascript.FormalParameterListTree transform(FormalParameterListTree tree) {
     return createFormalParameterList(transformFormalParameterList(tree.parameters));
   }
 
@@ -178,8 +178,14 @@ public class JavascriptTransformer extends ParseTreeTransformer {
 
   @Override
   protected ParseTree transform(FunctionExpressionTree tree) {
-    // TODO:
-    return super.transform(tree);
+    omakase.syntax.trees.javascript.FormalParameterListTree parameters = transform(tree.parameters);
+    omakase.syntax.trees.javascript.BlockTree body;
+    if (tree.body.isBlock()) {
+      body = transform(tree.body.asBlock());
+    } else {
+      body = createBlock(createReturnStatement(transformAny(tree.body)));
+    }
+    return createFunction(parameters, body);
   }
 
   @Override

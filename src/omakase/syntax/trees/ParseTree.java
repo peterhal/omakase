@@ -368,4 +368,340 @@ public class ParseTree {
   public omakase.syntax.trees.javascript.WithStatementTree asJavascriptWithStatement() {
     return (omakase.syntax.trees.javascript.WithStatementTree) this;
   }
+
+  public boolean isArguments() {
+    return this.kind == ParseTreeKind.ARGUMENTS;
+  }
+
+  public boolean isArrayAccessExpression() {
+    return this.kind == ParseTreeKind.ARRAY_ACCESS_EXPRESSION;
+  }
+
+  public boolean isArrayLiteralExpression() {
+    return this.kind == ParseTreeKind.ARRAY_LITERAL_EXPRESSION;
+  }
+
+  public boolean isBinaryExpression() {
+    return this.kind == ParseTreeKind.BINARY_EXPRESSION;
+  }
+
+  public boolean isBlock() {
+    return this.kind == ParseTreeKind.BLOCK;
+  }
+
+  public boolean isBreakStatement() {
+    return this.kind == ParseTreeKind.BREAK_STATEMENT;
+  }
+
+  public boolean isCallExpression() {
+    return this.kind == ParseTreeKind.CALL_EXPRESSION;
+  }
+
+  public boolean isCaseClause() {
+    return this.kind == ParseTreeKind.CASE_CLAUSE;
+  }
+
+  public boolean isCatchClause() {
+    return this.kind == ParseTreeKind.CATCH_CLAUSE;
+  }
+
+  public boolean isClassDeclaration() {
+    return this.kind == ParseTreeKind.CLASS_DECLARATION;
+  }
+
+  public boolean isConditionalExpression() {
+    return this.kind == ParseTreeKind.CONDITIONAL_EXPRESSION;
+  }
+
+  public boolean isContinueStatement() {
+    return this.kind == ParseTreeKind.CONTINUE_STATEMENT;
+  }
+
+  public boolean isDebuggerStatement() {
+    return this.kind == ParseTreeKind.DEBUGGER_STATEMENT;
+  }
+
+  public boolean isDefaultClause() {
+    return this.kind == ParseTreeKind.DEFAULT_CLAUSE;
+  }
+
+  public boolean isDoStatement() {
+    return this.kind == ParseTreeKind.DO_STATEMENT;
+  }
+
+  public boolean isEmptyStatement() {
+    return this.kind == ParseTreeKind.EMPTY_STATEMENT;
+  }
+
+  public boolean isExpressionStatement() {
+    return this.kind == ParseTreeKind.EXPRESSION_STATEMENT;
+  }
+
+  public boolean isForInStatement() {
+    return this.kind == ParseTreeKind.FOR_IN_STATEMENT;
+  }
+
+  public boolean isForStatement() {
+    return this.kind == ParseTreeKind.FOR_STATEMENT;
+  }
+
+  public boolean isFormalParameterList() {
+    return this.kind == ParseTreeKind.FORMAL_PARAMETER_LIST;
+  }
+
+  public boolean isFunctionExpression() {
+    return this.kind == ParseTreeKind.FUNCTION_EXPRESSION;
+  }
+
+  public boolean isIdentifierExpression() {
+    return this.kind == ParseTreeKind.IDENTIFIER_EXPRESSION;
+  }
+
+  public boolean isIfStatement() {
+    return this.kind == ParseTreeKind.IF_STATEMENT;
+  }
+
+  public boolean isLiteralExpression() {
+    return this.kind == ParseTreeKind.LITERAL_EXPRESSION;
+  }
+
+  public boolean isMethodDeclaration() {
+    return this.kind == ParseTreeKind.METHOD_DECLARATION;
+  }
+
+  public boolean isNewExpression() {
+    return this.kind == ParseTreeKind.NEW_EXPRESSION;
+  }
+
+  public boolean isParameterDeclaration() {
+    return this.kind == ParseTreeKind.PARAMETER_DECLARATION;
+  }
+
+  public boolean isParenExpression() {
+    return this.kind == ParseTreeKind.PAREN_EXPRESSION;
+  }
+
+  public boolean isPostfixExpression() {
+    return this.kind == ParseTreeKind.POSTFIX_EXPRESSION;
+  }
+
+  public boolean isReturnStatement() {
+    return this.kind == ParseTreeKind.RETURN_STATEMENT;
+  }
+
+  public boolean isSourceFile() {
+    return this.kind == ParseTreeKind.SOURCE_FILE;
+  }
+
+  public boolean isSwitchStatement() {
+    return this.kind == ParseTreeKind.SWITCH_STATEMENT;
+  }
+
+  public boolean isThisExpression() {
+    return this.kind == ParseTreeKind.THIS_EXPRESSION;
+  }
+
+  public boolean isThrowStatement() {
+    return this.kind == ParseTreeKind.THROW_STATEMENT;
+  }
+
+  public boolean isTryStatement() {
+    return this.kind == ParseTreeKind.TRY_STATEMENT;
+  }
+
+  public boolean isUnaryExpression() {
+    return this.kind == ParseTreeKind.UNARY_EXPRESSION;
+  }
+
+  public boolean isVariableDeclaration() {
+    return this.kind == ParseTreeKind.VARIABLE_DECLARATION;
+  }
+
+  public boolean isVariableStatement() {
+    return this.kind == ParseTreeKind.VARIABLE_STATEMENT;
+  }
+
+  public boolean isWhileStatement() {
+    return this.kind == ParseTreeKind.WHILE_STATEMENT;
+  }
+
+  public boolean isJavascriptArguments() {
+    return this.kind == ParseTreeKind.JAVASCRIPT_ARGUMENTS;
+  }
+
+  public boolean isJavascriptArrayAccessExpression() {
+    return this.kind == ParseTreeKind.JAVASCRIPT_ARRAY_ACCESS_EXPRESSION;
+  }
+
+  public boolean isJavascriptArrayLiteralExpression() {
+    return this.kind == ParseTreeKind.JAVASCRIPT_ARRAY_LITERAL_EXPRESSION;
+  }
+
+  public boolean isJavascriptBinaryExpression() {
+    return this.kind == ParseTreeKind.JAVASCRIPT_BINARY_EXPRESSION;
+  }
+
+  public boolean isJavascriptBlock() {
+    return this.kind == ParseTreeKind.JAVASCRIPT_BLOCK;
+  }
+
+  public boolean isJavascriptBreakStatement() {
+    return this.kind == ParseTreeKind.JAVASCRIPT_BREAK_STATEMENT;
+  }
+
+  public boolean isJavascriptCallExpression() {
+    return this.kind == ParseTreeKind.JAVASCRIPT_CALL_EXPRESSION;
+  }
+
+  public boolean isJavascriptCaseClause() {
+    return this.kind == ParseTreeKind.JAVASCRIPT_CASE_CLAUSE;
+  }
+
+  public boolean isJavascriptCatchClause() {
+    return this.kind == ParseTreeKind.JAVASCRIPT_CATCH_CLAUSE;
+  }
+
+  public boolean isJavascriptCommaExpression() {
+    return this.kind == ParseTreeKind.JAVASCRIPT_COMMA_EXPRESSION;
+  }
+
+  public boolean isJavascriptConditionalExpression() {
+    return this.kind == ParseTreeKind.JAVASCRIPT_CONDITIONAL_EXPRESSION;
+  }
+
+  public boolean isJavascriptContinueStatement() {
+    return this.kind == ParseTreeKind.JAVASCRIPT_CONTINUE_STATEMENT;
+  }
+
+  public boolean isJavascriptDebuggerStatement() {
+    return this.kind == ParseTreeKind.JAVASCRIPT_DEBUGGER_STATEMENT;
+  }
+
+  public boolean isJavascriptDefaultClause() {
+    return this.kind == ParseTreeKind.JAVASCRIPT_DEFAULT_CLAUSE;
+  }
+
+  public boolean isJavascriptDoStatement() {
+    return this.kind == ParseTreeKind.JAVASCRIPT_DO_STATEMENT;
+  }
+
+  public boolean isJavascriptElision() {
+    return this.kind == ParseTreeKind.JAVASCRIPT_ELISION;
+  }
+
+  public boolean isJavascriptEmptyStatement() {
+    return this.kind == ParseTreeKind.JAVASCRIPT_EMPTY_STATEMENT;
+  }
+
+  public boolean isJavascriptExpressionStatement() {
+    return this.kind == ParseTreeKind.JAVASCRIPT_EXPRESSION_STATEMENT;
+  }
+
+  public boolean isJavascriptForInStatement() {
+    return this.kind == ParseTreeKind.JAVASCRIPT_FOR_IN_STATEMENT;
+  }
+
+  public boolean isJavascriptForStatement() {
+    return this.kind == ParseTreeKind.JAVASCRIPT_FOR_STATEMENT;
+  }
+
+  public boolean isJavascriptFormalParameterList() {
+    return this.kind == ParseTreeKind.JAVASCRIPT_FORMAL_PARAMETER_LIST;
+  }
+
+  public boolean isJavascriptFunctionExpression() {
+    return this.kind == ParseTreeKind.JAVASCRIPT_FUNCTION_EXPRESSION;
+  }
+
+  public boolean isJavascriptGetAccessor() {
+    return this.kind == ParseTreeKind.JAVASCRIPT_GET_ACCESSOR;
+  }
+
+  public boolean isJavascriptIdentifierExpression() {
+    return this.kind == ParseTreeKind.JAVASCRIPT_IDENTIFIER_EXPRESSION;
+  }
+
+  public boolean isJavascriptIfStatement() {
+    return this.kind == ParseTreeKind.JAVASCRIPT_IF_STATEMENT;
+  }
+
+  public boolean isJavascriptLabelledStatement() {
+    return this.kind == ParseTreeKind.JAVASCRIPT_LABELLED_STATEMENT;
+  }
+
+  public boolean isJavascriptLiteralExpression() {
+    return this.kind == ParseTreeKind.JAVASCRIPT_LITERAL_EXPRESSION;
+  }
+
+  public boolean isJavascriptMemberExpression() {
+    return this.kind == ParseTreeKind.JAVASCRIPT_MEMBER_EXPRESSION;
+  }
+
+  public boolean isJavascriptNewExpression() {
+    return this.kind == ParseTreeKind.JAVASCRIPT_NEW_EXPRESSION;
+  }
+
+  public boolean isJavascriptObjectLiteralExpression() {
+    return this.kind == ParseTreeKind.JAVASCRIPT_OBJECT_LITERAL_EXPRESSION;
+  }
+
+  public boolean isJavascriptParenExpression() {
+    return this.kind == ParseTreeKind.JAVASCRIPT_PAREN_EXPRESSION;
+  }
+
+  public boolean isJavascriptPostfixExpression() {
+    return this.kind == ParseTreeKind.JAVASCRIPT_POSTFIX_EXPRESSION;
+  }
+
+  public boolean isJavascriptProgram() {
+    return this.kind == ParseTreeKind.JAVASCRIPT_PROGRAM;
+  }
+
+  public boolean isJavascriptPropertyAssignment() {
+    return this.kind == ParseTreeKind.JAVASCRIPT_PROPERTY_ASSIGNMENT;
+  }
+
+  public boolean isJavascriptReturnStatement() {
+    return this.kind == ParseTreeKind.JAVASCRIPT_RETURN_STATEMENT;
+  }
+
+  public boolean isJavascriptSetAccessor() {
+    return this.kind == ParseTreeKind.JAVASCRIPT_SET_ACCESSOR;
+  }
+
+  public boolean isJavascriptSwitchStatement() {
+    return this.kind == ParseTreeKind.JAVASCRIPT_SWITCH_STATEMENT;
+  }
+
+  public boolean isJavascriptThisExpression() {
+    return this.kind == ParseTreeKind.JAVASCRIPT_THIS_EXPRESSION;
+  }
+
+  public boolean isJavascriptThrowStatement() {
+    return this.kind == ParseTreeKind.JAVASCRIPT_THROW_STATEMENT;
+  }
+
+  public boolean isJavascriptTryStatement() {
+    return this.kind == ParseTreeKind.JAVASCRIPT_TRY_STATEMENT;
+  }
+
+  public boolean isJavascriptUnaryExpression() {
+    return this.kind == ParseTreeKind.JAVASCRIPT_UNARY_EXPRESSION;
+  }
+
+  public boolean isJavascriptVariableDeclaration() {
+    return this.kind == ParseTreeKind.JAVASCRIPT_VARIABLE_DECLARATION;
+  }
+
+  public boolean isJavascriptVariableStatement() {
+    return this.kind == ParseTreeKind.JAVASCRIPT_VARIABLE_STATEMENT;
+  }
+
+  public boolean isJavascriptWhileStatement() {
+    return this.kind == ParseTreeKind.JAVASCRIPT_WHILE_STATEMENT;
+  }
+
+  public boolean isJavascriptWithStatement() {
+    return this.kind == ParseTreeKind.JAVASCRIPT_WITH_STATEMENT;
+  }
 }

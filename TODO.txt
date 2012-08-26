@@ -2,7 +2,6 @@ TODO
 ----
 
 Next Up
-- function literals
 - sane this binding
 
 - marketing

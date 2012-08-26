@@ -43,6 +43,7 @@ public class Program {
     public String className;
     public ParseTreeKind kind;
     public String asName;
+    public String isName;
     public Class clazz;
   }
 
@@ -69,6 +70,7 @@ public class Program {
   private static void printParseTree(String headerFilename, ArrayList<TreeInfo> trees, PrintStream out) {
     printHeader(out, headerFilename);
     printAsMethods(out, trees);
+    printIsMethods(out, trees);
     out.println("}"); // class
   }
 
@@ -77,6 +79,15 @@ public class Program {
       out.println();
       out.printf("  public %s %s() {\n", tree.className, tree.asName);
       out.printf("    return (%s) this;\n", tree.className);
+      out.println("  }");
+    }
+  }
+
+  private static void printIsMethods(PrintStream out, ArrayList<TreeInfo> trees) {
+    for (TreeInfo tree: trees) {
+      out.println();
+      out.printf("  public boolean %s() {\n", tree.isName);
+      out.printf("    return this.kind == ParseTreeKind.%s;\n", tree.kind.name());
       out.println("  }");
     }
   }
@@ -229,6 +240,7 @@ public class Program {
       info.kind = kind;
       String camelName = upperCaseToCamelCase(kind.name());
       info.asName = "as" + camelName;
+      info.isName = "is" + camelName;
       String javascriptPrefix = "Javascript";
       String fullClassName;
       if (camelName.startsWith(javascriptPrefix)) {
