@@ -185,7 +185,7 @@ public class JavascriptTransformer extends ParseTreeTransformer {
     } else {
       body = createBlock(createReturnStatement(transformAny(tree.body)));
     }
-    return createFunction(parameters, body);
+    return createThisBoundFunction(createFunction(parameters, body));
   }
 
   @Override

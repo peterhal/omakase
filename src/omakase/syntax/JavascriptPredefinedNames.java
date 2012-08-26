@@ -21,4 +21,5 @@ public final class JavascriptPredefinedNames {
   public static final String GET = "get";
   public static final String SET = "set";
   public static final String PROTOTYPE = "prototype";
+  public static final String BIND = "bind";
 }

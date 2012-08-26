@@ -221,6 +221,10 @@ public final class JavascriptParseTreeFactory {
     return new LiteralExpressionTree(null, literal);
   }
 
+  public static MemberExpressionTree createMemberExpression(ParseTree object, String memberName) {
+    return new MemberExpressionTree(null, object, createIdentifierToken(memberName));
+  }
+
   public static NewExpressionTree createNew(ParseTree constructor, ArgumentsTree arguments) {
     return new NewExpressionTree(null, constructor, arguments);
   }
@@ -282,6 +286,11 @@ public final class JavascriptParseTreeFactory {
     return createParenExpression(createCall(createFunction(createFormalParameterList(), createBlock(statements))));
   }
 
+  public static ParseTree createThisBoundFunction(ParseTree function) {
+    // (function).bind(this)
+    return createCall(createMemberExpression(createParenExpression(function), JavascriptPredefinedNames.BIND), createThis());
+  }
+
   // Low-level Helpers
   public static ImmutableList<ParseTree> createList(ParseTree... arguments) {
     return ImmutableList.copyOf(arguments);
@@ -297,7 +306,7 @@ public final class JavascriptParseTreeFactory {
       if (result == null) {
         result = createIdentifier(name);
       } else {
-        result = new MemberExpressionTree(null, result, createIdentifierToken(name));
+        result = createMemberExpression(result, name);
       }
     }
     return result;
