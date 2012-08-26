@@ -37,43 +37,43 @@ public class JavascriptTransformer extends ParseTreeTransformer {
     return new ClassTransformer().transform(tree);
   }
 
-    private static class ClassTransformer {
-      // class C { members } =>
-      //
-      //  (function() {
-      //    C = function() {}
-      //    C.prototype.member = ...;
-      //  }());
-      //
-      public ParseTree transform(ClassDeclarationTree tree) {
-        ParseTree constructor = createConstructor(tree);
-        List<ParseTree> members = createMembers(tree);
-        members.add(0, constructor);
-        return createParenExpression(createCall(
-            createFunction(createFormalParameterList(), createBlock(members))
-        ));
-      }
-
-      private ParseTree createConstructor(ClassDeclarationTree tree) {
-        return createAssignmentStatement(
-            createIdentifier(tree.name),
-            createFunction(createFormalParameterList(), createBlock())
-        );
-      }
-      
-      private List<ParseTree> createMembers(ClassDeclarationTree tree) {
-        ArrayList<ParseTree> result = new ArrayList<ParseTree>();
-        for (ParseTree member: tree.members) {
-          result.add(createMember(tree.name.value, member.asMethodDeclaration()));
-        }
-        return result;
-      }
-
-      private ParseTree createMember(String className, MethodDeclarationTree method) {
-        //    C.prototype.member = ...;
-        return createAssignmentStatement(
-            createDottedName(className, "prototype", method.name.value),
-            createFunction(createFormalParameterList(), createBlock()));
-      }
+  private static class ClassTransformer {
+    // class C { members } =>
+    //
+    //  (function() {
+    //    C = function() {}
+    //    C.prototype.member = ...;
+    //  }());
+    //
+    public ParseTree transform(ClassDeclarationTree tree) {
+      ParseTree constructor = createConstructor(tree);
+      List<ParseTree> members = createMembers(tree);
+      members.add(0, constructor);
+      return createParenExpression(createCall(
+          createFunction(createFormalParameterList(), createBlock(members))
+      ));
     }
+
+    private ParseTree createConstructor(ClassDeclarationTree tree) {
+      return createAssignmentStatement(
+          createIdentifier(tree.name),
+          createFunction(createFormalParameterList(), createBlock())
+      );
+    }
+
+    private List<ParseTree> createMembers(ClassDeclarationTree tree) {
+      ArrayList<ParseTree> result = new ArrayList<ParseTree>();
+      for (ParseTree member: tree.members) {
+        result.add(createMember(tree.name.value, member.asMethodDeclaration()));
+      }
+      return result;
+    }
+
+    private ParseTree createMember(String className, MethodDeclarationTree method) {
+      //    C.prototype.member = ...;
+      return createAssignmentStatement(
+          createDottedName(className, "prototype", method.name.value),
+          createFunction(createFormalParameterList(), createBlock()));
+    }
+  }
 }
