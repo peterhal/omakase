@@ -45,9 +45,261 @@ public class ParseTreeWriter extends ParseTreeVisitor {
   }
 
   @Override
+  protected void visit(ArrayAccessExpressionTree tree) {
+    visitAny(tree.object);
+    write(TokenKind.OPEN_SQUARE);
+    visitAny(tree.member);
+    write(TokenKind.CLOSE_SQUARE);
+  }
+
+  @Override
+  protected void visit(ArrayLiteralExpressionTree tree) {
+    write(TokenKind.OPEN_SQUARE);
+    writeCommaSeparatedList(tree.elements);
+    write(TokenKind.CLOSE_SQUARE);
+  }
+
+  @Override
+  protected void visit(BinaryExpressionTree tree) {
+    visitAny(tree.left);
+    write(tree.operator);
+    visitAny(tree.right);
+  }
+
+  @Override
+  protected void visit(BreakStatementTree tree) {
+    write(TokenKind.BREAK);
+    write(TokenKind.SEMI_COLON);
+    writeLine();
+  }
+
+  @Override
+  protected void visit(CaseClauseTree tree) {
+    write(TokenKind.CASE);
+    visitAny(tree.expression);
+    write(TokenKind.COLON);
+    writeLine();
+    indent();
+    visitList(tree.statements);
+    outdent();
+  }
+
+  @Override
+  protected void visit(CatchClauseTree tree) {
+    write(TokenKind.CATCH);
+    write(TokenKind.OPEN_PAREN);
+    write(tree.identifier);
+    write(TokenKind.CLOSE_PAREN);
+    writeLine();
+    visitAny(tree.block);
+  }
+
+  @Override
+  protected void visit(ConditionalExpressionTree tree) {
+    visitAny(tree.condition);
+    write(TokenKind.QUESTION);
+    visitAny(tree.left);
+    write(TokenKind.COLON);
+    visitAny(tree.right);
+  }
+
+  @Override
+  protected void visit(ContinueStatementTree tree) {
+    write(TokenKind.CONTINUE);
+    write(TokenKind.SEMI_COLON);
+    writeLine();
+  }
+
+  @Override
+  protected void visit(DebuggerStatementTree tree) {
+    write(TokenKind.DEBUGGER);
+    write(TokenKind.SEMI_COLON);
+    writeLine();
+  }
+
+  @Override
+  protected void visit(DefaultClauseTree tree) {
+    write(TokenKind.DEFAULT);
+    write(TokenKind.COLON);
+    writeLine();
+    indent();
+    visitList(tree.statements);
+    outdent();
+  }
+
+  @Override
+  protected void visit(DoStatementTree tree) {
+    write(TokenKind.DO);
+    visitAny(tree.statement);
+    write(TokenKind.OPEN_PAREN);
+    visitAny(tree.condition);
+    write(TokenKind.CLOSE_PAREN);
+    write(TokenKind.SEMI_COLON);
+    writeLine();
+  }
+
+  @Override
+  protected void visit(EmptyStatementTree tree) {
+    write(TokenKind.SEMI_COLON);
+    writeLine();
+  }
+
+  @Override
+  protected void visit(ForInStatementTree tree) {
+    write(TokenKind.FOR);
+    write(TokenKind.OPEN_PAREN);
+    visitAny(tree.element);
+    write(TokenKind.IN);
+    visitAny(tree.collection);
+    write(TokenKind.CLOSE_PAREN);
+    writeLine();
+    visitAny(tree.body);
+  }
+
+  @Override
+  protected void visit(ForStatementTree tree) {
+    write(TokenKind.FOR);
+    write(TokenKind.OPEN_PAREN);
+    visitAny(tree.initializer);
+    write(TokenKind.SEMI_COLON);
+    visitAny(tree.condition);
+    write(TokenKind.SEMI_COLON);
+    visitAny(tree.increment);
+    write(TokenKind.CLOSE_PAREN);
+    writeLine();
+    visitAny(tree.body);
+  }
+
+  @Override
+  protected void visit(FormalParameterListTree tree) {
+    write(TokenKind.OPEN_PAREN);
+    writeCommaSeparatedList(tree.parameters);
+    write(TokenKind.CLOSE_PAREN);
+  }
+
+  @Override
+  protected void visit(IfStatementTree tree) {
+    write(TokenKind.IF);
+    write(TokenKind.OPEN_PAREN);
+    visitAny(tree.condition);
+    write(TokenKind.CLOSE_PAREN);
+    indent();
+    writeLine();
+    outdent();
+    visitAny(tree.ifClause);
+    if (tree.elseClause != null) {
+      write(TokenKind.ELSE);
+      writeLine();
+      indent();
+      visitAny(tree.elseClause);
+      outdent();
+    }
+  }
+
+  @Override
+  protected void visit(NewExpressionTree tree) {
+    write(TokenKind.NEW);
+    visitAny(tree.constructor);
+    visitAny(tree.arguments);
+  }
+
+  @Override
+  protected void visit(ParenExpressionTree tree) {
+    write(TokenKind.OPEN_PAREN);
+    visitAny(tree.expression);
+    write(TokenKind.CLOSE_PAREN);
+  }
+
+  @Override
+  protected void visit(PostfixExpressionTree tree) {
+    visitAny(tree.operand);
+    write(tree.operator);
+  }
+
+  @Override
+  protected void visit(ReturnStatementTree tree) {
+    write(TokenKind.RETURN);
+    visitAny(tree.value);
+    write(TokenKind.SEMI_COLON);
+    writeLine();
+  }
+
+  @Override
+  protected void visit(SourceFileTree tree) {
+    visitList(tree.declarations);
+  }
+
+  @Override
+  protected void visit(SwitchStatementTree tree) {
+    write(TokenKind.SWITCH);
+    write(TokenKind.OPEN_PAREN);
+    visitAny(tree.expression);
+    write(TokenKind.CLOSE_PAREN);
+    writeLine();
+    write(TokenKind.OPEN_CURLY);
+    visitList(tree.caseClauses);
+    write(TokenKind.CLOSE_CURLY);
+  }
+
+  @Override
+  protected void visit(ThisExpressionTree tree) {
+    write(TokenKind.THIS);
+  }
+
+  @Override
+  protected void visit(ThrowStatementTree tree) {
+    write(TokenKind.THROW);
+    visitAny(tree.expression);
+    write(TokenKind.SEMI_COLON);
+    writeLine();
+  }
+
+  @Override
+  protected void visit(TryStatementTree tree) {
+    write(TokenKind.TRY);
+    writeLine();
+    visitAny(tree.body);
+    visitAny(tree.catchClause);
+    visitAny(tree.finallyClause);
+  }
+
+  @Override
+  protected void visit(UnaryExpressionTree tree) {
+    write(tree.operator);
+    visitAny(tree.operand);
+  }
+
+  @Override
+  protected void visit(VariableDeclarationTree tree) {
+    write(tree.name);
+    if (tree.initializer != null) {
+      write(TokenKind.EQUAL);
+      visitAny(tree.initializer);
+    }
+  }
+
+  @Override
+  protected void visit(VariableStatementTree tree) {
+    write(TokenKind.VAR);
+    writeCommaSeparatedList(tree.declarations);
+    write(TokenKind.SEMI_COLON);
+    writeLine();
+  }
+
+  @Override
+  protected void visit(WhileStatementTree tree) {
+    write(TokenKind.WHILE);
+    write(TokenKind.OPEN_PAREN);
+    visitAny(tree.condition);
+    write(TokenKind.CLOSE_PAREN);
+    writeLine();
+    visitAny(tree.body);
+  }
+
+  @Override
   protected void visit(FunctionExpressionTree tree) {
     visit(tree.parameters);
-    // TODO: write(=>)
+    // TODO: write(->)
     visit(tree.body);
   }
 
@@ -163,6 +415,7 @@ public class ParseTreeWriter extends ParseTreeVisitor {
       write(tree.label);
     }
     write(TokenKind.JS_SEMI_COLON);
+    writeLine();
   }
 
   protected void visit(omakase.syntax.trees.javascript.CallExpressionTree tree) {
@@ -174,7 +427,10 @@ public class ParseTreeWriter extends ParseTreeVisitor {
     write(TokenKind.JS_CASE);
     visitAny(tree.expression);
     write(TokenKind.JS_COLON);
+    writeLine();
+    indent();
     visitList(tree.statements);
+    outdent();
   }
 
   protected void visit(omakase.syntax.trees.javascript.CatchClauseTree tree) {
@@ -182,6 +438,7 @@ public class ParseTreeWriter extends ParseTreeVisitor {
     write(TokenKind.JS_OPEN_PAREN);
     write(tree.identifier);
     write(TokenKind.JS_CLOSE_PAREN);
+    writeLine();
     visitAny(tree.block);
   }
 
@@ -203,36 +460,50 @@ public class ParseTreeWriter extends ParseTreeVisitor {
       write(tree.label);
     }
     write(TokenKind.JS_SEMI_COLON);
+    writeLine();
   }
 
   protected void visit(omakase.syntax.trees.javascript.DebuggerStatementTree tree) {
     write(TokenKind.JS_DEBUGGER);
     write(TokenKind.JS_SEMI_COLON);
+    writeLine();
   }
 
   protected void visit(omakase.syntax.trees.javascript.DefaultClauseTree tree) {
     write(TokenKind.JS_DEFAULT);
     write(TokenKind.JS_COLON);
+    writeLine();
+    indent();
     visitList(tree.statements);
+    outdent();
   }
 
   protected void visit(omakase.syntax.trees.javascript.DoStatementTree tree) {
     write(TokenKind.JS_DO);
+    writeLine();
     visitAny(tree.statement);
     write(TokenKind.JS_WHILE);
     write(TokenKind.JS_OPEN_PAREN);
     visitAny(tree.condition);
     write(TokenKind.JS_CLOSE_PAREN);
     write(TokenKind.JS_SEMI_COLON);
+    writeLine();
+  }
+
+  @Override
+  protected void visit(omakase.syntax.trees.javascript.ElisionTree tree) {
+    write(TokenKind.JS_COMMA);
   }
 
   protected void visit(omakase.syntax.trees.javascript.EmptyStatementTree tree) {
     write(TokenKind.JS_SEMI_COLON);
+    writeLine();
   }
 
   protected void visit(omakase.syntax.trees.javascript.ExpressionStatementTree tree) {
     visitAny(tree.expression);
     write(TokenKind.JS_SEMI_COLON);
+    writeLine();
     writeLine();
   }
 
@@ -243,6 +514,7 @@ public class ParseTreeWriter extends ParseTreeVisitor {
     write(TokenKind.JS_IN);
     visitAny(tree.collection);
     write(TokenKind.JS_CLOSE_PAREN);
+    writeLine();
     visitAny(tree.body);
   }
 
@@ -255,6 +527,7 @@ public class ParseTreeWriter extends ParseTreeVisitor {
     write(TokenKind.JS_SEMI_COLON);
     visitAny(tree.increment);
     write(TokenKind.JS_CLOSE_PAREN);
+    writeLine();
     visitAny(tree.body);
   }
 
@@ -290,15 +563,23 @@ public class ParseTreeWriter extends ParseTreeVisitor {
     write(TokenKind.JS_OPEN_PAREN);
     visitAny(tree.condition);
     write(TokenKind.JS_CLOSE_PAREN);
+    writeLine();
+    indent();
     visitAny(tree.ifClause);
+    outdent();
     if (tree.elseClause != null) {
+      write(TokenKind.JS_ELSE);
+      writeLine();
+      indent();
       visitAny(tree.elseClause);
+      outdent();
     }
   }
 
   protected void visit(omakase.syntax.trees.javascript.LabelledStatementTree tree) {
     write(tree.label);
     write(TokenKind.JS_COLON);
+    writeLine();
     visitAny(tree.statement);
   }
 
@@ -320,7 +601,9 @@ public class ParseTreeWriter extends ParseTreeVisitor {
 
   protected void visit(omakase.syntax.trees.javascript.ObjectLiteralExpressionTree tree) {
     write(TokenKind.JS_OPEN_CURLY);
+    indent();
     writeCommaSeparatedList(tree.initializers);
+    outdent();
     write(TokenKind.JS_CLOSE_CURLY);
   }
 
@@ -349,6 +632,7 @@ public class ParseTreeWriter extends ParseTreeVisitor {
     write(TokenKind.JS_RETURN);
     visitAny(tree.value);
     write(TokenKind.JS_SEMI_COLON);
+    writeLine();
   }
 
   protected void visit(omakase.syntax.trees.javascript.SetAccessorTree tree) {
@@ -362,6 +646,10 @@ public class ParseTreeWriter extends ParseTreeVisitor {
 
   protected void visit(omakase.syntax.trees.javascript.SwitchStatementTree tree) {
     write(TokenKind.JS_SWITCH);
+    write(TokenKind.JS_OPEN_PAREN);
+    visitAny(tree.expression);
+    write(TokenKind.JS_CLOSE_PAREN);
+    writeLine();
     write(TokenKind.JS_OPEN_CURLY);
     visitList(tree.caseClauses);
     write(TokenKind.JS_CLOSE_CURLY);
@@ -375,12 +663,16 @@ public class ParseTreeWriter extends ParseTreeVisitor {
     write(TokenKind.JS_THROW);
     visitAny(tree.expression);
     write(TokenKind.JS_SEMI_COLON);
+    writeLine();
   }
 
   protected void visit(omakase.syntax.trees.javascript.TryStatementTree tree) {
     write(TokenKind.JS_TRY);
+    writeLine();
     visitAny(tree.body);
-    visitAny(tree.catchClause);
+    if (tree.catchClause != null) {
+      visitAny(tree.catchClause);
+    }
     if (tree.finallyClause != null) {
       write(TokenKind.JS_FINALLY);
       visitAny(tree.finallyClause);
@@ -404,6 +696,7 @@ public class ParseTreeWriter extends ParseTreeVisitor {
     write(TokenKind.JS_VAR);
     writeCommaSeparatedList(tree.declarations);
     write(TokenKind.JS_SEMI_COLON);
+    writeLine();
   }
 
   protected void visit(omakase.syntax.trees.javascript.WhileStatementTree tree) {
@@ -411,6 +704,7 @@ public class ParseTreeWriter extends ParseTreeVisitor {
     write(TokenKind.JS_OPEN_PAREN);
     visitAny(tree.condition);
     write(TokenKind.JS_CLOSE_PAREN);
+    writeLine();
     visitAny(tree.body);
   }
 
@@ -419,6 +713,7 @@ public class ParseTreeWriter extends ParseTreeVisitor {
     write(TokenKind.JS_OPEN_PAREN);
     visitAny(tree.expression);
     write(TokenKind.JS_CLOSE_PAREN);
+    writeLine();
     visitAny(tree.body);
   }
 
