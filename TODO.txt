@@ -31,10 +31,12 @@ TODO
     - function literals
     - object literals
   - classes
+  - namespaces
   - type system
   - iterators
   - await
   - attributes
+  - jsdoc as attributes
 - libs
   - reflection
 - compiler
@@ -54,3 +56,29 @@ Omakase is a language for developing large web applications.
   - physical: units of distribution/download (think pinto modules)
 - debugging (via source maps)
 - IDE - code browsing, refactoring?
+
+
+Doc Comments as Attributes
+--------------------------
+
+Use compile time only attributes plus multi-line string literals for documentation comments.
+
+@Description(@"Filters a collection.")
+@Return(@"Those elements which pass the filter.")
+Iterable<T> where(Iterable<T> collection, T->bool filter) {
+  for (var value in collection) {
+    if (filter(value)) yield value;
+  }
+}
+
+The '@Description' and '@Return(@"' are verbose. Perhaps could shorten to:
+
+@`Filters a collection.`
+@Return(`Those elements which pass the filter.`)
+Iterable<T> where(Iterable<T> collection, T->bool filter) {
+  for (var value in collection) {
+    if (filter(value)) yield value;
+  }
+}
+
+Verbatim string literal before a member decl is 'default' attribute.
