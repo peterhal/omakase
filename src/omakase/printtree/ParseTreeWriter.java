@@ -504,7 +504,6 @@ public class ParseTreeWriter extends ParseTreeVisitor {
     visitAny(tree.expression);
     write(TokenKind.JS_SEMI_COLON);
     writeLine();
-    writeLine();
   }
 
   protected void visit(omakase.syntax.trees.javascript.ForInStatementTree tree) {
