@@ -339,7 +339,7 @@ public class JavascriptTransformer extends ParseTreeTransformer {
 
     private ParseTree createMember(MethodDeclarationTree method) {
       return createProtoMember(getClassName(), method.name.value,
-          createFunction(createFormalParameterList(), transform(method.body)));
+          createFunction(createFormalParameterList(), transformAny(method.body).asJavascriptBlock()));
     }
   }
 }
