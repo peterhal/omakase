@@ -72,6 +72,7 @@ public enum TokenKind {
   RIGHT_SHIFT_EQUAL(">>="),
   AMPERSAND_EQUAL("&="),
   BAR_EQUAL("|="),
+  HAT("^"),
   HAT_EQUAL("^="),
   SLASH("/"),
   SLASH_EQUAL("/="),

@@ -54,10 +54,22 @@ public class Scanner extends ScannerBase {
       if (eatOpt('=')) {
         return createToken(TokenKind.LESS_EQUAL, startIndex);
       }
+      if (eatOpt('<')) {
+        if (eatOpt('=')) {
+          return createToken(TokenKind.LEFT_SHIFT_EQUAL, startIndex);
+        }
+        return createToken(TokenKind.SHIFT_LEFT, startIndex);
+      }
       return createToken(TokenKind.OPEN_ANGLE, startIndex);
     case '>':
       if (eatOpt('=')) {
         return createToken(TokenKind.GREATER_EQUAL, startIndex);
+      }
+      if (eatOpt('>')) {
+        if (eatOpt('=')) {
+          return createToken(TokenKind.RIGHT_SHIFT_EQUAL, startIndex);
+        }
+        return createToken(TokenKind.SHIFT_RIGHT, startIndex);
       }
       return createToken(TokenKind.CLOSE_ANGLE, startIndex);
     case '=':
@@ -70,22 +82,63 @@ public class Scanner extends ScannerBase {
         return createToken(TokenKind.NOT_EQUAL, startIndex);
       }
       return createToken(TokenKind.BANG, startIndex);
-    case '+': return createToken(TokenKind.PLUS, startIndex);
-    case '-': return createToken(TokenKind.MINUS, startIndex);
-    case '*': return createToken(TokenKind.STAR, startIndex);
+    case '+':
+      if (eatOpt('+')) {
+        return createToken(TokenKind.PLUS_PLUS, startIndex);
+      }
+      if (eatOpt('=')) {
+        return createToken(TokenKind.PLUS_EQUAL, startIndex);
+      }
+      return createToken(TokenKind.PLUS, startIndex);
+    case '-':
+      if (eatOpt('-')) {
+        return createToken(TokenKind.MINUS_MINUS, startIndex);
+      }
+      if (eatOpt('=')) {
+        return createToken(TokenKind.MINUS_EQUAL, startIndex);
+      }
+      if (eatOpt('>')) {
+        return createToken(TokenKind.ARROW, startIndex);
+      }
+      return createToken(TokenKind.MINUS, startIndex);
+    case '*':
+      if (eatOpt('=')) {
+        return createToken(TokenKind.STAR_EQUAL, startIndex);
+      }
+      return createToken(TokenKind.STAR, startIndex);
+    case '%':
+      if (eatOpt('=')) {
+        return createToken(TokenKind.PERCENT_EQUAL, startIndex);
+      }
+      return createToken(TokenKind.PERCENT, startIndex);
+    case '^':
+      if (eatOpt('=')) {
+        return createToken(TokenKind.HAT_EQUAL, startIndex);
+      }
+      return createToken(TokenKind.HAT, startIndex);
     case '&':
       if (eatOpt('&')) {
         return createToken(TokenKind.AMPERSAND_AMPERSAND, startIndex);
+      }
+      if (eatOpt('=')) {
+        return createToken(TokenKind.AMPERSAND_EQUAL, startIndex);
       }
       return createToken(TokenKind.AMPERSAND, startIndex);
     case '|':
       if (eatOpt('|')) {
         return createToken(TokenKind.BAR_BAR, startIndex);
       }
+      if (eatOpt('=')) {
+        return createToken(TokenKind.BAR_EQUAL, startIndex);
+      }
       return createToken(TokenKind.BAR, startIndex);
     case '?': return createToken(TokenKind.QUESTION, startIndex);
     case ':': return createToken(TokenKind.COLON, startIndex);
-    case '/': return createToken(TokenKind.SLASH, startIndex);
+    case '/':
+      if (eatOpt('=')) {
+        return createToken(TokenKind.SLASH_EQUAL, startIndex);
+      }
+      return createToken(TokenKind.SLASH, startIndex);
     case '\"': return scanStringLiteral(startIndex);
     case '0': case '1': case '2': case '3': case '4':
     case '5': case '6': case '7': case '8': case '9':
