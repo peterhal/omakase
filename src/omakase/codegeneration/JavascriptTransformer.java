@@ -299,6 +299,7 @@ public class JavascriptTransformer extends ParseTreeTransformer {
 
   private class ClassTransformer {
     private final ClassDeclarationTree classTree;
+    private final ImmutableList.Builder<ParseTree> members = new ImmutableList.Builder<ParseTree>();
 
     public ClassTransformer(ClassDeclarationTree tree) {
       classTree = tree;
@@ -316,30 +317,27 @@ public class JavascriptTransformer extends ParseTreeTransformer {
     //  }());
     //
     public ParseTree transformClass() {
-      ParseTree constructor = createConstructor();
-      List<ParseTree> members = createMembers();
-      members.add(0, constructor);
-      return createScopedBlock(members);
+      createConstructor();
+      createMembers();
+      return createScopedBlock(members.build());
     }
 
-    private ParseTree createConstructor() {
-      return createAssignmentStatement(
+    private void createConstructor() {
+      members.add(createAssignmentStatement(
           createIdentifier(getClassName()),
           createFunction(createFormalParameterList(), createBlock())
-      );
+      ));
     }
 
-    private List<ParseTree> createMembers() {
-      ArrayList<ParseTree> result = new ArrayList<ParseTree>();
+    private void createMembers() {
       for (ParseTree member: classTree.members) {
-        result.add(createMember(member.asMethodDeclaration()));
+        createMember(member.asMethodDeclaration());
       }
-      return result;
     }
 
-    private ParseTree createMember(MethodDeclarationTree method) {
-      return createProtoMember(getClassName(), method.name.value,
-          createFunction(createFormalParameterList(), transformAny(method.body).asJavascriptBlock()));
+    private void createMember(MethodDeclarationTree method) {
+      members.add(createProtoMember(getClassName(), method.name.value,
+          createFunction(createFormalParameterList(), transformAny(method.body).asJavascriptBlock())));
     }
   }
 }

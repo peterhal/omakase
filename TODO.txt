@@ -1,6 +1,10 @@
 TODO
 ----
 
+Next Up
+- function literals
+- sane this binding
+
 - marketing
   - mission
   - samples
@@ -11,7 +15,7 @@ TODO
   - complete parsing
     - automatic semi-colon insertion
     - Expression NoIn
-  - jsdoc
+  - jsdoc import
 - scanning
   - unicode escapes
   - floating point numbers
@@ -31,12 +35,26 @@ TODO
     - function literals
     - object literals
   - classes
+    - constructors
+    - arguments
+    - implicit this
+    - fields
+    - static members
+    - const
+    - inheritance
+  - interfaces
+  - enums
+  - mixins?
+  - extensions?
   - namespaces
   - type system
   - iterators
   - await
   - attributes
-  - jsdoc as attributes
+  - doc comments as attributes
+  - javascript interop
+    - extern declarations
+    - monkey patching
 - libs
   - reflection
 - compiler

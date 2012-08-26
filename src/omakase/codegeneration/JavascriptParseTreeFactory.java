@@ -277,7 +277,7 @@ public final class JavascriptParseTreeFactory {
         value);
   }
 
-  public static ParseTree createScopedBlock(List<ParseTree> statements) {
+  public static ParseTree createScopedBlock(ImmutableList<ParseTree> statements) {
     // (function() { statements; }())
     return createParenExpression(createCall(createFunction(createFormalParameterList(), createBlock(statements))));
   }
