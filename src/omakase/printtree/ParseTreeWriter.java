@@ -15,6 +15,7 @@
 package omakase.printtree;
 
 import com.google.common.collect.ImmutableList;
+import omakase.syntax.JavascriptPredefinedNames;
 import omakase.syntax.ParseTreeVisitor;
 import omakase.syntax.tokens.*;
 import omakase.syntax.trees.*;
@@ -546,7 +547,7 @@ public class ParseTreeWriter extends ParseTreeVisitor {
   }
 
   protected void visit(omakase.syntax.trees.javascript.GetAccessorTree tree) {
-    write("get"); // TODO
+    write(JavascriptPredefinedNames.GET);
     write(tree.propertyName);
     write(TokenKind.JS_OPEN_PAREN);
     write(TokenKind.JS_CLOSE_PAREN);
@@ -635,7 +636,7 @@ public class ParseTreeWriter extends ParseTreeVisitor {
   }
 
   protected void visit(omakase.syntax.trees.javascript.SetAccessorTree tree) {
-    write("set"); // TODO
+    write(JavascriptPredefinedNames.SET);
     write(tree.propertyName);
     write(TokenKind.JS_OPEN_PAREN);
     write(tree.parameterName);
