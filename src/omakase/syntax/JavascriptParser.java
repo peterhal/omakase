@@ -288,9 +288,9 @@ public class JavascriptParser extends ParserBase {
     eat(TokenKind.JS_FOR);
     eat(TokenKind.JS_OPEN_PAREN);
     switch (peekKind()) {
-    case VAR:
+    case JS_VAR:
       Token variableStart = peek();
-      eat(TokenKind.VAR);
+      eat(TokenKind.JS_VAR);
       ParseTree variableDeclaration = parseVariableDeclaration(Expression.NO_IN);
       if (eatOpt(TokenKind.JS_IN)) {
         return parseForIn(start, variableDeclaration);
@@ -299,8 +299,8 @@ public class JavascriptParser extends ParserBase {
             new VariableStatementTree(getRange(variableStart),
                 parseRemainingVariableDeclarations(variableDeclaration, Expression.NO_IN)));
       }
-    case SEMI_COLON:
-      eat(TokenKind.SEMI_COLON);
+    case JS_SEMI_COLON:
+      eat(TokenKind.JS_SEMI_COLON);
       return parseForStatement(start, null);
     default:
       ParseTree initializer = parseExpression(Expression.NO_IN);
@@ -395,7 +395,7 @@ public class JavascriptParser extends ParserBase {
   private ParseTree parseCase() {
     Token start = peek();
     ParseTree expression = parseExpression();
-    eat(TokenKind.COLON);
+    eat(TokenKind.JS_COLON);
     return new CaseClauseTree(getRange(start), expression, parseStatementList());
   }
 
@@ -413,7 +413,7 @@ public class JavascriptParser extends ParserBase {
     Token start = peek();
     eat(TokenKind.JS_THROW);
     ParseTree exception = parseExpression();
-    eat(TokenKind.SEMI_COLON);
+    eat(TokenKind.JS_SEMI_COLON);
     return new ThrowStatementTree(getRange(start), exception);
   }
 
@@ -468,7 +468,7 @@ public class JavascriptParser extends ParserBase {
   private ParseTree parseCommaExpression(Expression expression) {
     Token start = peek();
     ParseTree assignment = parseAssignmentExpression(expression);
-    if (!peek(TokenKind.COMMA)) {
+    if (!peek(TokenKind.JS_COMMA)) {
       return assignment;
     }
 
@@ -495,11 +495,11 @@ public class JavascriptParser extends ParserBase {
   private ParseTree parseConditionalExpression(Expression expression) {
     Token start = peek();
     ParseTree condition = parseLogicalOrExpression(expression);
-    if (!eatOpt(TokenKind.QUESTION)) {
+    if (!eatOpt(TokenKind.JS_QUESTION)) {
       return condition;
     }
     ParseTree trueCase = parseAssignmentExpression(expression);
-    eat(TokenKind.COLON);
+    eat(TokenKind.JS_COLON);
     ParseTree falseCase = parseAssignmentExpression(expression);
     return new ConditionalExpressionTree(getRange(start), condition, trueCase, falseCase);
   }

@@ -14,19 +14,16 @@
 
 package omakase.syntax.trees;
 
-import omakase.syntax.tokens.IdentifierToken;
+import com.google.common.collect.ImmutableList;
 import omakase.util.SourceRange;
 
 /**
- *
  */
-public class MemberExpressionTree extends ParseTree {
-  public final IdentifierToken name;
-  public final ParseTree object;
+public class ArrayLiteralExpressionTree extends ParseTree {
+  public final ImmutableList<ParseTree> elements;
 
-  public MemberExpressionTree(SourceRange location, ParseTree object, IdentifierToken name) {
-    super(location, ParseTreeKind.IDENTIFIER_EXPRESSION);
-    this.object = object;
-    this.name = name;
+  public ArrayLiteralExpressionTree(SourceRange location, ImmutableList<ParseTree> elements) {
+    super(location, ParseTreeKind.ARRAY_LITERAL_EXPRESSION);
+    this.elements = elements;
   }
 }

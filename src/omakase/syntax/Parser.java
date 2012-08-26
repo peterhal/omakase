@@ -470,21 +470,293 @@ public class Parser extends ParserBase {
   }
 
   // Parse Expressions
+
+  // Expressions
   private ParseTree parseExpression() {
+    return parseAssignmentExpression();
+  }
+
+  private ParseTree parseAssignmentExpression() {
+    Token start = peek();
+    ParseTree left = parseConditionalExpression();
+    if (!peekAssignmentOperator()) {
+      return left;
+    }
+    // TODO: Check for LHS.
+    Token operator = nextToken();
+    ParseTree right = parseAssignmentExpression();
+    return new BinaryExpressionTree(getRange(start), left, operator, right);
+  }
+
+  private ParseTree parseConditionalExpression() {
+    Token start = peek();
+    ParseTree condition = parseLogicalOrExpression();
+    if (!eatOpt(TokenKind.QUESTION)) {
+      return condition;
+    }
+    ParseTree trueCase = parseAssignmentExpression();
+    eat(TokenKind.COLON);
+    ParseTree falseCase = parseAssignmentExpression();
+    return new ConditionalExpressionTree(getRange(start), condition, trueCase, falseCase);
+  }
+
+  private ParseTree parseLogicalOrExpression() {
+    Token start = peek();
+    ParseTree left = parseLogicalAndExpression();
+    while (peek(TokenKind.BAR_BAR)) {
+      Token operator = nextToken();
+      ParseTree right = parseLogicalAndExpression();
+      left = new BinaryExpressionTree(getRange(start), left, operator, right);
+    }
+    return left;
+  }
+
+  private ParseTree parseLogicalAndExpression() {
+    Token start = peek();
+    ParseTree left = parseBitwiseOrExpression();
+    while (peek(TokenKind.AMPERSAND_AMPERSAND)) {
+      Token operator = nextToken();
+      ParseTree right = parseBitwiseOrExpression();
+      left = new BinaryExpressionTree(getRange(start), left, operator, right);
+    }
+    return left;
+  }
+
+  private ParseTree parseBitwiseOrExpression() {
+    Token start = peek();
+    ParseTree left = parseBitwiseXorExpression();
+    while (peek(TokenKind.BAR)) {
+      Token operator = nextToken();
+      ParseTree right = parseBitwiseXorExpression();
+      left = new BinaryExpressionTree(getRange(start), left, operator, right);
+    }
+    return left;
+  }
+
+  private ParseTree parseBitwiseXorExpression() {
+    Token start = peek();
+    ParseTree left = parseBitwiseAndExpression();
+    while (peek(TokenKind.BAR)) {
+      Token operator = nextToken();
+      ParseTree right = parseBitwiseAndExpression();
+      left = new BinaryExpressionTree(getRange(start), left, operator, right);
+    }
+    return left;
+  }
+
+  private ParseTree parseBitwiseAndExpression() {
+    Token start = peek();
+    ParseTree left = parseEqualityExpression();
+    while (peek(TokenKind.BAR)) {
+      Token operator = nextToken();
+      ParseTree right = parseEqualityExpression();
+      left = new BinaryExpressionTree(getRange(start), left, operator, right);
+    }
+    return left;
+  }
+
+  private ParseTree parseEqualityExpression() {
+    Token start = peek();
+    ParseTree left = parseRelationalExpression();
+    while (peekEqualityOperator()) {
+      Token operator = nextToken();
+      ParseTree right = parseRelationalExpression();
+      left = new BinaryExpressionTree(getRange(start), left, operator, right);
+    }
+    return left;
+  }
+
+  private ParseTree parseRelationalExpression() {
+    Token start = peek();
+    ParseTree left = parseShiftExpression();
+    while (peekRelationalOperator()) {
+      Token operator = nextToken();
+      ParseTree right = parseShiftExpression();
+      left = new BinaryExpressionTree(getRange(start), left, operator, right);
+    }
+    return left;
+  }
+
+  private ParseTree parseShiftExpression() {
+    Token start = peek();
+    ParseTree left = parseAdditiveExpression();
+    while (peekShiftOperator()) {
+      Token operator = nextToken();
+      ParseTree right = parseAdditiveExpression();
+      left = new BinaryExpressionTree(getRange(start), left, operator, right);
+    }
+    return left;
+  }
+
+  private ParseTree parseAdditiveExpression() {
+    Token start = peek();
+    ParseTree left = parseMultiplicativeExpression();
+    while (peekAdditiveOperator()) {
+      Token operator = nextToken();
+      ParseTree right = parseMultiplicativeExpression();
+      left = new BinaryExpressionTree(getRange(start), left, operator, right);
+    }
+    return left;
+  }
+
+  private ParseTree parseMultiplicativeExpression() {
+    Token start = peek();
+    ParseTree left = parseUnaryExpression();
+    while (peekMultiplicativeOperator()) {
+      Token operator = nextToken();
+      ParseTree right = parseUnaryExpression();
+      left = new BinaryExpressionTree(getRange(start), left, operator, right);
+    }
+    return left;
+  }
+
+  private ParseTree parseUnaryExpression() {
+    Token start = peek();
+    if (peekUnaryOperator()) {
+      Token operator = nextToken();
+      return new UnaryExpressionTree(getRange(start), operator, parseUnaryExpression());
+    }
     return parsePostfixExpression();
+  }
+
+  private boolean peekUnaryOperator() {
+    switch (peekKind()) {
+    case VOID:
+    case TYPEOF:
+    case PLUS_PLUS:
+    case MINUS_MINUS:
+    case PLUS:
+    case MINUS:
+    case TILDE:
+    case BANG:
+      return true;
+    default:
+      return false;
+    }
+  }
+
+  private boolean peekMultiplicativeOperator() {
+    switch (peekKind()) {
+    case STAR:
+    case SLASH:
+    case PERCENT:
+      return true;
+    default:
+      return false;
+    }
+  }
+
+  private boolean peekAdditiveOperator() {
+    switch (peekKind()) {
+    case PLUS:
+    case MINUS:
+      return true;
+    default:
+      return false;
+    }
+  }
+
+  private boolean peekShiftOperator() {
+    switch (peekKind()) {
+    case SHIFT_LEFT:
+    case SHIFT_RIGHT:
+      return true;
+    default:
+      return false;
+    }
+  }
+
+  private boolean peekRelationalOperator() {
+    switch (peekKind()) {
+    case OPEN_ANGLE:
+    case CLOSE_ANGLE:
+    case GREATER_EQUAL:
+    case LESS_EQUAL:
+    case INSTANCEOF:
+      return true;
+    default:
+      return false;
+    }
+  }
+
+  private boolean peekEqualityOperator() {
+    switch (peekKind()) {
+    case EQUAL_EQUAL:
+    case NOT_EQUAL:
+      return true;
+    default:
+      return false;
+    }
+  }
+
+  private boolean peekAssignmentOperator() {
+    switch (peekKind()) {
+    case EQUAL:
+    case AMPERSAND_EQUAL:
+    case BAR_EQUAL:
+    case STAR_EQUAL:
+    case SLASH_EQUAL:
+    case PERCENT_EQUAL:
+    case PLUS_EQUAL:
+    case MINUS_EQUAL:
+    case LEFT_SHIFT_EQUAL:
+    case RIGHT_SHIFT_EQUAL:
+    case HAT_EQUAL:
+      return true;
+    default:
+      return false;
+    }
   }
 
   private ParseTree parsePrimaryExpression() {
     switch (peekKind()) {
+    case THIS:
+      return parseThisExpression();
+    case OPEN_SQUARE:
+      return parseArrayLiteral();
+    case OPEN_PAREN:
+      return parseParenExpression();
     case IDENTIFIER:
       return parseIdentifier();
+    case NULL:
+    case TRUE:
+    case FALSE:
     case NUMBER:
     case STRING:
+      // TODO: Regular Expression literals go here.
       return parseLiteral();
     default:
       reportError(nextToken(), "Expected expression.");
       return null;
     }
+  }
+
+  private ParseTree parseArrayLiteral() {
+    Token start = peek();
+    ImmutableList.Builder<ParseTree> elements = new ImmutableList.Builder<ParseTree>();
+    eat(TokenKind.OPEN_SQUARE);
+    while (peekAssignmentExpression()) {
+      elements.add(parseAssignmentExpression());
+    }
+    eat(TokenKind.CLOSE_SQUARE);
+    return new ArrayLiteralExpressionTree(getRange(start), elements.build());
+  }
+
+  private boolean peekAssignmentExpression() {
+    return peekExpression();
+  }
+
+  private ParseTree parseThisExpression() {
+    Token start = eat(TokenKind.THIS);
+    return new ThisExpressionTree(getRange(start));
+  }
+
+  private ParseTree parseParenExpression() {
+    Token start = peek();
+    eat(TokenKind.OPEN_PAREN);
+    ParseTree expression = parseExpression();
+    eat(TokenKind.CLOSE_PAREN);
+    return new ParenExpressionTree(getRange(start), expression);
   }
 
   private ParseTree parseIdentifier() {
@@ -493,27 +765,106 @@ public class Parser extends ParserBase {
   }
 
   private ParseTree parsePostfixExpression() {
-    ParseTree primary = parsePrimaryExpression();
+    Token start = peek();
+    ParseTree left = parseLeftHandSideExpression();
     while (peekPostfixOperator()) {
-      switch(peekKind()) {
-      case OPEN_PAREN:
-        primary = parseCallExpression(primary);
-      }
+      left = new PostfixExpressionTree(getRange(start), left, nextToken());
     }
-    return primary;
+    return left;
   }
 
-  private ParseTree parseCallExpression(ParseTree primary) {
-    ImmutableList.Builder<ParseTree> arguments = new ImmutableList.Builder<ParseTree>();
-    eat(TokenKind.OPEN_PAREN);
-    if (peekExpression()) {
-      arguments.add(parseExpression());
-      while (eatOpt(TokenKind.COMMA)) {
-        arguments.add(parseExpression());
+  private ParseTree parseLeftHandSideExpression() {
+    Token start = peek();
+    ParseTree operand = parseNewExpression();
+    while (peekCallSuffix()) {
+      switch (peekKind()) {
+      case OPEN_PAREN:
+        operand = parseCallSuffix(start, operand);
+        break;
+      case OPEN_SQUARE:
+        operand = parseArraySuffix(start, operand);
+        break;
+      case PERIOD:
+        operand = parseMemberAccessSuffix(start, operand);
+        break;
+      default:
+        throw new RuntimeException("Unexpected call suffix.");
       }
     }
-    eat(TokenKind.CLOSE_PAREN);
-    return new CallExpressionTree(getRange(primary.start()), primary, arguments.build());
+    return operand;
+  }
+
+  private ParseTree parseMemberAccessSuffix(Token start, ParseTree operand) {
+    return new MemberExpressionTree(getRange(start), operand, eatId());
+  }
+
+  private ParseTree parseCallSuffix(Token start, ParseTree operand) {
+    return new CallExpressionTree(getRange(start), operand, parseArguments());
+  }
+
+  private ParseTree parseArraySuffix(Token start, ParseTree operand) {
+    return new ArrayAccessExpressionTree(getRange(start), operand, parseArrayIndex());
+  }
+
+  private boolean peekCallSuffix() {
+    switch (peekKind()) {
+    case OPEN_PAREN:
+    case OPEN_SQUARE:
+    case PERIOD:
+      return true;
+    default:
+      return false;
+    }
+  }
+
+  private ParseTree parseNewExpression() {
+    Token start = peek();
+    if (eatOpt(TokenKind.NEW)) {
+      ParseTree operand = parseNewExpression();
+      ArgumentsTree arguments = null;
+      if (peekArguments()) {
+        arguments = parseArguments();
+      }
+      return new NewExpressionTree(getRange(start), operand, arguments);
+    } else {
+      return parseMemberExpressionNoNew();
+    }
+  }
+
+  private ParseTree parseMemberExpressionNoNew() {
+    Token start = peek();
+    ParseTree operand;
+    operand = parsePrimaryExpression();
+    while (peekMemberExpressionSuffix()) {
+      switch (peekKind()) {
+      case PERIOD:
+        operand = parseMemberAccessSuffix(start, operand);
+        break;
+      case OPEN_SQUARE:
+        operand = parseArraySuffix(start, operand);
+        break;
+      default:
+        throw new RuntimeException("Unexpected member expression suffix.");
+      }
+    }
+    return operand;
+  }
+
+  private ParseTree parseArrayIndex() {
+    eat(TokenKind.OPEN_SQUARE);
+    ParseTree index = parseExpression();
+    eat(TokenKind.CLOSE_SQUARE);
+    return index;
+  }
+
+  private boolean peekMemberExpressionSuffix() {
+    switch (peekKind()) {
+    case PERIOD:
+    case OPEN_SQUARE:
+      return true;
+    default:
+      return false;
+    }
   }
 
   private boolean peekPostfixOperator() {
@@ -532,14 +883,46 @@ public class Parser extends ParserBase {
 
   private boolean peekExpression() {
     switch (peekKind()) {
+    case OPEN_CURLY:
+    case OPEN_PAREN:
+    case OPEN_SQUARE:
+    case NULL:
+    case THIS:
+    case TRUE:
+    case FALSE:
     case IDENTIFIER:
     case NUMBER:
     case STRING:
-    // TODO: others
+    case NEW:
+    case TYPEOF:
+    case VOID:
+    case PLUS_PLUS:
+    case MINUS_MINUS:
+    case PLUS:
+    case MINUS:
+    case BANG:
+    case TILDE:
       return true;
     default:
       return false;
     }
+  }
+
+  private boolean peekArguments() {
+    return peek(TokenKind.OPEN_PAREN);
+  }
+
+  private ArgumentsTree parseArguments() {
+    Token start = peek();
+    eat(TokenKind.OPEN_PAREN);
+    ImmutableList.Builder<ParseTree> arguments = new ImmutableList.Builder<ParseTree>();
+    if (peekExpression()) {
+      do {
+        arguments.add(parseAssignmentExpression());
+      } while (eatOpt(TokenKind.COMMA));
+    }
+    eat(TokenKind.CLOSE_PAREN);
+    return new ArgumentsTree(getRange(start), arguments.build());
   }
 
   private IdentifierToken eatId() {

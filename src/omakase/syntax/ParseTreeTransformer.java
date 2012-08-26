@@ -48,6 +48,12 @@ public class ParseTreeTransformer {
     }
 
     switch (tree.kind) {
+    case ARGUMENTS:
+      return transform(tree.asArguments());
+    case ARRAY_ACCESS_EXPRESSION:
+      return transform(tree.asArrayAccessExpression());
+    case ARRAY_LITERAL_EXPRESSION:
+      return transform(tree.asArrayLiteralExpression());
     case BINARY_EXPRESSION:
       return transform(tree.asBinaryExpression());
     case BLOCK:
@@ -62,6 +68,8 @@ public class ParseTreeTransformer {
       return transform(tree.asCatchClause());
     case CLASS_DECLARATION:
       return transform(tree.asClassDeclaration());
+    case CONDITIONAL_EXPRESSION:
+      return transform(tree.asConditionalExpression());
     case CONTINUE_STATEMENT:
       return transform(tree.asContinueStatement());
     case DEBUGGER_STATEMENT:
@@ -90,20 +98,28 @@ public class ParseTreeTransformer {
       return transform(tree.asLiteralExpression());
     case METHOD_DECLARATION:
       return transform(tree.asMethodDeclaration());
+    case NEW_EXPRESSION:
+      return transform(tree.asNewExpression());
     case PARAMETER_DECLARATION:
       return transform(tree.asParameterDeclaration());
     case PAREN_EXPRESSION:
       return transform(tree.asParenExpression());
+    case POSTFIX_EXPRESSION:
+      return transform(tree.asPostfixExpression());
     case RETURN_STATEMENT:
       return transform(tree.asReturnStatement());
     case SOURCE_FILE:
       return transform(tree.asSourceFile());
     case SWITCH_STATEMENT:
       return transform(tree.asSwitchStatement());
+    case THIS_EXPRESSION:
+      return transform(tree.asThisExpression());
     case THROW_STATEMENT:
       return transform(tree.asThrowStatement());
     case TRY_STATEMENT:
       return transform(tree.asTryStatement());
+    case UNARY_EXPRESSION:
+      return transform(tree.asUnaryExpression());
     case VARIABLE_DECLARATION:
       return transform(tree.asVariableDeclaration());
     case VARIABLE_STATEMENT:
@@ -205,6 +221,39 @@ public class ParseTreeTransformer {
     }
   }
 
+  protected ParseTree transform(ArgumentsTree tree) {
+    ImmutableList<ParseTree> arguments = transformList(tree.arguments);
+    if (arguments == tree.arguments) {
+      return tree;
+    }
+    return new ArgumentsTree(
+        null,
+        arguments);
+  }
+
+  protected ParseTree transform(ArrayAccessExpressionTree tree) {
+    ParseTree object = transformAny(tree.object);
+    ParseTree member = transformAny(tree.member);
+    if (object == tree.object &&
+        member == tree.member) {
+      return tree;
+    }
+    return new ArrayAccessExpressionTree(
+        null,
+        object,
+        member);
+  }
+
+  protected ParseTree transform(ArrayLiteralExpressionTree tree) {
+    ImmutableList<ParseTree> elements = transformList(tree.elements);
+    if (elements == tree.elements) {
+      return tree;
+    }
+    return new ArrayLiteralExpressionTree(
+        null,
+        elements);
+  }
+
   protected ParseTree transform(BinaryExpressionTree tree) {
     ParseTree left = transformAny(tree.left);
     ParseTree right = transformAny(tree.right);
@@ -235,7 +284,7 @@ public class ParseTreeTransformer {
 
   protected ParseTree transform(CallExpressionTree tree) {
     ParseTree function = transformAny(tree.function);
-    ImmutableList<ParseTree> arguments = transformList(tree.arguments);
+    ParseTree arguments = transformAny(tree.arguments);
     if (function == tree.function &&
         arguments == tree.arguments) {
       return tree;
@@ -243,7 +292,7 @@ public class ParseTreeTransformer {
     return new CallExpressionTree(
         null,
         function,
-        arguments);
+        arguments.asArguments());
   }
 
   protected ParseTree transform(CaseClauseTree tree) {
@@ -279,6 +328,22 @@ public class ParseTreeTransformer {
         null,
         tree.name,
         members);
+  }
+
+  protected ParseTree transform(ConditionalExpressionTree tree) {
+    ParseTree condition = transformAny(tree.condition);
+    ParseTree left = transformAny(tree.left);
+    ParseTree right = transformAny(tree.right);
+    if (condition == tree.condition &&
+        left == tree.left &&
+        right == tree.right) {
+      return tree;
+    }
+    return new ConditionalExpressionTree(
+        null,
+        condition,
+        left,
+        right);
   }
 
   protected ParseTree transform(ContinueStatementTree tree) {
@@ -423,6 +488,19 @@ public class ParseTreeTransformer {
         body);
   }
 
+  protected ParseTree transform(NewExpressionTree tree) {
+    ParseTree constructor = transformAny(tree.constructor);
+    ParseTree arguments = transformAny(tree.arguments);
+    if (constructor == tree.constructor &&
+        arguments == tree.arguments) {
+      return tree;
+    }
+    return new NewExpressionTree(
+        null,
+        constructor,
+        arguments.asArguments());
+  }
+
   protected ParseTree transform(ParameterDeclarationTree tree) {
     return tree;
   }
@@ -435,6 +513,17 @@ public class ParseTreeTransformer {
     return new ParenExpressionTree(
         null,
         expression);
+  }
+
+  protected ParseTree transform(PostfixExpressionTree tree) {
+    ParseTree operand = transformAny(tree.operand);
+    if (operand == tree.operand) {
+      return tree;
+    }
+    return new PostfixExpressionTree(
+        null,
+        operand,
+        tree.operator);
   }
 
   protected ParseTree transform(ReturnStatementTree tree) {
@@ -470,6 +559,10 @@ public class ParseTreeTransformer {
         caseClauses);
   }
 
+  protected ParseTree transform(ThisExpressionTree tree) {
+    return tree;
+  }
+
   protected ParseTree transform(ThrowStatementTree tree) {
     ParseTree expression = transformAny(tree.expression);
     if (expression == tree.expression) {
@@ -494,6 +587,17 @@ public class ParseTreeTransformer {
         body.asBlock(),
         catchClause.asCatchClause(),
         finallyClause.asBlock());
+  }
+
+  protected ParseTree transform(UnaryExpressionTree tree) {
+    ParseTree operand = transformAny(tree.operand);
+    if (operand == tree.operand) {
+      return tree;
+    }
+    return new UnaryExpressionTree(
+        null,
+        tree.operator,
+        operand);
   }
 
   protected ParseTree transform(VariableDeclarationTree tree) {

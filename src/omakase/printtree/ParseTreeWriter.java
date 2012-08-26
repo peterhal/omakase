@@ -38,6 +38,13 @@ public class ParseTreeWriter extends ParseTreeVisitor {
   }
 
   @Override
+  protected void visit(ArgumentsTree tree) {
+    write(TokenKind.OPEN_PAREN);
+    writeCommaSeparatedList(tree.arguments);
+    write(TokenKind.CLOSE_PAREN);
+  }
+
+  @Override
   protected void visit(FunctionExpressionTree tree) {
     visit(tree.parameters);
     // TODO: write(=>)
@@ -47,9 +54,7 @@ public class ParseTreeWriter extends ParseTreeVisitor {
   @Override
   protected void visit(CallExpressionTree tree) {
     visitAny(tree.function);
-    write(TokenKind.OPEN_PAREN);
-    writeCommaSeparatedList(tree.arguments);
-    write(TokenKind.CLOSE_PAREN);
+    visitAny(tree.arguments);
   }
 
   @Override

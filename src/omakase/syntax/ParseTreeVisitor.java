@@ -34,6 +34,15 @@ public class ParseTreeVisitor {
     }
 
     switch (tree.kind) {
+    case ARGUMENTS:
+      visit(tree.asArguments());
+      break;
+    case ARRAY_ACCESS_EXPRESSION:
+      visit(tree.asArrayAccessExpression());
+      break;
+    case ARRAY_LITERAL_EXPRESSION:
+      visit(tree.asArrayLiteralExpression());
+      break;
     case BINARY_EXPRESSION:
       visit(tree.asBinaryExpression());
       break;
@@ -54,6 +63,9 @@ public class ParseTreeVisitor {
       break;
     case CLASS_DECLARATION:
       visit(tree.asClassDeclaration());
+      break;
+    case CONDITIONAL_EXPRESSION:
+      visit(tree.asConditionalExpression());
       break;
     case CONTINUE_STATEMENT:
       visit(tree.asContinueStatement());
@@ -97,11 +109,17 @@ public class ParseTreeVisitor {
     case METHOD_DECLARATION:
       visit(tree.asMethodDeclaration());
       break;
+    case NEW_EXPRESSION:
+      visit(tree.asNewExpression());
+      break;
     case PARAMETER_DECLARATION:
       visit(tree.asParameterDeclaration());
       break;
     case PAREN_EXPRESSION:
       visit(tree.asParenExpression());
+      break;
+    case POSTFIX_EXPRESSION:
+      visit(tree.asPostfixExpression());
       break;
     case RETURN_STATEMENT:
       visit(tree.asReturnStatement());
@@ -112,11 +130,17 @@ public class ParseTreeVisitor {
     case SWITCH_STATEMENT:
       visit(tree.asSwitchStatement());
       break;
+    case THIS_EXPRESSION:
+      visit(tree.asThisExpression());
+      break;
     case THROW_STATEMENT:
       visit(tree.asThrowStatement());
       break;
     case TRY_STATEMENT:
       visit(tree.asTryStatement());
+      break;
+    case UNARY_EXPRESSION:
+      visit(tree.asUnaryExpression());
       break;
     case VARIABLE_DECLARATION:
       visit(tree.asVariableDeclaration());
@@ -265,6 +289,19 @@ public class ParseTreeVisitor {
     }
   }
 
+  protected void visit(ArgumentsTree tree) {
+    visitList(tree.arguments);
+  }
+
+  protected void visit(ArrayAccessExpressionTree tree) {
+    visitAny(tree.object);
+    visitAny(tree.member);
+  }
+
+  protected void visit(ArrayLiteralExpressionTree tree) {
+    visitList(tree.elements);
+  }
+
   protected void visit(BinaryExpressionTree tree) {
     visitAny(tree.left);
     visitAny(tree.right);
@@ -279,7 +316,7 @@ public class ParseTreeVisitor {
 
   protected void visit(CallExpressionTree tree) {
     visitAny(tree.function);
-    visitList(tree.arguments);
+    visitAny(tree.arguments);
   }
 
   protected void visit(CaseClauseTree tree) {
@@ -293,6 +330,12 @@ public class ParseTreeVisitor {
 
   protected void visit(ClassDeclarationTree tree) {
     visitList(tree.members);
+  }
+
+  protected void visit(ConditionalExpressionTree tree) {
+    visitAny(tree.condition);
+    visitAny(tree.left);
+    visitAny(tree.right);
   }
 
   protected void visit(ContinueStatementTree tree) {
@@ -356,11 +399,20 @@ public class ParseTreeVisitor {
     visitAny(tree.body);
   }
 
+  protected void visit(NewExpressionTree tree) {
+    visitAny(tree.constructor);
+    visitAny(tree.arguments);
+  }
+
   protected void visit(ParameterDeclarationTree tree) {
   }
 
   protected void visit(ParenExpressionTree tree) {
     visitAny(tree.expression);
+  }
+
+  protected void visit(PostfixExpressionTree tree) {
+    visitAny(tree.operand);
   }
 
   protected void visit(ReturnStatementTree tree) {
@@ -376,6 +428,9 @@ public class ParseTreeVisitor {
     visitList(tree.caseClauses);
   }
 
+  protected void visit(ThisExpressionTree tree) {
+  }
+
   protected void visit(ThrowStatementTree tree) {
     visitAny(tree.expression);
   }
@@ -384,6 +439,10 @@ public class ParseTreeVisitor {
     visitAny(tree.body);
     visitAny(tree.catchClause);
     visitAny(tree.finallyClause);
+  }
+
+  protected void visit(UnaryExpressionTree tree) {
+    visitAny(tree.operand);
   }
 
   protected void visit(VariableDeclarationTree tree) {

@@ -14,19 +14,19 @@
 
 package omakase.syntax.trees;
 
-import omakase.syntax.tokens.IdentifierToken;
 import omakase.util.SourceRange;
 
 /**
- *
  */
-public class MemberExpressionTree extends ParseTree {
-  public final IdentifierToken name;
-  public final ParseTree object;
+public class ConditionalExpressionTree extends ParseTree {
+  public final ParseTree condition;
+  public final ParseTree left;
+  public final ParseTree right;
 
-  public MemberExpressionTree(SourceRange location, ParseTree object, IdentifierToken name) {
-    super(location, ParseTreeKind.IDENTIFIER_EXPRESSION);
-    this.object = object;
-    this.name = name;
+  public ConditionalExpressionTree(SourceRange location, ParseTree condition, ParseTree left, ParseTree right) {
+    super(location, ParseTreeKind.CONDITIONAL_EXPRESSION);
+    this.condition = condition;
+    this.left = left;
+    this.right = right;
   }
 }

@@ -33,6 +33,18 @@ public class ParseTree {
     return location.start;
   }
 
+  public ArgumentsTree asArguments() {
+    return (ArgumentsTree) this;
+  }
+
+  public ArrayAccessExpressionTree asArrayAccessExpression() {
+    return (ArrayAccessExpressionTree) this;
+  }
+
+  public ArrayLiteralExpressionTree asArrayLiteralExpression() {
+    return (ArrayLiteralExpressionTree) this;
+  }
+
   public BinaryExpressionTree asBinaryExpression() {
     return (BinaryExpressionTree) this;
   }
@@ -59,6 +71,10 @@ public class ParseTree {
 
   public ClassDeclarationTree asClassDeclaration() {
     return (ClassDeclarationTree) this;
+  }
+
+  public ConditionalExpressionTree asConditionalExpression() {
+    return (ConditionalExpressionTree) this;
   }
 
   public ContinueStatementTree asContinueStatement() {
@@ -117,12 +133,20 @@ public class ParseTree {
     return (MethodDeclarationTree) this;
   }
 
+  public NewExpressionTree asNewExpression() {
+    return (NewExpressionTree) this;
+  }
+
   public ParameterDeclarationTree asParameterDeclaration() {
     return (ParameterDeclarationTree) this;
   }
 
   public ParenExpressionTree asParenExpression() {
     return (ParenExpressionTree) this;
+  }
+
+  public PostfixExpressionTree asPostfixExpression() {
+    return (PostfixExpressionTree) this;
   }
 
   public ReturnStatementTree asReturnStatement() {
@@ -137,12 +161,20 @@ public class ParseTree {
     return (SwitchStatementTree) this;
   }
 
+  public ThisExpressionTree asThisExpression() {
+    return (ThisExpressionTree) this;
+  }
+
   public ThrowStatementTree asThrowStatement() {
     return (ThrowStatementTree) this;
   }
 
   public TryStatementTree asTryStatement() {
     return (TryStatementTree) this;
+  }
+
+  public UnaryExpressionTree asUnaryExpression() {
+    return (UnaryExpressionTree) this;
   }
 
   public VariableDeclarationTree asVariableDeclaration() {
