@@ -26,6 +26,11 @@ for parse_source in parser/*.oma ; do
   ../omaparse.sh $parse_source >> $RESULTS_FILE 2>&1
 done
 
+echo Compiling Tests ...
+for parse_source in parser/*.oma ; do
+  ../oma.sh $parse_source >> $RESULTS_FILE 2>&1
+done
+
 if diff expected-results.txt $RESULTS_FILE > $OUT_DIR/results.dif ; then
   echo Tests Passed.
 else

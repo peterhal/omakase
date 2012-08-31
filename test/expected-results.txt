@@ -194,3 +194,160 @@ class Program {
     print ( "Hello World!" ) ;
   }
 }
+( function ( ) {
+  Program = function ( ) {
+  }
+  ;
+  Program . prototype . main = function ( ) {
+    print ( "Hello World!" ) ;
+  }
+  ;
+}
+( ) )( function ( ) {
+  Program = function ( ) {
+  }
+  ;
+  Program . prototype . main = function ( ) {
+    print ( "Hello World!" ) ;
+  }
+  ;
+}
+( ) )( function ( ) {
+  Program = function ( ) {
+  }
+  ;
+  Program . prototype . parseVariableStatement = function ( ) {
+    var a ;
+    var a b c ;
+    var d = a ;
+    var e = a f = b g = c ;
+  }
+  ;
+  Program . prototype . parseEmptyStatement = function ( ) {
+    ;
+  }
+  ;
+  Program . prototype . parseForStatement = function ( ) {
+    for ( ; ; )
+    ;
+    for ( a ; b ; c )
+    ;
+    for ( var a ;
+    ; b ; c )
+    ;
+    for ( var a = b ;
+    ; c ; d )
+    ;
+  }
+  ;
+  Program . prototype . parseForInStatement = function ( ) {
+    for ( a in b )
+    ;
+    for ( a in b )
+    ;
+  }
+  ;
+  Program . prototype . parseIfStatement = function ( ) {
+    if ( cond )
+      {
+      }
+    if ( cond )
+      {
+      }
+    else
+      {
+      }
+    if ( cond )
+      ;
+    if ( cond )
+      ;
+    else
+      ;
+  }
+  ;
+  Program . prototype . parseDoStatement = function ( ) {
+    do
+    {
+    }
+    while ( e ) ;
+    do
+    ;
+    while ( e ) ;
+  }
+  ;
+  Program . prototype . parseWhileStatement = function ( ) {
+    while ( e )
+    ;
+    while ( e )
+    {
+    }
+  }
+  ;
+  Program . prototype . parseBreakStatement = function ( ) {
+    break ;
+  }
+  ;
+  Program . prototype . parseContinueStatement = function ( ) {
+    continue ;
+  }
+  ;
+  Program . prototype . parseReturnStatement = function ( ) {
+    return ;
+    return a ;
+  }
+  ;
+  Program . prototype . parseSwitchStatement = function ( ) {
+    switch ( v )
+    { } switch ( v )
+    { case a :
+    } switch ( v )
+    { default :
+    } switch ( v )
+    { case a :
+      ;
+    case b :
+    case c :
+      ;
+    default :
+      ;
+    } }
+  ;
+  Program . prototype . parseThrowStatement = function ( ) {
+    throw e ;
+  }
+  ;
+  Program . prototype . parseTryStatement = function ( ) {
+    try
+    {
+      ;
+    }
+    catch ( e )
+    {
+      ;
+    }
+    try
+    {
+    }
+    finally {
+      ;
+    }
+    try
+    {
+    }
+    catch ( e )
+    {
+    }
+    finally {
+    }
+  }
+  ;
+  Program . prototype . parseDebuggerStatement = function ( ) {
+    debugger ;
+  }
+  ;
+  Program . prototype . main = function ( ) {
+    print ( "Hello World!" ) ;
+  }
+  ;
+}
+( ) )
