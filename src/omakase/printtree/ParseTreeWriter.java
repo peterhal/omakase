@@ -162,7 +162,9 @@ public class ParseTreeWriter extends ParseTreeVisitor {
     write(TokenKind.FOR);
     write(TokenKind.OPEN_PAREN);
     visitAny(tree.initializer);
-    write(TokenKind.SEMI_COLON);
+    if (tree.initializer == null || !tree.initializer.isVariableStatement()) {
+      write(TokenKind.SEMI_COLON);
+    }
     visitAny(tree.condition);
     write(TokenKind.SEMI_COLON);
     visitAny(tree.increment);
@@ -195,26 +197,6 @@ public class ParseTreeWriter extends ParseTreeVisitor {
       visitAny(tree.elseClause);
       outdent();
     }
-  }
-
-  @Override
-  protected void visit(NewExpressionTree tree) {
-    write(TokenKind.NEW);
-    visitAny(tree.constructor);
-    visitAny(tree.arguments);
-  }
-
-  @Override
-  protected void visit(ParenExpressionTree tree) {
-    write(TokenKind.OPEN_PAREN);
-    visitAny(tree.expression);
-    write(TokenKind.CLOSE_PAREN);
-  }
-
-  @Override
-  protected void visit(PostfixExpressionTree tree) {
-    visitAny(tree.operand);
-    write(tree.operator);
   }
 
   @Override

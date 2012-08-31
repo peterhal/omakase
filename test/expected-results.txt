@@ -76,3 +76,71 @@ class Program {
     print ( "Hello World!" ) ;
   }
 }
+class Program {
+  parseVariableStatement ( ) {
+    var a ;
+    var a b c ;
+    var d = a ;
+    var e = a f = b g = c ;
+  }
+  parseEmptyStatement ( ) {
+    ;
+  }
+  parseForStatement ( ) {
+    for ( ; ; )
+    ;
+    for ( a ; b ; c )
+    ;
+    for ( var a ;
+    b ; c )
+    ;
+    for ( var a = b ;
+    c ; d )
+    ;
+  }
+  parseForInStatement ( ) {
+    for ( a in b )
+    ;
+    for ( a in b )
+    ;
+  }
+  parseIfStatement ( ) {
+    if ( cond )
+    {
+    }
+    if ( cond )
+    {
+    }
+    else
+      {
+      }
+    if ( cond )
+    ;
+    if ( cond )
+    ;
+    else
+      ;
+  }
+  parseReturnStatement ( ) {
+    return ;
+    return a ;
+  }
+  parseSwitchStatement ( ) {
+    switch ( v )
+    { } switch ( v )
+    { case a :
+    } switch ( v )
+    { default :
+    } switch ( v )
+    { case a :
+      ;
+    case b :
+    case c :
+      ;
+    default :
+      ;
+    } }
+  native main ( ) {
+    print ( "Hello World!" ) ;
+  }
+}

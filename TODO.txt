@@ -1,9 +1,10 @@
+Next Up
+-------
+- testing
+- type system
+
 TODO
 ----
-
-Next Up
-- sane this binding
-
 - marketing
   - mission
   - samples
@@ -63,6 +64,9 @@ Next Up
   - optimization
 - ide
 
+Mission
+-------
+
 Omakase is a language for developing large web applications.
 - interop with the browser DOM and JS (importing/exporting/inline JS)
 - types - non-optional, largely inferred rather than declared
@@ -75,8 +79,8 @@ Omakase is a language for developing large web applications.
 - IDE - code browsing, refactoring?
 
 
-Doc Comments as Attributes
---------------------------
+Design: Doc Comments as Attributes
+----------------------------------
 
 Use compile time only attributes plus multi-line string literals for documentation comments.
 

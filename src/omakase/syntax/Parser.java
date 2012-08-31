@@ -165,6 +165,8 @@ public class Parser extends ParserBase {
       return parseExpressionStatement();
 
     // statements
+    case OPEN_CURLY:
+      return parseBlock();
     case VAR:
       return parseVariableStatement();
     case SEMI_COLON:
@@ -284,7 +286,6 @@ public class Parser extends ParserBase {
             new VariableStatementTree(getRange(variableStart), parseRemainingVariableDeclarations(variableDeclaration)));
       }
     case SEMI_COLON:
-      eat(TokenKind.SEMI_COLON);
       return parseForStatement(start, null);
     default:
       ParseTree initializer = parseExpression();
@@ -299,6 +300,7 @@ public class Parser extends ParserBase {
   private ParseTree parseForStatement(Token start, ParseTree initializer) {
     eat(TokenKind.SEMI_COLON);
     ParseTree condition = peek(TokenKind.SEMI_COLON) ? null : parseExpression();
+    eat(TokenKind.SEMI_COLON);
     ParseTree increment = peek(TokenKind.CLOSE_PAREN) ? null : parseExpression();
     eat(TokenKind.CLOSE_PAREN);
     return new ForStatementTree(getRange(start), initializer, condition, increment, parseStatement());
@@ -329,7 +331,10 @@ public class Parser extends ParserBase {
   private ParseTree parseReturnStatement() {
     Token start = peek();
     eat(TokenKind.RETURN);
-    ParseTree expression = parseExpression();
+    ParseTree expression = null;
+    if (peekExpression()) {
+      expression = parseExpression();
+    }
     eat(TokenKind.SEMI_COLON);
     return new ReturnStatementTree(getRange(start), expression);
   }
@@ -369,6 +374,7 @@ public class Parser extends ParserBase {
 
   private ParseTree parseCase() {
     Token start = peek();
+    eat(TokenKind.CASE);
     ParseTree expression = parseExpression();
     eat(TokenKind.COLON);
     return new CaseClauseTree(getRange(start), expression, parseStatementList());
