@@ -38,6 +38,27 @@ class Program {
     if (cond)  ; else ;
   }
 
+  parseDoStatement() {
+    do {
+
+    } while (e);
+
+    do ; while (e);
+  }
+
+  parseWhileStatement() {
+    while (e) ;
+    while (e) {}
+  }
+
+  parseBreakStatement() {
+    break;
+  }
+
+  parseContinueStatement() {
+    continue;
+  }
+
   parseReturnStatement() {
     return;
     return a;
@@ -63,7 +84,37 @@ class Program {
       ;
     }
   }
-  
+
+  parseThrowStatement() {
+    throw e;
+  }
+
+  parseTryStatement() {
+    try {
+      ;
+    } catch (e) {
+      ;
+    }
+
+    try {
+
+    } finally {
+      ;
+    }
+
+    try {
+
+    } catch (e) {
+
+    } finally {
+
+    }
+  }
+
+  parseDebuggerStatement() {
+    debugger;
+  }
+
   // expressions
 
   native main() {

@@ -121,6 +121,26 @@ class Program {
     else
       ;
   }
+  parseDoStatement ( ) {
+    do {
+    }
+    while ( e ) ;
+    do ;
+    while ( e ) ;
+  }
+  parseWhileStatement ( ) {
+    while ( e )
+    ;
+    while ( e )
+    {
+    }
+  }
+  parseBreakStatement ( ) {
+    break ;
+  }
+  parseContinueStatement ( ) {
+    continue ;
+  }
   parseReturnStatement ( ) {
     return ;
     return a ;
@@ -140,6 +160,36 @@ class Program {
     default :
       ;
     } }
+  parseThrowStatement ( ) {
+    throw e ;
+  }
+  parseTryStatement ( ) {
+    try
+    {
+      ;
+    }
+    catch ( e )
+    {
+      ;
+    }
+    try
+    {
+    }
+    finally {
+      ;
+    }
+    try
+    {
+    }
+    catch ( e )
+    {
+    }
+    finally {
+    }
+  }
+  parseDebuggerStatement ( ) {
+    debugger ;
+  }
   native main ( ) {
     print ( "Hello World!" ) ;
   }

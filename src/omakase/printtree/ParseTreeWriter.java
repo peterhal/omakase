@@ -132,6 +132,7 @@ public class ParseTreeWriter extends ParseTreeVisitor {
   protected void visit(DoStatementTree tree) {
     write(TokenKind.DO);
     visitAny(tree.statement);
+    write(TokenKind.WHILE);
     write(TokenKind.OPEN_PAREN);
     visitAny(tree.condition);
     write(TokenKind.CLOSE_PAREN);
@@ -243,7 +244,10 @@ public class ParseTreeWriter extends ParseTreeVisitor {
     writeLine();
     visitAny(tree.body);
     visitAny(tree.catchClause);
-    visitAny(tree.finallyClause);
+    if (tree.finallyClause != null) {
+      write(TokenKind.FINALLY);
+      visitAny(tree.finallyClause);
+    }
   }
 
   @Override
