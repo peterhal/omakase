@@ -106,6 +106,9 @@ public class ParseTreeVisitor {
     case LITERAL_EXPRESSION:
       visit(tree.asLiteralExpression());
       break;
+    case MEMBER_EXPRESSION:
+      visit(tree.asMemberExpression());
+      break;
     case METHOD_DECLARATION:
       visit(tree.asMethodDeclaration());
       break;
@@ -392,6 +395,10 @@ public class ParseTreeVisitor {
   }
 
   protected void visit(LiteralExpressionTree tree) {
+  }
+
+  protected void visit(MemberExpressionTree tree) {
+    visitAny(tree.object);
   }
 
   protected void visit(MethodDeclarationTree tree) {

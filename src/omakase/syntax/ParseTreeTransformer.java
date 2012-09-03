@@ -97,6 +97,8 @@ public class ParseTreeTransformer {
       return transform(tree.asIfStatement());
     case LITERAL_EXPRESSION:
       return transform(tree.asLiteralExpression());
+    case MEMBER_EXPRESSION:
+      return transform(tree.asMemberExpression());
     case METHOD_DECLARATION:
       return transform(tree.asMethodDeclaration());
     case NEW_EXPRESSION:
@@ -472,6 +474,17 @@ public class ParseTreeTransformer {
 
   protected ParseTree transform(LiteralExpressionTree tree) {
     return tree;
+  }
+
+  protected ParseTree transform(MemberExpressionTree tree) {
+    ParseTree object = transformAny(tree.object);
+    if (object == tree.object) {
+      return tree;
+    }
+    return new MemberExpressionTree(
+        null,
+        tree.name,
+        object);
   }
 
   protected ParseTree transform(MethodDeclarationTree tree) {

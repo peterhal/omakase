@@ -129,6 +129,10 @@ public class ParseTree {
     return (LiteralExpressionTree) this;
   }
 
+  public MemberExpressionTree asMemberExpression() {
+    return (MemberExpressionTree) this;
+  }
+
   public MethodDeclarationTree asMethodDeclaration() {
     return (MethodDeclarationTree) this;
   }
@@ -463,6 +467,10 @@ public class ParseTree {
 
   public boolean isLiteralExpression() {
     return this.kind == ParseTreeKind.LITERAL_EXPRESSION;
+  }
+
+  public boolean isMemberExpression() {
+    return this.kind == ParseTreeKind.MEMBER_EXPRESSION;
   }
 
   public boolean isMethodDeclaration() {
