@@ -771,7 +771,7 @@ public class ParseTreeWriter extends ParseTreeVisitor {
   }
 
   private void write(TokenKind kind) {
-    write(kind.toString());
+    write(kind.value());
   }
 
   private void write(String value) {

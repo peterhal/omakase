@@ -116,6 +116,15 @@ class Program {
   }
 
   // expressions
+  parseFunctionExpression() {
+    a = () -> b;
+    a = (x) -> x;
+    a = (x, y) -> x + y;
+
+    a = () -> {};
+    a = (x) -> {};
+    a = (x, y) -> {};
+  }
 
   native main() {
     print("Hello World!");

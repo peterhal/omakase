@@ -190,6 +190,20 @@ class Program {
   parseDebuggerStatement ( ) {
     debugger ;
   }
+  parseFunctionExpression ( ) {
+    a = ( ) -> b ;
+    a = ( x ) -> x ;
+    a = ( x y ) -> x + y ;
+    a = ( ) -> {
+    }
+    ;
+    a = ( x ) -> {
+    }
+    ;
+    a = ( x y ) -> {
+    }
+    ;
+  }
   native main ( ) {
     print ( "Hello World!" ) ;
   }
@@ -343,6 +357,30 @@ class Program {
   ;
   Program . prototype . parseDebuggerStatement = function ( ) {
     debugger ;
+  }
+  ;
+  Program . prototype . parseFunctionExpression = function ( ) {
+    a = ( function ( ) {
+      return b ;
+    }
+    ) . bind ( this ) ;
+    a = ( function ( x ) {
+      return x ;
+    }
+    ) . bind ( this ) ;
+    a = ( function ( x y ) {
+      return x + y ;
+    }
+    ) . bind ( this ) ;
+    a = ( function ( ) {
+    }
+    ) . bind ( this ) ;
+    a = ( function ( x ) {
+    }
+    ) . bind ( this ) ;
+    a = ( function ( x y ) {
+    }
+    ) . bind ( this ) ;
   }
   ;
   Program . prototype . main = function ( ) {

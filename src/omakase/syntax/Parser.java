@@ -562,7 +562,7 @@ public class Parser extends ParserBase {
     if (!peek(index, TokenKind.CLOSE_PAREN)) {
       return false;
     }
-    return peek(index, TokenKind.ARROW);
+    return peek(index + 1, TokenKind.ARROW);
   }
 
   private ParseTree parseConditionalExpression() {

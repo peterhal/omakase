@@ -21,8 +21,8 @@ import omakase.util.SourceRange;
  *
  */
 public class MemberExpressionTree extends ParseTree {
-  public final IdentifierToken name;
   public final ParseTree object;
+  public final IdentifierToken name;
 
   public MemberExpressionTree(SourceRange location, ParseTree object, IdentifierToken name) {
     super(location, ParseTreeKind.MEMBER_EXPRESSION);

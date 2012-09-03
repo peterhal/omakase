@@ -43,7 +43,7 @@ public class Token {
     if (hasValue()) {
       return valueString();
     } else {
-      return kind.name();
+      return kind.value();
     }
   }
   

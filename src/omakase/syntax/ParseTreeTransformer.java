@@ -483,8 +483,8 @@ public class ParseTreeTransformer {
     }
     return new MemberExpressionTree(
         null,
-        tree.name,
-        object);
+        object,
+        tree.name);
   }
 
   protected ParseTree transform(MethodDeclarationTree tree) {
