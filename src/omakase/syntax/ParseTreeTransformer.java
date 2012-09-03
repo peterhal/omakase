@@ -22,6 +22,7 @@ import omakase.syntax.trees.*;
  */
 public class ParseTreeTransformer {
 
+  @SuppressWarnings("unchecked")
   public <T extends ParseTree> ImmutableList<T> transformList(ImmutableList<T> trees) {
     ImmutableList.Builder<T> result = null;
     for (int i = 0; i < trees.size(); i++) {
