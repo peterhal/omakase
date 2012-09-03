@@ -483,12 +483,12 @@ public class Parser extends ParserBase {
   // Parse Expressions
 
   // Expressions
-  private ParseTree parseExpression() {
-    return parseAssignmentExpression();
-  }
 
-  private ParseTree parseAssignmentExpression() {
-    Token start = peek();
+  // expression:
+  //    function-expression
+  //    conditional-expression
+  //    assignment-expression
+  private ParseTree parseExpression() {
     if (peekFunction()) {
       return parseFunction();
     }
@@ -496,10 +496,38 @@ public class Parser extends ParserBase {
     if (!peekAssignmentOperator()) {
       return left;
     }
-    // TODO: Check for LHS.
+    return parseAssignmentExpression(left);
+  }
+
+  private ParseTree parseAssignmentExpression(ParseTree left) {
     Token operator = nextToken();
-    ParseTree right = parseAssignmentExpression();
-    return new BinaryExpressionTree(getRange(start), left, operator, right);
+    checkForLeftHandSideExpression(left, operator);
+    ParseTree right = parseExpression();
+    return new BinaryExpressionTree(getRange(left.start()), left, operator, right);
+  }
+
+  private void checkForLeftHandSideExpression(ParseTree left, Token operator) {
+    switch (left.kind) {
+    case ARRAY_ACCESS_EXPRESSION:
+    case CALL_EXPRESSION:
+    case PAREN_EXPRESSION:
+    case IDENTIFIER_EXPRESSION:
+    case MEMBER_EXPRESSION:
+    case NEW_EXPRESSION:
+    case POSTFIX_EXPRESSION:
+    case THIS_EXPRESSION:
+    case UNARY_EXPRESSION:
+      break;
+    case ARRAY_LITERAL_EXPRESSION:
+    case BINARY_EXPRESSION:
+    case CONDITIONAL_EXPRESSION:
+    case FUNCTION_EXPRESSION:
+    case LITERAL_EXPRESSION:
+      reportError(operator, "Left hand side of an assignment operator may not be conditional, function, literal or binary expressions.");
+      break;
+    default:
+      throw new RuntimeException("Unexpected expression kind");
+    }
   }
 
   private ParseTree parseFunction() {
@@ -543,9 +571,9 @@ public class Parser extends ParserBase {
     if (!eatOpt(TokenKind.QUESTION)) {
       return condition;
     }
-    ParseTree trueCase = parseAssignmentExpression();
+    ParseTree trueCase = parseExpression();
     eat(TokenKind.COLON);
-    ParseTree falseCase = parseAssignmentExpression();
+    ParseTree falseCase = parseExpression();
     return new ConditionalExpressionTree(getRange(start), condition, trueCase, falseCase);
   }
 
@@ -785,7 +813,7 @@ public class Parser extends ParserBase {
     ImmutableList.Builder<ParseTree> elements = new ImmutableList.Builder<ParseTree>();
     eat(TokenKind.OPEN_SQUARE);
     while (peekAssignmentExpression()) {
-      elements.add(parseAssignmentExpression());
+      elements.add(parseExpression());
     }
     eat(TokenKind.CLOSE_SQUARE);
     return new ArrayLiteralExpressionTree(getRange(start), elements.build());
@@ -967,7 +995,7 @@ public class Parser extends ParserBase {
     ImmutableList.Builder<ParseTree> arguments = new ImmutableList.Builder<ParseTree>();
     if (peekExpression()) {
       do {
-        arguments.add(parseAssignmentExpression());
+        arguments.add(parseExpression());
       } while (eatOpt(TokenKind.COMMA));
     }
     eat(TokenKind.CLOSE_PAREN);

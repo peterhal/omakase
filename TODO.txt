@@ -1,6 +1,7 @@
 Next Up
 -------
 - testing
+- class declarations
 - type system
 
 TODO
