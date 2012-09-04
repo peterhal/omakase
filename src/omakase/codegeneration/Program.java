@@ -43,26 +43,8 @@ public class Program {
     if (project == null) {
       return;
     }
-    parseProject(project);
-    if (!project.errorReporter().hadError()) {
-      writeProject(project);
-    }
-  }
-
-  private static void writeProject(Project project) {
-    for (ParseTree tree : project.trees()) {
-      JavascriptTransformer transformer = new JavascriptTransformer();
-      ParseTree result = transformer.transformAny(tree);
-      ParseTreeWriter writer = new ParseTreeWriter(System.out);
-      writer.visitAny(result);
-    }
-  }
-
-  private static void parseProject(Project project) {
-    for (SourceFile file : project.files()) {
-      ParseTree tree = Parser.parse(project.errorReporter(), file);
-      project.setParseTree(file,tree);
-    }
+    Compiler compiler = new Compiler(project);
+    compiler.compile();
   }
 
   private static Project readProject(String[] args) {
