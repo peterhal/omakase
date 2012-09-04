@@ -343,6 +343,33 @@ public class ParseTreeWriter extends ParseTreeVisitor {
   }
 
   @Override
+  protected void visit(MemberExpressionTree tree) {
+    visitAny(tree.object);
+    write(TokenKind.PERIOD);
+    write(tree.name);
+  }
+
+  @Override
+  protected void visit(NewExpressionTree tree) {
+    write(TokenKind.NEW);
+    visitAny(tree.constructor);
+    visit(tree.arguments);
+  }
+
+  @Override
+  protected void visit(ParenExpressionTree tree) {
+    write(TokenKind.OPEN_PAREN);
+    visitAny(tree.expression);
+    write(TokenKind.CLOSE_PAREN);
+  }
+
+  @Override
+  protected void visit(PostfixExpressionTree tree) {
+    visitAny(tree.operand);
+    write(tree.operator);
+  }
+
+  @Override
   protected void visit(ClassDeclarationTree tree) {
     write(TokenKind.CLASS);
     write(tree.name);

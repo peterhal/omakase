@@ -3,6 +3,10 @@ Next Up
 - testing
 - class declarations
 - type system
+- hygiene
+  - name table
+  - project
+  - semantic analyzer
 
 TODO
 ----

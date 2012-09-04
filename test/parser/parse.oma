@@ -126,6 +126,54 @@ class Program {
     a = (x, y) -> {};
   }
 
+  parseConditionalExpression() {
+    a == b ? x : y;
+  }
+
+  parseAssignmentExpression() {
+    a = b;
+    a += b;
+  }
+
+  parseUnaryExpression() {
+    typeof a;
+    ++a;
+    --a;
+    +a;
+    -a;
+    ~a;
+    !a;
+  }
+
+  parsePostFixExpression() {
+    a(b);
+    a[b];
+    a.b;
+  }
+
+  parseNewExpression() {
+    new a();
+    new a(b);
+  }
+
+  parsePrimaryExpression() {
+    this;
+    [1,2,3];
+    (a);
+    a;
+    null;
+    true;
+    false;
+    1;
+    "hello";
+  }
+
+  parseBinaryExpression() {
+    a + b;
+    a + b * c;
+    // TODO: More binary expressions.
+  }
+
   native main() {
     print("Hello World!");
   }

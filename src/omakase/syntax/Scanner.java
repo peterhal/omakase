@@ -47,9 +47,12 @@ public class Scanner extends ScannerBase {
     case '}': return createToken(TokenKind.CLOSE_CURLY, startIndex);
     case '(': return createToken(TokenKind.OPEN_PAREN, startIndex);
     case ')': return createToken(TokenKind.CLOSE_PAREN, startIndex);
+    case '[': return createToken(TokenKind.OPEN_SQUARE, startIndex);
+    case ']': return createToken(TokenKind.CLOSE_SQUARE, startIndex);
     case '.': return createToken(TokenKind.PERIOD, startIndex);
     case ';': return createToken(TokenKind.SEMI_COLON, startIndex);
     case ',': return createToken(TokenKind.COMMA, startIndex);
+    case '~': return createToken(TokenKind.TILDE, startIndex);
     case '<':
       if (eatOpt('=')) {
         return createToken(TokenKind.LESS_EQUAL, startIndex);

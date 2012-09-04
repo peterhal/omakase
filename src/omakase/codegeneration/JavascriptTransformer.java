@@ -185,6 +185,7 @@ public class JavascriptTransformer extends ParseTreeTransformer {
     } else {
       body = createBlock(createReturnStatement(transformAny(tree.body)));
     }
+    // TODO: Only do this binding if this is used in body.
     return createThisBoundFunction(createFunction(parameters, body));
   }
 

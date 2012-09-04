@@ -204,6 +204,46 @@ class Program {
     }
     ;
   }
+  parseConditionalExpression ( ) {
+    a == b ? x : y ;
+  }
+  parseAssignmentExpression ( ) {
+    a = b ;
+    a += b ;
+  }
+  parseUnaryExpression ( ) {
+    typeof a ;
+    ++ a ;
+    -- a ;
+    + a ;
+    - a ;
+    ~ a ;
+    ! a ;
+  }
+  parsePostFixExpression ( ) {
+    a ( b ) ;
+    a [ b ] ;
+    a . b ;
+  }
+  parseNewExpression ( ) {
+    new a ( ) ;
+    new a ( b ) ;
+  }
+  parsePrimaryExpression ( ) {
+    this ;
+    [  1  2  3 ] ;
+    ( a ) ;
+    a ;
+    null ;
+    true ;
+    false ;
+     1 ;
+    "hello" ;
+  }
+  parseBinaryExpression ( ) {
+    a + b ;
+    a + b * c ;
+  }
   native main ( ) {
     print ( "Hello World!" ) ;
   }
@@ -381,6 +421,53 @@ class Program {
     a = ( function ( x y ) {
     }
     ) . bind ( this ) ;
+  }
+  ;
+  Program . prototype . parseConditionalExpression = function ( ) {
+    a == b ? x : y ;
+  }
+  ;
+  Program . prototype . parseAssignmentExpression = function ( ) {
+    a = b ;
+    a += b ;
+  }
+  ;
+  Program . prototype . parseUnaryExpression = function ( ) {
+    typeof a ;
+    ++ a ;
+    -- a ;
+    + a ;
+    - a ;
+    ~ a ;
+    ! a ;
+  }
+  ;
+  Program . prototype . parsePostFixExpression = function ( ) {
+    a ( b ) ;
+    a [ b ] ;
+    a . b ;
+  }
+  ;
+  Program . prototype . parseNewExpression = function ( ) {
+    new a ( ) ;
+    new a ( b ) ;
+  }
+  ;
+  Program . prototype . parsePrimaryExpression = function ( ) {
+    this ;
+    [ 1 2 3 ] ;
+    ( a ) ;
+    a ;
+    null ;
+    true ;
+    false ;
+    1 ;
+    "hello" ;
+  }
+  ;
+  Program . prototype . parseBinaryExpression = function ( ) {
+    a + b ;
+    a + b * c ;
   }
   ;
   Program . prototype . main = function ( ) {

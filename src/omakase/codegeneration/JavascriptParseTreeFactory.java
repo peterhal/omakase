@@ -116,6 +116,8 @@ public final class JavascriptParseTreeFactory {
       return TokenKind.JS_SLASH_EQUAL;
     case INSTANCEOF:
       return TokenKind.JS_INSTANCEOF;
+    case TYPEOF:
+      return TokenKind.JS_TYPEOF;
     default:
       throw new RuntimeException("Unexpected operator.");
     }

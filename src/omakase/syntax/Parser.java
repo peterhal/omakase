@@ -698,7 +698,6 @@ public class Parser extends ParserBase {
 
   private boolean peekUnaryOperator() {
     switch (peekKind()) {
-    case VOID:
     case TYPEOF:
     case PLUS_PLUS:
     case MINUS_MINUS:
@@ -812,8 +811,11 @@ public class Parser extends ParserBase {
     Token start = peek();
     ImmutableList.Builder<ParseTree> elements = new ImmutableList.Builder<ParseTree>();
     eat(TokenKind.OPEN_SQUARE);
-    while (peekAssignmentExpression()) {
+    if (peekExpression()) {
       elements.add(parseExpression());
+      while (eatOpt(TokenKind.COMMA)) {
+        elements.add(parseExpression());
+      }
     }
     eat(TokenKind.CLOSE_SQUARE);
     return new ArrayLiteralExpressionTree(getRange(start), elements.build());
@@ -872,6 +874,7 @@ public class Parser extends ParserBase {
   }
 
   private ParseTree parseMemberAccessSuffix(Token start, ParseTree operand) {
+    eat(TokenKind.PERIOD);
     return new MemberExpressionTree(getRange(start), operand, eatId());
   }
 
@@ -897,6 +900,7 @@ public class Parser extends ParserBase {
   private ParseTree parseNewExpression() {
     Token start = peek();
     if (eatOpt(TokenKind.NEW)) {
+      // TODO: Should be parseTypeName.
       ParseTree operand = parseNewExpression();
       ArgumentsTree arguments = null;
       if (peekArguments()) {
