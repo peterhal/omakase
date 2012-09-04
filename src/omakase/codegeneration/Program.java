@@ -17,6 +17,7 @@ package omakase.codegeneration;
 import com.google.common.collect.ImmutableList;
 import com.google.common.io.Files;
 import omakase.printtree.ParseTreeWriter;
+import omakase.semantics.Project;
 import omakase.syntax.Parser;
 import omakase.syntax.Scanner;
 import omakase.syntax.tokens.Token;
@@ -38,28 +39,55 @@ public class Program {
       return;
     }
 
-    final String filename = args[0];
+    Project project = readProject(args);
+    if (project == null) {
+      return;
+    }
+    parseProject(project);
+    if (!project.errorReporter().hadError()) {
+      writeProject(project);
+    }
+  }
+
+  private static void writeProject(Project project) {
+    for (ParseTree tree : project.trees()) {
+      JavascriptTransformer transformer = new JavascriptTransformer();
+      ParseTree result = transformer.transformAny(tree);
+      ParseTreeWriter writer = new ParseTreeWriter(System.out);
+      writer.visitAny(result);
+    }
+  }
+
+  private static void parseProject(Project project) {
+    for (SourceFile file : project.files()) {
+      ParseTree tree = Parser.parse(project.errorReporter(), file);
+      project.setParseTree(file,tree);
+    }
+  }
+
+  private static Project readProject(String[] args) {
+    Project project = new Project(ConsoleErrorReporter.reporter);
+    boolean hadError = false;
+    for (String arg : args) {
+      SourceFile file = readFile(arg);
+      if (file == null) {
+        hadError = true;
+      } else {
+        project.addFile(file);
+      }
+    }
+    return hadError ? null : project;
+  }
+
+  private static SourceFile readFile(String filename) {
     String source;
     try {
       source = Files.toString(new File(filename), Charset.defaultCharset());
     } catch (IOException e) {
       System.err.format("Error '%s' attempting to open file '%s'.\n", e.toString(), filename);
-      source = null;
-    }
-    if (source == null) {
-      return;
+      return null;
     }
 
-    SourceFile file = new SourceFile(filename, source);
-    if (!ConsoleErrorReporter.reporter.hadError()) {
-      ParseTree tree = Parser.parse(ConsoleErrorReporter.reporter, file);
-      if (!ConsoleErrorReporter.reporter.hadError()) {
-        JavascriptTransformer transformer = new JavascriptTransformer();
-        ParseTree result = transformer.transformAny(tree);
-        ParseTreeWriter writer = new ParseTreeWriter(System.out);
-        writer.visitAny(result);
-      }
-    }
-
+    return new SourceFile(filename, source);
   }
 }
