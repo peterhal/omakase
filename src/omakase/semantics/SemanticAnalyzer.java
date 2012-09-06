@@ -44,6 +44,15 @@ public class SemanticAnalyzer {
     if (hadError()) {
       return;
     }
+
+    declareClassMembers();
+    if (hadError()) {
+      return;
+    }
+  }
+
+  private void declareClassMembers() {
+    new ClassMemberDeclarer(project).declareMembers();
   }
 
   private void declareClasses() {

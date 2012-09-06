@@ -14,11 +14,9 @@
 
 package omakase.printsymbols;
 
-import omakase.semantics.ClassSymbol;
-import omakase.semantics.Project;
-import omakase.semantics.ProjectReader;
-import omakase.semantics.SemanticAnalyzer;
+import omakase.semantics.*;
 import omakase.util.ConsoleErrorReporter;
+import omakase.util.IndentedWriter;
 
 import java.io.PrintStream;
 
@@ -34,9 +32,18 @@ public class Program {
     SemanticAnalyzer analyzer = new SemanticAnalyzer(project);
     analyzer.analyze();
 
-    PrintStream out = System.out;
+    IndentedWriter out = new IndentedWriter(System.out);
     for (ClassSymbol clazz : project.getClasses()) {
-      out.println(clazz.name);
+      out.write(clazz.name);
+      out.writeLine();
+      out.indent();
+
+      for (Symbol member : clazz.members()) {
+        out.write(member.name);
+        out.writeLine();
+      }
+
+      out.outdent();
     }
   }
 }

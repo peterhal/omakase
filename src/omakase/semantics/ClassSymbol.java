@@ -16,13 +16,26 @@ package omakase.semantics;
 
 import omakase.syntax.trees.ClassDeclarationTree;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
+
 /**
  */
 public class ClassSymbol extends Symbol {
-  private final ClassDeclarationTree declaration;
+  public final ClassDeclarationTree declaration;
+  private final Map<String, Symbol> members;
 
   public ClassSymbol(String name, ClassDeclarationTree declaration) {
     super(SymbolKind.CLASS, name, declaration);
     this.declaration = declaration;
+    this.members = new LinkedHashMap<String, Symbol>();
+  }
+
+  public void addMember(Symbol member) {
+    members.put(member.name, member);
+  }
+
+  public Iterable<Symbol> members() {
+    return members.values();
   }
 }

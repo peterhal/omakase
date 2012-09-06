@@ -85,6 +85,9 @@ public class ParseTreeVisitor {
     case EXPRESSION_STATEMENT:
       visit(tree.asExpressionStatement());
       break;
+    case FIELD_DECLARATION:
+      visit(tree.asFieldDeclaration());
+      break;
     case FOR_IN_STATEMENT:
       visit(tree.asForInStatement());
       break;
@@ -361,6 +364,10 @@ public class ParseTreeVisitor {
 
   protected void visit(ExpressionStatementTree tree) {
     visitAny(tree.expression);
+  }
+
+  protected void visit(FieldDeclarationTree tree) {
+    visitList(tree.declarations);
   }
 
   protected void visit(ForInStatementTree tree) {

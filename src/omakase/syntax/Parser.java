@@ -78,6 +78,7 @@ public class Parser extends ParserBase {
     switch (peekKind()) {
     case IDENTIFIER:
     case NATIVE:
+    case VAR:
       return true;
     }
     return false;
@@ -105,6 +106,25 @@ public class Parser extends ParserBase {
   }
 
   private ParseTree parseClassMember() {
+    if (peekField()) {
+      return parseField();
+    }
+    return parseMethod();
+  }
+
+  private boolean peekField() {
+    return peek(TokenKind.VAR);
+  }
+
+  private ParseTree parseField() {
+    Token start = peek();
+    eat(TokenKind.VAR);
+    ImmutableList<ParseTree> declarations = parseVariableDeclarations();
+    eat(TokenKind.SEMI_COLON);
+    return new FieldDeclarationTree(getRange(start), declarations);
+  }
+
+  private ParseTree parseMethod() {
     boolean isNative = eatOpt(TokenKind.NATIVE);
     IdentifierToken name = eatId();
     FormalParameterListTree formals = parseParameterListDeclaration();

@@ -14,10 +14,16 @@
 
 package omakase.semantics;
 
+import omakase.syntax.trees.VariableDeclarationTree;
+
 /**
  */
-public enum SymbolKind {
-  CLASS,
-  METHOD,
-  FIELD,
+public class FieldSymbol extends Symbol {
+  private final VariableDeclarationTree tree;
+
+  public FieldSymbol(ClassSymbol parent, String name, VariableDeclarationTree tree) {
+    super(SymbolKind.FIELD, name, tree);
+    this.tree = tree;
+    parent.addMember(this);
+  }
 }

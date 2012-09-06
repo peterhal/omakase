@@ -1,0 +1,4 @@
+class A {
+  var a, b;
+  c() { return this.a; }
+}

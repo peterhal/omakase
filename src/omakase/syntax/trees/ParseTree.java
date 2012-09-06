@@ -101,6 +101,10 @@ public class ParseTree {
     return (ExpressionStatementTree) this;
   }
 
+  public FieldDeclarationTree asFieldDeclaration() {
+    return (FieldDeclarationTree) this;
+  }
+
   public ForInStatementTree asForInStatement() {
     return (ForInStatementTree) this;
   }
@@ -439,6 +443,10 @@ public class ParseTree {
 
   public boolean isExpressionStatement() {
     return this.kind == ParseTreeKind.EXPRESSION_STATEMENT;
+  }
+
+  public boolean isFieldDeclaration() {
+    return this.kind == ParseTreeKind.FIELD_DECLARATION;
   }
 
   public boolean isForInStatement() {

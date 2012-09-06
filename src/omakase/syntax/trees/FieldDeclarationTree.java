@@ -12,12 +12,18 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package omakase.semantics;
+package omakase.syntax.trees;
+
+import com.google.common.collect.ImmutableList;
+import omakase.util.SourceRange;
 
 /**
  */
-public enum SymbolKind {
-  CLASS,
-  METHOD,
-  FIELD,
+public class FieldDeclarationTree extends ParseTree {
+  public final ImmutableList<ParseTree> declarations;
+
+  public FieldDeclarationTree(SourceRange location, ImmutableList<ParseTree> declarations) {
+    super(location, ParseTreeKind.FIELD_DECLARATION);
+    this.declarations = declarations;
+  }
 }

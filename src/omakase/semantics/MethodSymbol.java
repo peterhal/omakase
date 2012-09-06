@@ -14,10 +14,16 @@
 
 package omakase.semantics;
 
+import omakase.syntax.trees.MethodDeclarationTree;
+
 /**
  */
-public enum SymbolKind {
-  CLASS,
-  METHOD,
-  FIELD,
+public class MethodSymbol extends Symbol{
+  public final MethodDeclarationTree tree;
+
+  public MethodSymbol(ClassSymbol clazz, String name, MethodDeclarationTree tree) {
+    super(SymbolKind.METHOD, name, tree);
+    this.tree = tree;
+    clazz.addMember(this);
+  }
 }

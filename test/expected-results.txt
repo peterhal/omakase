@@ -251,6 +251,10 @@ class Program {
 A
 B
 C
+A
+  a
+  b
+  c
 ( function ( ) {
   Program = function ( ) {
   }

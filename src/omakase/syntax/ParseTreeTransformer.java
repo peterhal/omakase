@@ -83,6 +83,8 @@ public class ParseTreeTransformer {
       return transform(tree.asEmptyStatement());
     case EXPRESSION_STATEMENT:
       return transform(tree.asExpressionStatement());
+    case FIELD_DECLARATION:
+      return transform(tree.asFieldDeclaration());
     case FOR_IN_STATEMENT:
       return transform(tree.asForInStatement());
     case FOR_STATEMENT:
@@ -392,6 +394,16 @@ public class ParseTreeTransformer {
     return new ExpressionStatementTree(
         null,
         expression);
+  }
+
+  protected ParseTree transform(FieldDeclarationTree tree) {
+    ImmutableList<ParseTree> declarations = transformList(tree.declarations);
+    if (declarations == tree.declarations) {
+      return tree;
+    }
+    return new FieldDeclarationTree(
+        null,
+        declarations);
   }
 
   protected ParseTree transform(ForInStatementTree tree) {
