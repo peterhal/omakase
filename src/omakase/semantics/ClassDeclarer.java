@@ -38,8 +38,8 @@ public class ClassDeclarer {
 
   private void declareClasses(SourceFileTree tree) {
     for (ParseTree element : tree.declarations) {
-      if (tree.isClassDeclaration()) {
-        ClassDeclarationTree classDeclaration = tree.asClassDeclaration();
+      if (element.isClassDeclaration()) {
+        ClassDeclarationTree classDeclaration = element.asClassDeclaration();
         String className = classDeclaration.name.value;
         if (project.containsClass(className)) {
           reportError(classDeclaration.name, "Duplicate class '%s'.", className);

@@ -248,6 +248,9 @@ class Program {
     print ( "Hello World!" ) ;
   }
 }
+A
+B
+C
 ( function ( ) {
   Program = function ( ) {
   }

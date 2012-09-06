@@ -30,6 +30,7 @@ public class Program {
     if (project == null) {
       return;
     }
+
     SemanticAnalyzer analyzer = new SemanticAnalyzer(project);
     analyzer.analyze();
 

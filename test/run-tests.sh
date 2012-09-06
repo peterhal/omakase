@@ -26,6 +26,11 @@ for parse_source in parser/*.oma ; do
   ../omaparse.sh $parse_source >> $RESULTS_FILE 2>&1
 done
 
+echo Symbol Tests ...
+for symbol_source in symbols/*.oma ; do
+  ../omasymbol.sh $symbol_source >> $RESULTS_FILE 2>&1
+done
+
 echo Compiling Tests ...
 for parse_source in parser/*.oma ; do
   ../oma.sh $parse_source >> $RESULTS_FILE 2>&1
