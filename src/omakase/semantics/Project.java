@@ -14,7 +14,7 @@
 
 package omakase.semantics;
 
-import omakase.syntax.trees.ParseTree;
+import omakase.syntax.trees.SourceFileTree;
 import omakase.util.ErrorReporter;
 import omakase.util.SourceFile;
 
@@ -25,7 +25,8 @@ import java.util.Map;
  */
 public class Project {
   private final Map<String, SourceFile> files = new LinkedHashMap<String, SourceFile>();
-  private final Map<SourceFile, ParseTree> trees = new LinkedHashMap<SourceFile, ParseTree>();
+  private final Map<SourceFile, SourceFileTree> trees = new LinkedHashMap<SourceFile, SourceFileTree>();
+  private final Map<String, ClassSymbol> classes = new LinkedHashMap<String, ClassSymbol>();
   private final ErrorReporter reporter;
 
   public Project(ErrorReporter reporter) {
@@ -49,11 +50,27 @@ public class Project {
     return reporter;
   }
 
-  public void setParseTree(SourceFile file, ParseTree tree) {
+  public void setParseTree(SourceFile file, SourceFileTree tree) {
     trees.put(file, tree);
   }
 
-  public Iterable<? extends ParseTree> trees() {
+  public Iterable<SourceFileTree> trees() {
     return trees.values();
+  }
+
+  public boolean containsClass(String className) {
+    return classes.containsKey(className);
+  }
+
+  public ClassSymbol getClass(String className) {
+    return classes.get(className);
+  }
+
+  public void addClass(ClassSymbol classSymbol) {
+    classes.put(classSymbol.name, classSymbol);
+  }
+
+  public Iterable<ClassSymbol> getClasses() {
+    return classes.values();
   }
 }

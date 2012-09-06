@@ -12,26 +12,17 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package omakase.codegeneration;
+package omakase.printsymbols;
 
-import com.google.common.collect.ImmutableList;
-import com.google.common.io.Files;
-import omakase.printtree.ParseTreeWriter;
+import omakase.semantics.ClassSymbol;
 import omakase.semantics.Project;
 import omakase.semantics.ProjectReader;
-import omakase.syntax.Parser;
-import omakase.syntax.Scanner;
-import omakase.syntax.tokens.Token;
-import omakase.syntax.trees.ParseTree;
+import omakase.semantics.SemanticAnalyzer;
 import omakase.util.ConsoleErrorReporter;
-import omakase.util.SourceFile;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.charset.Charset;
+import java.io.PrintStream;
 
 /**
- *
  */
 public class Program {
   public static void main(String[] args) {
@@ -39,7 +30,12 @@ public class Program {
     if (project == null) {
       return;
     }
-    Compiler compiler = new Compiler(project);
-    compiler.compile();
+    SemanticAnalyzer analyzer = new SemanticAnalyzer(project);
+    analyzer.analyze();
+
+    PrintStream out = System.out;
+    for (ClassSymbol clazz : project.getClasses()) {
+      out.println(clazz.name);
+    }
   }
 }

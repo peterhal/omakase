@@ -15,7 +15,7 @@
 package omakase.semantics;
 
 import omakase.syntax.Parser;
-import omakase.syntax.trees.ParseTree;
+import omakase.syntax.trees.SourceFileTree;
 import omakase.util.SourceFile;
 
 /**
@@ -29,12 +29,28 @@ public class SemanticAnalyzer {
 
   private void parseProject() {
     for (SourceFile file : project.files()) {
-      ParseTree tree = Parser.parse(project.errorReporter(), file);
+      SourceFileTree tree = Parser.parse(project.errorReporter(), file);
       project.setParseTree(file,tree);
     }
   }
 
   public void analyze() {
     parseProject();
+    if (hadError()) {
+      return;
+    }
+
+    declareClasses();
+    if (hadError()) {
+      return;
+    }
+  }
+
+  private void declareClasses() {
+    new ClassDeclarer(project).declareClasses();
+  }
+
+  private boolean hadError() {
+    return project.errorReporter().hadError();
   }
 }

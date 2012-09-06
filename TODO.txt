@@ -81,6 +81,28 @@ Omakase is a language for developing large web applications.
 - debugging (via source maps)
 - IDE - code browsing, refactoring?
 
+Design: Casting and Type Testing
+--------------------------------
+
+Use method call like syntax, but with 'is' and 'as' keywords:
+
+  if (control.is(Button)) {
+    var button = control.as(Button);
+  }
+
+Allows 'fluent' style chaining.
+Execution occurs in the order read.
+No confusion of operator precedence.
+
+Alternative 1: C Style Cast
+- Chaining requires parens.
+- grammar ambiguities
+- execution order reversed
+
+Alternative 2: 'is', 'as' binary operators
+- Chaining requires parens
+- Operator precedence confusion
+
 
 Design: Doc Comments as Attributes
 ----------------------------------

@@ -19,6 +19,7 @@ import omakase.syntax.JavascriptPredefinedNames;
 import omakase.syntax.ParseTreeVisitor;
 import omakase.syntax.tokens.*;
 import omakase.syntax.trees.*;
+import omakase.util.IndentedWriter;
 
 import java.io.PrintStream;
 
@@ -27,15 +28,10 @@ import java.io.PrintStream;
  */
 public class ParseTreeWriter extends ParseTreeVisitor {
 
-  private int indent;
-  private PrintStream out;
-  private boolean startOfLine;
-  private final int INDENT = 2;
+  private final IndentedWriter indentedWriter;
 
   public ParseTreeWriter(PrintStream out) {
-    this.indent = 0;
-    this.out = out;
-    this.startOfLine = true;
+    this.indentedWriter = new IndentedWriter(out);
   }
 
   @Override
@@ -789,8 +785,7 @@ public class ParseTreeWriter extends ParseTreeVisitor {
   }
 
   private void writeLine() {
-    out.println();
-    this.startOfLine = true;
+    indentedWriter.writeLine();
   }
 
   private void write(Token token) {
@@ -802,22 +797,14 @@ public class ParseTreeWriter extends ParseTreeVisitor {
   }
 
   private void write(String value) {
-    if (this.startOfLine) {
-      for (int i = 0; i < indent; i++) {
-        out.print(' ');
-      }
-      this.startOfLine = false;
-    } else {
-      out.print(' ');
-    }
-    out.print(value);
+    indentedWriter.write(value);
   }
 
   private void outdent() {
-    indent  -= INDENT;
+    indentedWriter.outdent();
   }
 
   private void indent() {
-    indent  += INDENT;
+    indentedWriter.indent();
   }
 }

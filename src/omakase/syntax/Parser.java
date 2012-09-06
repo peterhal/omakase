@@ -31,11 +31,11 @@ public class Parser extends ParserBase {
     super(reporter, file, new Scanner(reporter, file));
   }
 
-  public static ParseTree parse(ErrorReporter reporter, SourceFile file) {
+  public static SourceFileTree parse(ErrorReporter reporter, SourceFile file) {
     return new Parser(reporter, file).parseFile();
   }
 
-  private ParseTree parseFile() {
+  private SourceFileTree parseFile() {
     Token start = peek();
     ImmutableList.Builder<ParseTree> declarations = new ImmutableList.Builder<ParseTree>();
     while (peekClass()) {
@@ -819,10 +819,6 @@ public class Parser extends ParserBase {
     }
     eat(TokenKind.CLOSE_SQUARE);
     return new ArrayLiteralExpressionTree(getRange(start), elements.build());
-  }
-
-  private boolean peekAssignmentExpression() {
-    return peekExpression();
   }
 
   private ParseTree parseThisExpression() {
