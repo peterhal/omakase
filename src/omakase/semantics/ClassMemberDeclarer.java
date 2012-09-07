@@ -43,13 +43,29 @@ public class ClassMemberDeclarer {
   private void declareMember(ClassSymbol clazz, ParseTree tree) {
     if (tree.isMethodDeclaration()) {
       MethodDeclarationTree methodTree = tree.asMethodDeclaration();
-      new MethodSymbol(clazz, methodTree.name.value, methodTree);
+      String name = methodTree.name.value;
+      if (!checkForDuplicateMember(clazz, name, tree)) {
+        new MethodSymbol(clazz, name, methodTree);
+      }
     } else {
       FieldDeclarationTree fieldsTree = tree.asFieldDeclaration();
       for (ParseTree t : fieldsTree.declarations) {
         VariableDeclarationTree fieldTree = t.asVariableDeclaration();
-        new FieldSymbol(clazz, fieldTree.name.value, fieldTree);
+        String name = fieldTree.name.value;
+        if (!checkForDuplicateMember(clazz, name, t)) {
+          new FieldSymbol(clazz, name, fieldTree);
+        }
       }
     }
+  }
+
+  private boolean checkForDuplicateMember(ClassSymbol clazz, String name, ParseTree tree) {
+    Symbol member = clazz.getMember(name);
+    if (member != null) {
+      project.errorReporter().reportError(tree.location.start, "Duplicate member '%s' in class '%s'.", name, clazz);
+      project.errorReporter().reportError(member.location.start(), "Location of duplicate member.");
+      return true;
+    }
+    return false;
   }
 }

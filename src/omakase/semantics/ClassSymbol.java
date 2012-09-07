@@ -38,4 +38,8 @@ public class ClassSymbol extends Symbol {
   public Iterable<Symbol> members() {
     return members.values();
   }
+
+  public Symbol getMember(String name) {
+    return members.get(name);
+  }
 }
