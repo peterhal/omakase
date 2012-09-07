@@ -1,6 +1,7 @@
 Next Up
 -------
-- class declarations
+- static members
+- extern declarations
 - type system
 - hygiene
   - name table

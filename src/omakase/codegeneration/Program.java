@@ -14,21 +14,9 @@
 
 package omakase.codegeneration;
 
-import com.google.common.collect.ImmutableList;
-import com.google.common.io.Files;
-import omakase.printtree.ParseTreeWriter;
 import omakase.semantics.Project;
 import omakase.semantics.ProjectReader;
-import omakase.syntax.Parser;
-import omakase.syntax.Scanner;
-import omakase.syntax.tokens.Token;
-import omakase.syntax.trees.ParseTree;
 import omakase.util.ConsoleErrorReporter;
-import omakase.util.SourceFile;
-
-import java.io.File;
-import java.io.IOException;
-import java.nio.charset.Charset;
 
 /**
  *

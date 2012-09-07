@@ -18,8 +18,6 @@ import omakase.semantics.*;
 import omakase.util.ConsoleErrorReporter;
 import omakase.util.IndentedWriter;
 
-import java.io.PrintStream;
-
 /**
  */
 public class Program {

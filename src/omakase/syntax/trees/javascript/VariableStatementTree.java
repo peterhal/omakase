@@ -15,8 +15,8 @@
 package omakase.syntax.trees.javascript;
 
 import com.google.common.collect.ImmutableList;
-import omakase.syntax.trees.ParseTree;
-import omakase.syntax.trees.ParseTreeKind;
+import omakase.syntax.trees.*;
+import omakase.syntax.trees.VariableDeclarationTree;
 import omakase.util.SourceRange;
 
 /**

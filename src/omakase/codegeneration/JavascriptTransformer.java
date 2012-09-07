@@ -286,12 +286,18 @@ public class JavascriptTransformer extends ParseTreeTransformer {
 
   @Override
   protected ParseTree transform(VariableStatementTree tree) {
-    return createVariableStatement(transformList(tree.declarations));
+    // TODO: Fix this ...
+    return createVariableStatement((ImmutableList<ParseTree>)(Object)transformList(tree.declarations));
   }
 
   @Override
   protected ParseTree transform(WhileStatementTree tree) {
     return createWhileStatement(transformAny(tree.condition), transformAny(tree.body));
+  }
+
+  @Override
+  protected ParseTree transform(FieldDeclarationTree tree) {
+    throw new RuntimeException("Fields should be handled by class transformer");
   }
 
   @Override
@@ -338,13 +344,38 @@ public class JavascriptTransformer extends ParseTreeTransformer {
 
     private void createMembers() {
       for (ParseTree member: classTree.members) {
-        createMember(member.asMethodDeclaration());
+        if (member.isMethodDeclaration()) {
+          members.add(createMember(member.asMethodDeclaration()));
+        } else {
+          createFields(member.asFieldDeclaration());
+        }
       }
     }
 
-    private void createMember(MethodDeclarationTree method) {
-      members.add(createProtoMember(getClassName(), method.name.value,
-          createFunction(createFormalParameterList(), transformAny(method.body).asJavascriptBlock())));
+    private void createFields(FieldDeclarationTree fields) {
+      boolean isStatic = fields.isStatic;
+      for (VariableDeclarationTree field : fields.declarations) {
+        members.add(createField(isStatic, field));
+      }
+    }
+
+    private ParseTree createField(boolean isStatic, VariableDeclarationTree field) {
+      ParseTree value = field.initializer != null ? transformAny(field.initializer) : createNull();
+      if (isStatic) {
+        return createStaticMember(getClassName(), field.name.value, value);
+      } else {
+        return createProtoMember(getClassName(), field.name.value, value);
+      }
+    }
+
+    private ParseTree createMember(MethodDeclarationTree method) {
+      if (method.isStatic) {
+        return createStaticMember(getClassName(), method.name.value,
+          createFunction(createFormalParameterList(), transformAny(method.body).asJavascriptBlock()));
+      } else {
+        return createProtoMember(getClassName(), method.name.value,
+            createFunction(createFormalParameterList(), transformAny(method.body).asJavascriptBlock()));
+      }
     }
   }
 }

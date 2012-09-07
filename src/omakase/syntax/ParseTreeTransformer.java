@@ -397,13 +397,13 @@ public class ParseTreeTransformer {
   }
 
   protected ParseTree transform(FieldDeclarationTree tree) {
-    ImmutableList<ParseTree> declarations = transformList(tree.declarations);
+    ImmutableList<VariableDeclarationTree> declarations = transformList(tree.declarations);
     if (declarations == tree.declarations) {
       return tree;
     }
     return new FieldDeclarationTree(
         null,
-        declarations);
+        tree.isStatic, declarations);
   }
 
   protected ParseTree transform(ForInStatementTree tree) {
@@ -510,6 +510,7 @@ public class ParseTreeTransformer {
         null,
         tree.name,
         formals.asFormalParameterList(),
+        tree.isStatic,
         tree.isNative,
         body);
   }
@@ -638,7 +639,7 @@ public class ParseTreeTransformer {
   }
 
   protected ParseTree transform(VariableStatementTree tree) {
-    ImmutableList<ParseTree> declarations = transformList(tree.declarations);
+    ImmutableList<VariableDeclarationTree> declarations = transformList(tree.declarations);
     if (declarations == tree.declarations) {
       return tree;
     }

@@ -328,7 +328,20 @@ public class ParseTreeWriter extends ParseTreeVisitor {
   }
 
   @Override
+  protected void visit(FieldDeclarationTree tree) {
+    if (tree.isStatic) {
+      write(TokenKind.STATIC);
+    }
+    write(TokenKind.VAR);
+    writeCommaSeparatedList(tree.declarations);
+    write(TokenKind.SEMI_COLON);
+  }
+
+  @Override
   protected void visit(MethodDeclarationTree tree) {
+    if (tree.isStatic) {
+      write(TokenKind.STATIC);
+    }
     if (tree.isNative) {
       write(TokenKind.NATIVE);
     }
@@ -724,7 +737,7 @@ public class ParseTreeWriter extends ParseTreeVisitor {
     visitAny(tree.body);
   }
 
-  private void writeCommaSeparatedList(ImmutableList<ParseTree> trees) {
+  private void writeCommaSeparatedList(ImmutableList<? extends ParseTree> trees) {
     writeList(trees, TokenKind.COMMA.toString());
   }
 
@@ -732,7 +745,7 @@ public class ParseTreeWriter extends ParseTreeVisitor {
     writeTokenList(trees, TokenKind.COMMA.toString());
   }
 
-  private void writeList(ImmutableList<ParseTree> trees, String separator) {
+  private void writeList(ImmutableList<? extends ParseTree> trees, String separator) {
     boolean first = true;
     for (ParseTree tree: trees) {
       if (!first) {

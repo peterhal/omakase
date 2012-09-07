@@ -19,8 +19,44 @@ import omakase.syntax.JavascriptPredefinedNames;
 import omakase.syntax.tokens.Token;
 import omakase.syntax.tokens.TokenKind;
 import omakase.syntax.tokens.javascript.IdentifierToken;
-import omakase.syntax.trees.ParseTree;
+import omakase.syntax.trees.*;
 import omakase.syntax.trees.javascript.*;
+import omakase.syntax.trees.javascript.ArgumentsTree;
+import omakase.syntax.trees.javascript.ArrayAccessExpressionTree;
+import omakase.syntax.trees.javascript.ArrayLiteralExpressionTree;
+import omakase.syntax.trees.javascript.BinaryExpressionTree;
+import omakase.syntax.trees.javascript.BlockTree;
+import omakase.syntax.trees.javascript.BreakStatementTree;
+import omakase.syntax.trees.javascript.CallExpressionTree;
+import omakase.syntax.trees.javascript.CaseClauseTree;
+import omakase.syntax.trees.javascript.CatchClauseTree;
+import omakase.syntax.trees.javascript.ConditionalExpressionTree;
+import omakase.syntax.trees.javascript.ContinueStatementTree;
+import omakase.syntax.trees.javascript.DebuggerStatementTree;
+import omakase.syntax.trees.javascript.DefaultClauseTree;
+import omakase.syntax.trees.javascript.DoStatementTree;
+import omakase.syntax.trees.javascript.EmptyStatementTree;
+import omakase.syntax.trees.javascript.ExpressionStatementTree;
+import omakase.syntax.trees.javascript.ForInStatementTree;
+import omakase.syntax.trees.javascript.ForStatementTree;
+import omakase.syntax.trees.javascript.FormalParameterListTree;
+import omakase.syntax.trees.javascript.FunctionExpressionTree;
+import omakase.syntax.trees.javascript.IdentifierExpressionTree;
+import omakase.syntax.trees.javascript.IfStatementTree;
+import omakase.syntax.trees.javascript.LiteralExpressionTree;
+import omakase.syntax.trees.javascript.MemberExpressionTree;
+import omakase.syntax.trees.javascript.NewExpressionTree;
+import omakase.syntax.trees.javascript.ParenExpressionTree;
+import omakase.syntax.trees.javascript.PostfixExpressionTree;
+import omakase.syntax.trees.javascript.ReturnStatementTree;
+import omakase.syntax.trees.javascript.SwitchStatementTree;
+import omakase.syntax.trees.javascript.ThisExpressionTree;
+import omakase.syntax.trees.javascript.ThrowStatementTree;
+import omakase.syntax.trees.javascript.TryStatementTree;
+import omakase.syntax.trees.javascript.UnaryExpressionTree;
+import omakase.syntax.trees.javascript.VariableDeclarationTree;
+import omakase.syntax.trees.javascript.VariableStatementTree;
+import omakase.syntax.trees.javascript.WhileStatementTree;
 
 import java.util.List;
 
@@ -231,6 +267,10 @@ public final class JavascriptParseTreeFactory {
     return new NewExpressionTree(null, constructor, arguments);
   }
 
+  public static LiteralExpressionTree createNull() {
+    return new LiteralExpressionTree(null, createToken(TokenKind.NULL));
+  }
+
   public static ParseTree createParenExpression(ParseTree expression) {
     return new ParenExpressionTree(null, expression);
   }
@@ -280,6 +320,13 @@ public final class JavascriptParseTreeFactory {
     // class.prototype.memberName = value;
     return createAssignmentStatement(
         createDottedName(className, JavascriptPredefinedNames.PROTOTYPE, memberName),
+        value);
+  }
+
+  public static ParseTree createStaticMember(String className, String memberName, ParseTree value) {
+    // class.memberName = value;
+    return createAssignmentStatement(
+        createDottedName(className, memberName),
         value);
   }
 

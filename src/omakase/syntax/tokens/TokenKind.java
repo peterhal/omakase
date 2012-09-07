@@ -99,6 +99,7 @@ public enum TokenKind {
   NEW("new"),
   NULL("null"),
   RETURN("return"),
+  STATIC("static"),
   SWITCH("switch"),
   THIS("this"),
   THROW("throw"),

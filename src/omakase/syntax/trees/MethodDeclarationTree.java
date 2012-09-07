@@ -14,7 +14,6 @@
 
 package omakase.syntax.trees;
 
-import com.google.common.collect.ImmutableList;
 import omakase.syntax.tokens.IdentifierToken;
 import omakase.util.SourceRange;
 
@@ -24,13 +23,15 @@ import omakase.util.SourceRange;
 public class MethodDeclarationTree extends ParseTree {
   public final IdentifierToken name;
   public final FormalParameterListTree formals;
+  public final boolean isStatic;
   public final boolean isNative;
   public final ParseTree body;
 
   public MethodDeclarationTree(SourceRange range, IdentifierToken name, FormalParameterListTree formals,
-      boolean isNative, ParseTree body) {
+      boolean isStatic, boolean isNative, ParseTree body) {
     super(range, ParseTreeKind.METHOD_DECLARATION);
     this.name = name;
+    this.isStatic = isStatic;
     this.isNative = isNative;
     this.formals = formals;
     this.body = body;

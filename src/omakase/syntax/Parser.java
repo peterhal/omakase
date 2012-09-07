@@ -78,6 +78,7 @@ public class Parser extends ParserBase {
     switch (peekKind()) {
     case IDENTIFIER:
     case NATIVE:
+    case STATIC:
     case VAR:
       return true;
     }
@@ -113,23 +114,26 @@ public class Parser extends ParserBase {
   }
 
   private boolean peekField() {
-    return peek(TokenKind.VAR);
+    return peek(TokenKind.VAR) || (peek(TokenKind.STATIC) && peek(1, TokenKind.VAR));
   }
 
   private ParseTree parseField() {
     Token start = peek();
+    boolean isStatic = eatOpt(TokenKind.STATIC);
     eat(TokenKind.VAR);
-    ImmutableList<ParseTree> declarations = parseVariableDeclarations();
+    ImmutableList<VariableDeclarationTree> declarations = parseVariableDeclarations();
     eat(TokenKind.SEMI_COLON);
-    return new FieldDeclarationTree(getRange(start), declarations);
+    return new FieldDeclarationTree(getRange(start), isStatic, declarations);
   }
 
   private ParseTree parseMethod() {
+    Token start = peek();
+    boolean isStatic = eatOpt(TokenKind.STATIC);
     boolean isNative = eatOpt(TokenKind.NATIVE);
     IdentifierToken name = eatId();
     FormalParameterListTree formals = parseParameterListDeclaration();
     ParseTree body = parseBlock(isNative);
-    return new MethodDeclarationTree(getRange(name), name, formals, isNative, body);
+    return new MethodDeclarationTree(getRange(start), name, formals, isStatic, isNative, body);
   }
 
   private ParseTree parseBlock(boolean isNative) {
@@ -221,17 +225,17 @@ public class Parser extends ParserBase {
   private ParseTree parseVariableStatement() {
     Token start = peek();
     eat(TokenKind.VAR);
-    ImmutableList<ParseTree> declarations = parseVariableDeclarations();
+    ImmutableList<VariableDeclarationTree> declarations = parseVariableDeclarations();
     eat(TokenKind.SEMI_COLON);
     return new VariableStatementTree(getRange(start), declarations);
   }
 
-  private ImmutableList<ParseTree> parseVariableDeclarations() {
+  private ImmutableList<VariableDeclarationTree> parseVariableDeclarations() {
     return parseRemainingVariableDeclarations(parseVariableDeclaration());
   }
 
-  private ImmutableList<ParseTree> parseRemainingVariableDeclarations(ParseTree element) {
-    ImmutableList.Builder<ParseTree> declarations = new ImmutableList.Builder<ParseTree>();
+  private ImmutableList<VariableDeclarationTree> parseRemainingVariableDeclarations(VariableDeclarationTree element) {
+    ImmutableList.Builder<VariableDeclarationTree> declarations = new ImmutableList.Builder<VariableDeclarationTree>();
     declarations.add(element);
     while (eatOpt(TokenKind.COMMA)) {
       declarations.add(parseVariableDeclaration());
@@ -239,7 +243,7 @@ public class Parser extends ParserBase {
     return declarations.build();
   }
 
-  private ParseTree parseVariableDeclaration() {
+  private VariableDeclarationTree parseVariableDeclaration() {
     Token start = peek();
     IdentifierToken identifier = eatId();
     ParseTree initializer = null;
@@ -298,7 +302,7 @@ public class Parser extends ParserBase {
     case VAR:
       Token variableStart = peek();
       eat(TokenKind.VAR);
-      ParseTree variableDeclaration = parseVariableDeclaration();
+      VariableDeclarationTree variableDeclaration = parseVariableDeclaration();
       if (eatOpt(TokenKind.IN)) {
         return parseForIn(start, variableDeclaration);
       } else {
