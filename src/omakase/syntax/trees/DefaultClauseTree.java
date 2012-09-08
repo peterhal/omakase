@@ -20,9 +20,9 @@ import omakase.util.SourceRange;
 /**
  */
 public class DefaultClauseTree extends ParseTree {
-  public final ImmutableList<ParseTree> statements;
+  public final ImmutableList<? extends ParseTree> statements;
 
-  public DefaultClauseTree(SourceRange location, ImmutableList<ParseTree> statements) {
+  public DefaultClauseTree(SourceRange location, ImmutableList<? extends ParseTree> statements) {
     super(location, ParseTreeKind.DEFAULT_CLAUSE);
     this.statements = statements;
   }

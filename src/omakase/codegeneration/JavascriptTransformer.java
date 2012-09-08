@@ -168,7 +168,7 @@ public class JavascriptTransformer extends ParseTreeTransformer {
     return createFormalParameterList(transformFormalParameterList(tree.parameters));
   }
 
-  private ImmutableList<omakase.syntax.tokens.javascript.IdentifierToken> transformFormalParameterList(ImmutableList<ParseTree> parameters) {
+  private ImmutableList<omakase.syntax.tokens.javascript.IdentifierToken> transformFormalParameterList(ImmutableList<? extends ParseTree> parameters) {
     ImmutableList.Builder<IdentifierToken> names = new ImmutableList.Builder<IdentifierToken>();
     for (ParseTree parameter : parameters) {
       names.add(createIdentifierToken(parameter.asParameterDeclaration().name.value));
@@ -287,7 +287,7 @@ public class JavascriptTransformer extends ParseTreeTransformer {
   @Override
   protected ParseTree transform(VariableStatementTree tree) {
     // TODO: Fix this ...
-    return createVariableStatement((ImmutableList<ParseTree>)(Object)transformList(tree.declarations));
+    return createVariableStatement(transformList(tree.declarations));
   }
 
   @Override

@@ -23,9 +23,9 @@ import omakase.util.SourceRange;
  *
  */
 public class BlockTree extends ParseTree {
-  public final ImmutableList<ParseTree> statements;
+  public final ImmutableList<? extends ParseTree> statements;
 
-  public BlockTree(SourceRange location, ImmutableList<ParseTree> statements) {
+  public BlockTree(SourceRange location, ImmutableList<? extends ParseTree> statements) {
     super(location, ParseTreeKind.JAVASCRIPT_BLOCK);
     this.statements = statements;
   }

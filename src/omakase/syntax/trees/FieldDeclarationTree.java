@@ -21,9 +21,9 @@ import omakase.util.SourceRange;
  */
 public class FieldDeclarationTree extends ParseTree {
   public final boolean isStatic;
-  public final ImmutableList<VariableDeclarationTree> declarations;
+  public final ImmutableList<? extends VariableDeclarationTree> declarations;
 
-  public FieldDeclarationTree(SourceRange location, boolean isStatic, ImmutableList<VariableDeclarationTree> declarations) {
+  public FieldDeclarationTree(SourceRange location, boolean isStatic, ImmutableList<? extends VariableDeclarationTree> declarations) {
     super(location, ParseTreeKind.FIELD_DECLARATION);
     this.isStatic = isStatic;
     this.declarations = declarations;

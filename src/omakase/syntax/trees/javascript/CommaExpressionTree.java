@@ -22,9 +22,9 @@ import omakase.util.SourceRange;
 /**
  */
 public class CommaExpressionTree extends ParseTree {
-  public final ImmutableList<ParseTree> expressions;
+  public final ImmutableList<? extends ParseTree> expressions;
 
-  public CommaExpressionTree(SourceRange location, ImmutableList<ParseTree> expressions) {
+  public CommaExpressionTree(SourceRange location, ImmutableList<? extends ParseTree> expressions) {
     super(location, ParseTreeKind.JAVASCRIPT_COMMA_EXPRESSION);
     this.expressions = expressions;
   }

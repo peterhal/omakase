@@ -22,9 +22,9 @@ import omakase.util.SourceRange;
 /**
  */
 public class ObjectLiteralExpressionTree extends ParseTree {
-  public final ImmutableList<ParseTree> initializers;
+  public final ImmutableList<? extends ParseTree> initializers;
 
-  public ObjectLiteralExpressionTree(SourceRange location, ImmutableList<ParseTree> initializers) {
+  public ObjectLiteralExpressionTree(SourceRange location, ImmutableList<? extends ParseTree> initializers) {
     super(location, ParseTreeKind.JAVASCRIPT_OBJECT_LITERAL_EXPRESSION);
     this.initializers = initializers;
   }

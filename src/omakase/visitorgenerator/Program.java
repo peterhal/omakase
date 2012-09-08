@@ -24,6 +24,8 @@ import java.io.FileNotFoundException;
 import java.io.PrintStream;
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+import java.lang.reflect.WildcardType;
 import java.util.*;
 
 /**
@@ -113,7 +115,7 @@ public class Program {
         if (isParseTreeType(field)) {
           out.printf("    ParseTree %s = transformAny(tree.%s);\n", field.getName(), field.getName());
         } else if (isParseTreeListType(field)) {
-          out.printf("    ImmutableList<ParseTree> %s = transformList(tree.%s);\n", field.getName(), field.getName());
+          out.printf("    ImmutableList<? extends %s> %s = transformList(tree.%s);\n", getListElementType(field).getName(), field.getName(), field.getName());
         }
       }
 
@@ -211,7 +213,15 @@ public class Program {
 
   private static boolean isParseTreeListType(Field field) {
     return ImmutableList.class.isAssignableFrom((field.getType()))
-        && isParseTreeType((Class<?>)((ParameterizedType)field.getGenericType()).getActualTypeArguments()[0]);
+        && isParseTreeType(getListElementType(field));
+  }
+
+  private static Class<?> getListElementType(Field field) {
+    Type type = ((ParameterizedType) field.getGenericType()).getActualTypeArguments()[0];
+    if (type instanceof WildcardType)
+      return (Class<?>)((WildcardType) type).getUpperBounds()[0];
+    else
+      return (Class<?>) type;
   }
 
   private static boolean isParseTreeType(Field field) {

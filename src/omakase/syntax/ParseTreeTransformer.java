@@ -227,7 +227,7 @@ public class ParseTreeTransformer {
   }
 
   protected ParseTree transform(ArgumentsTree tree) {
-    ImmutableList<ParseTree> arguments = transformList(tree.arguments);
+    ImmutableList<? extends omakase.syntax.trees.ParseTree> arguments = transformList(tree.arguments);
     if (arguments == tree.arguments) {
       return tree;
     }
@@ -250,7 +250,7 @@ public class ParseTreeTransformer {
   }
 
   protected ParseTree transform(ArrayLiteralExpressionTree tree) {
-    ImmutableList<ParseTree> elements = transformList(tree.elements);
+    ImmutableList<? extends omakase.syntax.trees.ParseTree> elements = transformList(tree.elements);
     if (elements == tree.elements) {
       return tree;
     }
@@ -274,7 +274,7 @@ public class ParseTreeTransformer {
   }
 
   protected ParseTree transform(BlockTree tree) {
-    ImmutableList<ParseTree> statements = transformList(tree.statements);
+    ImmutableList<? extends omakase.syntax.trees.ParseTree> statements = transformList(tree.statements);
     if (statements == tree.statements) {
       return tree;
     }
@@ -302,7 +302,7 @@ public class ParseTreeTransformer {
 
   protected ParseTree transform(CaseClauseTree tree) {
     ParseTree expression = transformAny(tree.expression);
-    ImmutableList<ParseTree> statements = transformList(tree.statements);
+    ImmutableList<? extends omakase.syntax.trees.ParseTree> statements = transformList(tree.statements);
     if (expression == tree.expression &&
         statements == tree.statements) {
       return tree;
@@ -325,7 +325,7 @@ public class ParseTreeTransformer {
   }
 
   protected ParseTree transform(ClassDeclarationTree tree) {
-    ImmutableList<ParseTree> members = transformList(tree.members);
+    ImmutableList<? extends omakase.syntax.trees.ParseTree> members = transformList(tree.members);
     if (members == tree.members) {
       return tree;
     }
@@ -360,7 +360,7 @@ public class ParseTreeTransformer {
   }
 
   protected ParseTree transform(DefaultClauseTree tree) {
-    ImmutableList<ParseTree> statements = transformList(tree.statements);
+    ImmutableList<? extends omakase.syntax.trees.ParseTree> statements = transformList(tree.statements);
     if (statements == tree.statements) {
       return tree;
     }
@@ -397,13 +397,14 @@ public class ParseTreeTransformer {
   }
 
   protected ParseTree transform(FieldDeclarationTree tree) {
-    ImmutableList<VariableDeclarationTree> declarations = transformList(tree.declarations);
+    ImmutableList<? extends omakase.syntax.trees.VariableDeclarationTree> declarations = transformList(tree.declarations);
     if (declarations == tree.declarations) {
       return tree;
     }
     return new FieldDeclarationTree(
         null,
-        tree.isStatic, declarations);
+        tree.isStatic,
+        declarations);
   }
 
   protected ParseTree transform(ForInStatementTree tree) {
@@ -442,7 +443,7 @@ public class ParseTreeTransformer {
   }
 
   protected ParseTree transform(FormalParameterListTree tree) {
-    ImmutableList<ParseTree> parameters = transformList(tree.parameters);
+    ImmutableList<? extends omakase.syntax.trees.ParseTree> parameters = transformList(tree.parameters);
     if (parameters == tree.parameters) {
       return tree;
     }
@@ -564,7 +565,7 @@ public class ParseTreeTransformer {
   }
 
   protected ParseTree transform(SourceFileTree tree) {
-    ImmutableList<ParseTree> declarations = transformList(tree.declarations);
+    ImmutableList<? extends omakase.syntax.trees.ParseTree> declarations = transformList(tree.declarations);
     if (declarations == tree.declarations) {
       return tree;
     }
@@ -575,7 +576,7 @@ public class ParseTreeTransformer {
 
   protected ParseTree transform(SwitchStatementTree tree) {
     ParseTree expression = transformAny(tree.expression);
-    ImmutableList<ParseTree> caseClauses = transformList(tree.caseClauses);
+    ImmutableList<? extends omakase.syntax.trees.ParseTree> caseClauses = transformList(tree.caseClauses);
     if (expression == tree.expression &&
         caseClauses == tree.caseClauses) {
       return tree;
@@ -639,7 +640,7 @@ public class ParseTreeTransformer {
   }
 
   protected ParseTree transform(VariableStatementTree tree) {
-    ImmutableList<VariableDeclarationTree> declarations = transformList(tree.declarations);
+    ImmutableList<? extends omakase.syntax.trees.VariableDeclarationTree> declarations = transformList(tree.declarations);
     if (declarations == tree.declarations) {
       return tree;
     }
@@ -662,7 +663,7 @@ public class ParseTreeTransformer {
   }
 
   protected ParseTree transform(omakase.syntax.trees.javascript.ArgumentsTree tree) {
-    ImmutableList<ParseTree> arguments = transformList(tree.arguments);
+    ImmutableList<? extends omakase.syntax.trees.ParseTree> arguments = transformList(tree.arguments);
     if (arguments == tree.arguments) {
       return tree;
     }
@@ -685,7 +686,7 @@ public class ParseTreeTransformer {
   }
 
   protected ParseTree transform(omakase.syntax.trees.javascript.ArrayLiteralExpressionTree tree) {
-    ImmutableList<ParseTree> elements = transformList(tree.elements);
+    ImmutableList<? extends omakase.syntax.trees.ParseTree> elements = transformList(tree.elements);
     if (elements == tree.elements) {
       return tree;
     }
@@ -709,7 +710,7 @@ public class ParseTreeTransformer {
   }
 
   protected ParseTree transform(omakase.syntax.trees.javascript.BlockTree tree) {
-    ImmutableList<ParseTree> statements = transformList(tree.statements);
+    ImmutableList<? extends omakase.syntax.trees.ParseTree> statements = transformList(tree.statements);
     if (statements == tree.statements) {
       return tree;
     }
@@ -737,7 +738,7 @@ public class ParseTreeTransformer {
 
   protected ParseTree transform(omakase.syntax.trees.javascript.CaseClauseTree tree) {
     ParseTree expression = transformAny(tree.expression);
-    ImmutableList<ParseTree> statements = transformList(tree.statements);
+    ImmutableList<? extends omakase.syntax.trees.ParseTree> statements = transformList(tree.statements);
     if (expression == tree.expression &&
         statements == tree.statements) {
       return tree;
@@ -760,7 +761,7 @@ public class ParseTreeTransformer {
   }
 
   protected ParseTree transform(omakase.syntax.trees.javascript.CommaExpressionTree tree) {
-    ImmutableList<ParseTree> expressions = transformList(tree.expressions);
+    ImmutableList<? extends omakase.syntax.trees.ParseTree> expressions = transformList(tree.expressions);
     if (expressions == tree.expressions) {
       return tree;
     }
@@ -794,7 +795,7 @@ public class ParseTreeTransformer {
   }
 
   protected ParseTree transform(omakase.syntax.trees.javascript.DefaultClauseTree tree) {
-    ImmutableList<ParseTree> statements = transformList(tree.statements);
+    ImmutableList<? extends omakase.syntax.trees.ParseTree> statements = transformList(tree.statements);
     if (statements == tree.statements) {
       return tree;
     }
@@ -958,7 +959,7 @@ public class ParseTreeTransformer {
   }
 
   protected ParseTree transform(omakase.syntax.trees.javascript.ObjectLiteralExpressionTree tree) {
-    ImmutableList<ParseTree> initializers = transformList(tree.initializers);
+    ImmutableList<? extends omakase.syntax.trees.ParseTree> initializers = transformList(tree.initializers);
     if (initializers == tree.initializers) {
       return tree;
     }
@@ -989,7 +990,7 @@ public class ParseTreeTransformer {
   }
 
   protected ParseTree transform(omakase.syntax.trees.javascript.ProgramTree tree) {
-    ImmutableList<ParseTree> sourceElements = transformList(tree.sourceElements);
+    ImmutableList<? extends omakase.syntax.trees.ParseTree> sourceElements = transformList(tree.sourceElements);
     if (sourceElements == tree.sourceElements) {
       return tree;
     }
@@ -1033,7 +1034,7 @@ public class ParseTreeTransformer {
 
   protected ParseTree transform(omakase.syntax.trees.javascript.SwitchStatementTree tree) {
     ParseTree expression = transformAny(tree.expression);
-    ImmutableList<ParseTree> caseClauses = transformList(tree.caseClauses);
+    ImmutableList<? extends omakase.syntax.trees.ParseTree> caseClauses = transformList(tree.caseClauses);
     if (expression == tree.expression &&
         caseClauses == tree.caseClauses) {
       return tree;
@@ -1097,7 +1098,7 @@ public class ParseTreeTransformer {
   }
 
   protected ParseTree transform(omakase.syntax.trees.javascript.VariableStatementTree tree) {
-    ImmutableList<ParseTree> declarations = transformList(tree.declarations);
+    ImmutableList<? extends omakase.syntax.trees.ParseTree> declarations = transformList(tree.declarations);
     if (declarations == tree.declarations) {
       return tree;
     }

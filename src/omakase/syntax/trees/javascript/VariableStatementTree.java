@@ -22,9 +22,9 @@ import omakase.util.SourceRange;
 /**
  */
 public class VariableStatementTree extends ParseTree {
-  public final ImmutableList<ParseTree> declarations;
+  public final ImmutableList<? extends ParseTree> declarations;
 
-  public VariableStatementTree(SourceRange location, ImmutableList<ParseTree> declarations) {
+  public VariableStatementTree(SourceRange location, ImmutableList<? extends ParseTree> declarations) {
     super(location, ParseTreeKind.JAVASCRIPT_VARIABLE_STATEMENT);
     this.declarations = declarations;
   }

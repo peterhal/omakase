@@ -68,7 +68,7 @@ public final class JavascriptParseTreeFactory {
     return createArguments(createList(arguments));
   }
 
-  public static ArgumentsTree createArguments(ImmutableList<ParseTree> arguments) {
+  public static ArgumentsTree createArguments(ImmutableList<? extends ParseTree> arguments) {
     return new ArgumentsTree(null, arguments);
   }
 
@@ -76,7 +76,7 @@ public final class JavascriptParseTreeFactory {
     return new ArrayAccessExpressionTree(null, object,member);
   }
 
-  public static ArrayLiteralExpressionTree createArrayLiteral(ImmutableList<ParseTree> elements) {
+  public static ArrayLiteralExpressionTree createArrayLiteral(ImmutableList<? extends ParseTree> elements) {
     return new ArrayLiteralExpressionTree(null, elements);
   }
 
@@ -167,11 +167,11 @@ public final class JavascriptParseTreeFactory {
     return createBlock(ImmutableList.<ParseTree>copyOf(statements));
   }
 
-  public static BlockTree createBlock(ImmutableList<ParseTree> statements) {
+  public static BlockTree createBlock(ImmutableList<? extends ParseTree> statements) {
     return new BlockTree(null, statements);
   }
 
-  public static BlockTree createBlock(List<ParseTree> statements) {
+  public static BlockTree createBlock(List<? extends ParseTree> statements) {
     return new BlockTree(null, ImmutableList.<ParseTree>copyOf(statements));
   }
 
@@ -187,7 +187,7 @@ public final class JavascriptParseTreeFactory {
     return new CallExpressionTree(null, function, args);
   }
 
-  public static CaseClauseTree createCaseClause(ParseTree expression, ImmutableList<ParseTree> statements) {
+  public static CaseClauseTree createCaseClause(ParseTree expression, ImmutableList<? extends ParseTree> statements) {
     return new CaseClauseTree(null, expression, statements);
   }
 
@@ -207,7 +207,7 @@ public final class JavascriptParseTreeFactory {
     return new DebuggerStatementTree(null);
   }
 
-  public static DefaultClauseTree createDefaultClause(ImmutableList<ParseTree> statements) {
+  public static DefaultClauseTree createDefaultClause(ImmutableList<? extends ParseTree> statements) {
     return new DefaultClauseTree(null, statements);
   }
 
@@ -283,7 +283,7 @@ public final class JavascriptParseTreeFactory {
     return new ReturnStatementTree(null, value);
   }
 
-  public static SwitchStatementTree createSwitchStatement(ParseTree expression, ImmutableList<ParseTree> caseClauses) {
+  public static SwitchStatementTree createSwitchStatement(ParseTree expression, ImmutableList<? extends ParseTree> caseClauses) {
     return new SwitchStatementTree(null, expression, caseClauses);
   }
 
@@ -307,7 +307,7 @@ public final class JavascriptParseTreeFactory {
     return new VariableDeclarationTree(null, createIdentifierToken(name), initializer);
   }
 
-  public static VariableStatementTree createVariableStatement(ImmutableList<ParseTree> declarations) {
+  public static VariableStatementTree createVariableStatement(ImmutableList<? extends ParseTree> declarations) {
     return new VariableStatementTree(null, declarations);
   }
 

@@ -23,9 +23,9 @@ import omakase.util.SourceRange;
  */
 public class ClassDeclarationTree extends ParseTree {
   public final IdentifierToken name;
-  public final ImmutableList<ParseTree> members;
+  public final ImmutableList<? extends ParseTree> members;
 
-  public ClassDeclarationTree(SourceRange range, IdentifierToken name, ImmutableList<ParseTree> members) {
+  public ClassDeclarationTree(SourceRange range, IdentifierToken name, ImmutableList<? extends ParseTree> members) {
     super(range, ParseTreeKind.CLASS_DECLARATION);
     this.name = name;
     this.members = members;

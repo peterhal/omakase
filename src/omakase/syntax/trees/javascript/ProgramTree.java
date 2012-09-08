@@ -23,9 +23,9 @@ import omakase.util.SourceRange;
  *
  */
 public class ProgramTree extends ParseTree {
-  public final ImmutableList<ParseTree> sourceElements;
+  public final ImmutableList<? extends ParseTree> sourceElements;
 
-  public ProgramTree(SourceRange range, ImmutableList<ParseTree> sourceElements) {
+  public ProgramTree(SourceRange range, ImmutableList<? extends ParseTree> sourceElements) {
     super(range, ParseTreeKind.JAVASCRIPT_PROGRAM);
     this.sourceElements = sourceElements;
   }

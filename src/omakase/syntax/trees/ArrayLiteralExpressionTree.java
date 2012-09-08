@@ -20,9 +20,9 @@ import omakase.util.SourceRange;
 /**
  */
 public class ArrayLiteralExpressionTree extends ParseTree {
-  public final ImmutableList<ParseTree> elements;
+  public final ImmutableList<? extends ParseTree> elements;
 
-  public ArrayLiteralExpressionTree(SourceRange location, ImmutableList<ParseTree> elements) {
+  public ArrayLiteralExpressionTree(SourceRange location, ImmutableList<? extends ParseTree> elements) {
     super(location, ParseTreeKind.ARRAY_LITERAL_EXPRESSION);
     this.elements = elements;
   }

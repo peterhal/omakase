@@ -21,9 +21,9 @@ import omakase.util.SourceRange;
  */
 public class CaseClauseTree extends ParseTree {
   public final ParseTree expression;
-  public final ImmutableList<ParseTree> statements;
+  public final ImmutableList<? extends ParseTree> statements;
 
-  public CaseClauseTree(SourceRange location, ParseTree expression, ImmutableList<ParseTree> statements) {
+  public CaseClauseTree(SourceRange location, ParseTree expression, ImmutableList<? extends ParseTree> statements) {
     super(location, ParseTreeKind.CASE_CLAUSE);
     this.expression = expression;
     this.statements = statements;

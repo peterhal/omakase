@@ -22,9 +22,9 @@ import omakase.util.SourceRange;
 /**
  */
 public class ArgumentsTree extends ParseTree {
-  public final ImmutableList<ParseTree> arguments;
+  public final ImmutableList<? extends ParseTree> arguments;
 
-  public ArgumentsTree(SourceRange location, ImmutableList<ParseTree> arguments) {
+  public ArgumentsTree(SourceRange location, ImmutableList<? extends ParseTree> arguments) {
     super(location, ParseTreeKind.JAVASCRIPT_ARGUMENTS);
     this.arguments = arguments;
   }

@@ -21,9 +21,9 @@ import omakase.util.SourceRange;
  *
  */
 public class SourceFileTree extends ParseTree {
-  public final ImmutableList<ParseTree> declarations;
+  public final ImmutableList<? extends ParseTree> declarations;
 
-  public SourceFileTree(SourceRange range, ImmutableList<ParseTree> declarations) {
+  public SourceFileTree(SourceRange range, ImmutableList<? extends ParseTree> declarations) {
     super(range, ParseTreeKind.SOURCE_FILE);
     this.declarations = declarations;
   }
