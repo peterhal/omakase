@@ -369,6 +369,7 @@ public class ParseTreeWriter extends ParseTreeVisitor {
 
   @Override
   protected void visit(ParameterDeclarationTree tree) {
+    visitAny(tree.type);
     write(tree.name);
   }
 

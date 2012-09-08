@@ -600,7 +600,14 @@ public class ParseTreeTransformer {
   }
 
   protected ParseTree transform(ParameterDeclarationTree tree) {
-    return tree;
+    ParseTree type = transformAny(tree.type);
+    if (type == tree.type) {
+      return tree;
+    }
+    return new ParameterDeclarationTree(
+        null,
+        type,
+        tree.name);
   }
 
   protected ParseTree transform(ParenExpressionTree tree) {

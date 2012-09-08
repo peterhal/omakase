@@ -4,10 +4,8 @@ Types
 -----
 
 Context
-- variable declarations
-- member declarations
+- local variable declarations
 - cast expressions
-- parameter lists
 - typeof/is/as
 
 - simple

@@ -460,6 +460,7 @@ public class ParseTreeVisitor {
   }
 
   protected void visit(ParameterDeclarationTree tree) {
+    visitAny(tree.type);
   }
 
   protected void visit(ParenExpressionTree tree) {

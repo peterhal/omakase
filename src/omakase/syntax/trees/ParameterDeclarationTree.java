@@ -21,10 +21,12 @@ import omakase.util.SourceRange;
  *
  */
 public class ParameterDeclarationTree extends ParseTree {
+  public final ParseTree type;
   public final IdentifierToken name;
 
-  public ParameterDeclarationTree(SourceRange location, IdentifierToken name) {
+  public ParameterDeclarationTree(SourceRange location, ParseTree type, IdentifierToken name) {
     super(location, ParseTreeKind.PARAMETER_DECLARATION);
+    this.type = type;
     this.name = name;
   }
 }

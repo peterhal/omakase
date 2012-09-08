@@ -47,9 +47,9 @@ public class Parser extends ParserBase {
   }
 
   // Parse Class Members
-  private FormalParameterListTree parseParameterListDeclaration() {
+  private FormalParameterListTree parseParameterListDeclaration(boolean typesRequired) {
     Token start = peek();
-    ImmutableList.Builder<ParseTree> result = new ImmutableList.Builder<ParseTree>();
+    ImmutableList.Builder<ParameterDeclarationTree> result = new ImmutableList.Builder<ParameterDeclarationTree>();
     eat(TokenKind.OPEN_PAREN);
     if (peekParameter()) {
       result.add(parseParameter());
@@ -58,12 +58,41 @@ public class Parser extends ParserBase {
       }
     }
     eat(TokenKind.CLOSE_PAREN);
-    return new FormalParameterListTree(getRange(start), result.build());
+    ImmutableList<ParameterDeclarationTree> parameters = result.build();
+    if (!parameters.isEmpty()) {
+      // Types are either all specified or none.
+      if (typesRequired || parameters.get(0).asParameterDeclaration().type != null) {
+        for (ParameterDeclarationTree parameter : parameters) {
+          if (parameter.type == null) {
+            reportError(parameter.name, "Parameter type required");
+          }
+        }
+      } else {
+        for (ParameterDeclarationTree parameter : parameters) {
+          if (parameter.type != null) {
+            reportError(parameter.type.start(), "Parameter type unexpected.");
+          }
+        }
+      }
+    }
+
+    return new FormalParameterListTree(getRange(start), parameters);
   }
 
-  private ParseTree parseParameter() {
+  private ParameterDeclarationTree parseParameter() {
+    Token start = peek();
+    ParseTree type;
+    if (peekUntypedParameter()) {
+      type = null;
+    } else {
+      type = parseType();
+    }
     IdentifierToken name = eatId();
-    return new ParameterDeclarationTree(getRange(name), name);
+    return new ParameterDeclarationTree(getRange(start), type, name);
+  }
+
+  private boolean peekUntypedParameter() {
+    return peek(TokenKind.IDENTIFIER) && (peek(1, TokenKind.COMMA) || peek(1, TokenKind.CLOSE_PAREN));
   }
 
   private boolean peekParameter() {
@@ -240,7 +269,7 @@ public class Parser extends ParserBase {
   }
 
   private ParseTree parseMethod(boolean isExtern, Token start, boolean isNative, boolean isStatic, ParseTree returnType, IdentifierToken name) {
-    FormalParameterListTree formals = parseParameterListDeclaration();
+    FormalParameterListTree formals = parseParameterListDeclaration(true);
     ParseTree body;
     if (isExtern) {
       body = null;
@@ -675,7 +704,7 @@ public class Parser extends ParserBase {
 
   private ParseTree parseFunction() {
     Token start = peek();
-    FormalParameterListTree parameters = parseParameterListDeclaration();
+    FormalParameterListTree parameters = parseParameterListDeclaration(false);
     eat(TokenKind.ARROW);
     ParseTree body;
     if (peek(TokenKind.OPEN_CURLY)) {
