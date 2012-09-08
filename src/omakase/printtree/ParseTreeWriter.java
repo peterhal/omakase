@@ -57,6 +57,13 @@ public class ParseTreeWriter extends ParseTreeVisitor {
   }
 
   @Override
+  protected void visit(ArrayTypeTree tree) {
+    visitAny(tree.elementType);
+    write(TokenKind.OPEN_SQUARE);
+    write(TokenKind.CLOSE_SQUARE);
+  }
+
+  @Override
   protected void visit(BinaryExpressionTree tree) {
     visitAny(tree.left);
     write(tree.operator);
@@ -178,6 +185,22 @@ public class ParseTreeWriter extends ParseTreeVisitor {
   }
 
   @Override
+  protected void visit(FunctionExpressionTree tree) {
+    visit(tree.parameters);
+    write(TokenKind.ARROW);
+    visitAny(tree.body);
+  }
+
+  @Override
+  protected void visit(FunctionTypeTree tree) {
+    write(TokenKind.OPEN_PAREN);
+    writeCommaSeparatedList(tree.argumentTypes);
+    write(TokenKind.CLOSE_PAREN);
+    write(TokenKind.ARROW);
+    visitAny(tree.returnType);
+  }
+
+  @Override
   protected void visit(IfStatementTree tree) {
     write(TokenKind.IF);
     write(TokenKind.OPEN_PAREN);
@@ -194,6 +217,27 @@ public class ParseTreeWriter extends ParseTreeVisitor {
       visitAny(tree.elseClause);
       outdent();
     }
+  }
+
+  @Override
+  protected void visit(KeywordTypeTree tree) {
+    write(tree.type);
+  }
+
+  @Override
+  protected void visit(NamedTypeTree tree) {
+    if (tree.element != null) {
+      visitAny(tree.element);
+      write(TokenKind.PERIOD);
+    }
+    write(tree.name);
+    visit(tree.typeArguments);
+  }
+
+  @Override
+  protected void visit(NullableTypeTree tree) {
+    visitAny(tree.elementType);
+    write(TokenKind.QUESTION);
   }
 
   @Override
@@ -248,6 +292,13 @@ public class ParseTreeWriter extends ParseTreeVisitor {
   }
 
   @Override
+  protected void visit(TypeArgumentListTree tree) {
+    write(TokenKind.OPEN_ANGLE);
+    writeCommaSeparatedList(tree.typeArguments);
+    write(TokenKind.CLOSE_ANGLE);
+  }
+
+  @Override
   protected void visit(UnaryExpressionTree tree) {
     write(tree.operator);
     visitAny(tree.operand);
@@ -277,13 +328,6 @@ public class ParseTreeWriter extends ParseTreeVisitor {
     visitAny(tree.condition);
     write(TokenKind.CLOSE_PAREN);
     writeLine();
-    visitAny(tree.body);
-  }
-
-  @Override
-  protected void visit(FunctionExpressionTree tree) {
-    visit(tree.parameters);
-    write(TokenKind.ARROW);
     visitAny(tree.body);
   }
 
