@@ -331,6 +331,7 @@ public class ParseTreeTransformer {
     }
     return new ClassDeclarationTree(
         null,
+        tree.isExtern,
         tree.name,
         members);
   }

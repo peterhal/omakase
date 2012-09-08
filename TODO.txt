@@ -1,7 +1,7 @@
 Next Up
 -------
-- static members
 - extern declarations
+- use semantics
 - type system
 - hygiene
   - name table

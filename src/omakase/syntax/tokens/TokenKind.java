@@ -88,6 +88,7 @@ public enum TokenKind {
   DEFAULT("default"),
   DO("do"),
   ELSE("else"),
+  EXTERN("extern"),
   FALSE("false"),
   FINALLY("finally"),
   FOR("for"),

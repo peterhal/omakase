@@ -22,11 +22,13 @@ import omakase.util.SourceRange;
  *
  */
 public class ClassDeclarationTree extends ParseTree {
+  public final boolean isExtern;
   public final IdentifierToken name;
   public final ImmutableList<? extends ParseTree> members;
 
-  public ClassDeclarationTree(SourceRange range, IdentifierToken name, ImmutableList<? extends ParseTree> members) {
+  public ClassDeclarationTree(SourceRange range, boolean isExtern, IdentifierToken name, ImmutableList<? extends ParseTree> members) {
     super(range, ParseTreeKind.CLASS_DECLARATION);
+    this.isExtern = isExtern;
     this.name = name;
     this.members = members;
   }

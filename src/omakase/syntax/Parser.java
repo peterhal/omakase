@@ -86,16 +86,18 @@ public class Parser extends ParserBase {
   }
 
   private boolean peekClass() {
-    return peek(TokenKind.CLASS);
+    return peek(TokenKind.CLASS) || peek(TokenKind.EXTERN);
   }
 
   private ParseTree parseClass() {
-    Token start = eat(TokenKind.CLASS);
+    Token start = peek();
+    boolean isExtern = eatOpt(TokenKind.EXTERN);
+    eat(TokenKind.CLASS);
     IdentifierToken name = eatId();
     eat(TokenKind.OPEN_CURLY);
     ImmutableList<ParseTree> members = parseClassMembers();
     eat(TokenKind.CLOSE_CURLY);
-    return new ClassDeclarationTree(getRange(start), name, members);
+    return new ClassDeclarationTree(getRange(start), isExtern, name, members);
   }
 
   private ImmutableList<ParseTree> parseClassMembers() {
