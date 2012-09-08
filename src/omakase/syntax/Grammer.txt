@@ -20,15 +20,17 @@ Context
 - array
   - type[]
   - array<type>
-- named
-  - dotted-name
-  - dotted-name < type-list >
+- named-type
+  - identifier type-argument-list-opt
+  - named-type . identifier type-argument-list-opt
 - function
-  - Func/Action
+  - Func < type-list >/Action < type-list >
   - (type-list-opt) => type
 - nullable
   - type ?
   - nullable<type>
+- type-argument-list
+  - < type-arguments >
 
 Expressions
 -----------
