@@ -377,7 +377,7 @@ public class ParseTreeWriter extends ParseTreeVisitor {
     if (tree.isStatic) {
       write(TokenKind.STATIC);
     }
-    write(TokenKind.VAR);
+    visitAny(tree.type);
     writeCommaSeparatedList(tree.declarations);
     write(TokenKind.SEMI_COLON);
   }
@@ -390,6 +390,7 @@ public class ParseTreeWriter extends ParseTreeVisitor {
     if (tree.isNative) {
       write(TokenKind.NATIVE);
     }
+    visitAny(tree.returnType);
     write(tree.name);
     visitAny(tree.formals);
 

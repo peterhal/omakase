@@ -389,6 +389,7 @@ public class ParseTreeVisitor {
   }
 
   protected void visit(FieldDeclarationTree tree) {
+    visitAny(tree.type);
     visitList(tree.declarations);
   }
 
@@ -439,6 +440,7 @@ public class ParseTreeVisitor {
   }
 
   protected void visit(MethodDeclarationTree tree) {
+    visitAny(tree.returnType);
     visitAny(tree.formals);
     visitAny(tree.body);
   }

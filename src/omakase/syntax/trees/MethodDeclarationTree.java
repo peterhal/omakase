@@ -21,15 +21,17 @@ import omakase.util.SourceRange;
  *
  */
 public class MethodDeclarationTree extends ParseTree {
+  public final ParseTree returnType;
   public final IdentifierToken name;
   public final FormalParameterListTree formals;
   public final boolean isStatic;
   public final boolean isNative;
   public final ParseTree body;
 
-  public MethodDeclarationTree(SourceRange range, IdentifierToken name, FormalParameterListTree formals,
+  public MethodDeclarationTree(SourceRange range, ParseTree returnType, IdentifierToken name, FormalParameterListTree formals,
       boolean isStatic, boolean isNative, ParseTree body) {
     super(range, ParseTreeKind.METHOD_DECLARATION);
+    this.returnType = returnType;
     this.name = name;
     this.isStatic = isStatic;
     this.isNative = isNative;

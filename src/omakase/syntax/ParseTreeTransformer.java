@@ -420,13 +420,16 @@ public class ParseTreeTransformer {
   }
 
   protected ParseTree transform(FieldDeclarationTree tree) {
+    ParseTree type = transformAny(tree.type);
     ImmutableList<? extends omakase.syntax.trees.VariableDeclarationTree> declarations = transformList(tree.declarations);
-    if (declarations == tree.declarations) {
+    if (type == tree.type &&
+        declarations == tree.declarations) {
       return tree;
     }
     return new FieldDeclarationTree(
         null,
         tree.isStatic,
+        type,
         declarations);
   }
 
@@ -541,14 +544,17 @@ public class ParseTreeTransformer {
   }
 
   protected ParseTree transform(MethodDeclarationTree tree) {
+    ParseTree returnType = transformAny(tree.returnType);
     ParseTree formals = transformAny(tree.formals);
     ParseTree body = transformAny(tree.body);
-    if (formals == tree.formals &&
+    if (returnType == tree.returnType &&
+        formals == tree.formals &&
         body == tree.body) {
       return tree;
     }
     return new MethodDeclarationTree(
         null,
+        returnType,
         tree.name,
         formals.asFormalParameterList(),
         tree.isStatic,

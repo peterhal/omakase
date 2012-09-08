@@ -69,28 +69,28 @@ scanner/test.oma (8, 1): CLOSE_CURLY
 scanner/test.oma (9, 2): END_OF_FILE
 Parsing Tests ...
 class Program {
-  main ( ) {
+  void main ( ) {
     print ( "Hello World!" ) ;
   }
 }
 
 class Program {
-  native main ( ) {
+  native void main ( ) {
     print ( "Hello World!" ) ;
   }
 }
 
 class Program {
-  parseVariableStatement ( ) {
+  void parseVariableStatement ( ) {
     var a ;
     var a b c ;
     var d = a ;
     var e = a f = b g = c ;
   }
-  parseEmptyStatement ( ) {
+  void parseEmptyStatement ( ) {
     ;
   }
-  parseForStatement ( ) {
+  void parseForStatement ( ) {
     for ( ; ; )
     ;
     for ( a ; b ; c )
@@ -102,13 +102,13 @@ class Program {
     c ; d )
     ;
   }
-  parseForInStatement ( ) {
+  void parseForInStatement ( ) {
     for ( a in b )
     ;
     for ( a in b )
     ;
   }
-  parseIfStatement ( ) {
+  void parseIfStatement ( ) {
     if ( cond )
     {
     }
@@ -125,31 +125,31 @@ class Program {
     else
       ;
   }
-  parseDoStatement ( ) {
+  void parseDoStatement ( ) {
     do {
     }
     while ( e ) ;
     do ;
     while ( e ) ;
   }
-  parseWhileStatement ( ) {
+  void parseWhileStatement ( ) {
     while ( e )
     ;
     while ( e )
     {
     }
   }
-  parseBreakStatement ( ) {
+  void parseBreakStatement ( ) {
     break ;
   }
-  parseContinueStatement ( ) {
+  void parseContinueStatement ( ) {
     continue ;
   }
-  parseReturnStatement ( ) {
+  void parseReturnStatement ( ) {
     return ;
     return a ;
   }
-  parseSwitchStatement ( ) {
+  void parseSwitchStatement ( ) {
     switch ( v )
     { } switch ( v )
     { case a :
@@ -164,10 +164,10 @@ class Program {
     default :
       ;
     } }
-  parseThrowStatement ( ) {
+  void parseThrowStatement ( ) {
     throw e ;
   }
-  parseTryStatement ( ) {
+  void parseTryStatement ( ) {
     try
     {
       ;
@@ -191,10 +191,10 @@ class Program {
     finally {
     }
   }
-  parseDebuggerStatement ( ) {
+  void parseDebuggerStatement ( ) {
     debugger ;
   }
-  parseFunctionExpression ( ) {
+  void parseFunctionExpression ( ) {
     a = ( ) -> b ;
     a = ( x ) -> x ;
     a = ( x y ) -> x + y ;
@@ -208,14 +208,14 @@ class Program {
     }
     ;
   }
-  parseConditionalExpression ( ) {
+  void parseConditionalExpression ( ) {
     a == b ? x : y ;
   }
-  parseAssignmentExpression ( ) {
+  void parseAssignmentExpression ( ) {
     a = b ;
     a += b ;
   }
-  parseUnaryExpression ( ) {
+  void parseUnaryExpression ( ) {
     typeof a ;
     ++ a ;
     -- a ;
@@ -224,16 +224,16 @@ class Program {
     ~ a ;
     ! a ;
   }
-  parsePostFixExpression ( ) {
+  void parsePostFixExpression ( ) {
     a ( b ) ;
     a [ b ] ;
     a . b ;
   }
-  parseNewExpression ( ) {
+  void parseNewExpression ( ) {
     new a ( ) ;
     new a ( b ) ;
   }
-  parsePrimaryExpression ( ) {
+  void parsePrimaryExpression ( ) {
     this ;
     [  1  2  3 ] ;
     ( a ) ;
@@ -244,11 +244,11 @@ class Program {
      1 ;
     "hello" ;
   }
-  parseBinaryExpression ( ) {
+  void parseBinaryExpression ( ) {
     a + b ;
     a + b * c ;
   }
-  native main ( ) {
+  static native void main ( ) {
     print ( "Hello World!" ) ;
   }
 }

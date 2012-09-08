@@ -2,30 +2,30 @@
 class Program {
 
   // statements
-  parseVariableStatement() {
+  void parseVariableStatement() {
     var a;
     var a, b, c;
     var d = a;
     var e = a, f = b, g = c;
   }
 
-  parseEmptyStatement() {
+  void parseEmptyStatement() {
     ;
   }
 
-  parseForStatement() {
+  void parseForStatement() {
     for (;;) ;
     for (a;b;c) ;
     for (var a;b;c) ;
     for (var a = b;c;d) ;
   }
 
-  parseForInStatement() {
+  void parseForInStatement() {
     for (a in b) ;
     for (var a in b) ;
   }
 
-  parseIfStatement() {
+  void parseIfStatement() {
     if (cond) {
     }
 
@@ -38,7 +38,7 @@ class Program {
     if (cond)  ; else ;
   }
 
-  parseDoStatement() {
+  void parseDoStatement() {
     do {
 
     } while (e);
@@ -46,25 +46,25 @@ class Program {
     do ; while (e);
   }
 
-  parseWhileStatement() {
+  void parseWhileStatement() {
     while (e) ;
     while (e) {}
   }
 
-  parseBreakStatement() {
+  void parseBreakStatement() {
     break;
   }
 
-  parseContinueStatement() {
+  void parseContinueStatement() {
     continue;
   }
 
-  parseReturnStatement() {
+  void parseReturnStatement() {
     return;
     return a;
   }
 
-  parseSwitchStatement() {
+  void parseSwitchStatement() {
     switch(v) {
     }
     switch(v) {
@@ -85,11 +85,11 @@ class Program {
     }
   }
 
-  parseThrowStatement() {
+  void parseThrowStatement() {
     throw e;
   }
 
-  parseTryStatement() {
+  void parseTryStatement() {
     try {
       ;
     } catch (e) {
@@ -111,12 +111,12 @@ class Program {
     }
   }
 
-  parseDebuggerStatement() {
+  void parseDebuggerStatement() {
     debugger;
   }
 
   // expressions
-  parseFunctionExpression() {
+  void parseFunctionExpression() {
     a = () -> b;
     a = (x) -> x;
     a = (x, y) -> x + y;
@@ -126,16 +126,16 @@ class Program {
     a = (x, y) -> {};
   }
 
-  parseConditionalExpression() {
+  void parseConditionalExpression() {
     a == b ? x : y;
   }
 
-  parseAssignmentExpression() {
+  void parseAssignmentExpression() {
     a = b;
     a += b;
   }
 
-  parseUnaryExpression() {
+  void parseUnaryExpression() {
     typeof a;
     ++a;
     --a;
@@ -145,18 +145,18 @@ class Program {
     !a;
   }
 
-  parsePostFixExpression() {
+  void parsePostFixExpression() {
     a(b);
     a[b];
     a.b;
   }
 
-  parseNewExpression() {
+  void parseNewExpression() {
     new a();
     new a(b);
   }
 
-  parsePrimaryExpression() {
+  void parsePrimaryExpression() {
     this;
     [1,2,3];
     (a);
@@ -168,13 +168,13 @@ class Program {
     "hello";
   }
 
-  parseBinaryExpression() {
+  void parseBinaryExpression() {
     a + b;
     a + b * c;
     // TODO: More binary expressions.
   }
 
-  native main() {
+  native void main() {
     print("Hello World!");
   }
 }

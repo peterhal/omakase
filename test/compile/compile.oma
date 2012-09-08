@@ -1,9 +1,9 @@
 class A {
-  var a, b;
-  c() { return this.a; }
+  number a, b;
+  string c() { return this.a; }
 }
 
 extern class Externs {
-  var a;
-  b();
+  number a;
+  void b();
 }

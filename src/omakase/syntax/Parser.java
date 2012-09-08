@@ -76,10 +76,18 @@ public class Parser extends ParserBase {
 
   private boolean peekClassMember() {
     switch (peekKind()) {
-    case IDENTIFIER:
+    // Modifiers
     case NATIVE:
     case STATIC:
-    case VAR:
+
+    // Types
+    case OPEN_PAREN:
+    case IDENTIFIER:
+    case STRING:
+    case OBJECT:
+    case BOOL:
+    case NUMBER:
+    case VOID:
       return true;
     }
     return false;
@@ -109,37 +117,129 @@ public class Parser extends ParserBase {
   }
 
   private ParseTree parseClassMember(boolean isExtern) {
-    if (peekField()) {
-      return parseField(isExtern);
-    }
-    return parseMethod(isExtern);
-  }
-
-  private boolean peekField() {
-    return peek(TokenKind.VAR) || (peek(TokenKind.STATIC) && peek(1, TokenKind.VAR));
-  }
-
-  private ParseTree parseField(boolean isExtern) {
-    Token start = peek();
-    boolean isStatic = eatOpt(TokenKind.STATIC);
-    eat(TokenKind.VAR);
-    ImmutableList<VariableDeclarationTree> declarations = parseVariableDeclarations();
-    if (isExtern) {
-      for (VariableDeclarationTree declaration : declarations) {
-        if (declaration.initializer != null) {
-          reportError(declaration.initializer.start(), "Extern fields may not have initializers.");
-        }
-      }
-    }
-    eat(TokenKind.SEMI_COLON);
-    return new FieldDeclarationTree(getRange(start), isStatic, declarations);
-  }
-
-  private ParseTree parseMethod(boolean isExtern) {
     Token start = peek();
     boolean isStatic = eatOpt(TokenKind.STATIC);
     boolean isNative = eatOpt(TokenKind.NATIVE);
+    ParseTree type = parseType();
     IdentifierToken name = eatId();
+    if (peek(TokenKind.OPEN_PAREN)) {
+      return parseMethod(isExtern, start, isNative, isStatic, type, name);
+    } else {
+      if (isNative) {
+        reportError(name, "Fields may not be native.");
+      }
+      return parseField(isExtern, start, isStatic, type, name);
+    }
+  }
+
+  private ParseTree parseType() {
+    switch (peekKind()) {
+    case OPEN_PAREN:
+      return parseFunctionType();
+    case IDENTIFIER:
+      return parseNamedType();
+    case STRING:
+    case OBJECT:
+    case BOOL:
+    case NUMBER:
+    case VOID:
+      return parseKeywordType();
+    default:
+      reportError(peek(), "Type expected");
+      return null;
+    }
+  }
+
+  private ParseTree parseNamedType() {
+    Token start = peek();
+    NamedTypeTree element = parseNamedTypeElement(start, null);
+    while (eatOpt(TokenKind.PERIOD)) {
+      element = parseNamedTypeElement(start, element);
+    }
+    return element;
+  }
+
+  private NamedTypeTree parseNamedTypeElement(Token start, NamedTypeTree element) {
+    IdentifierToken name = eatId();
+    TypeArgumentListTree typeArguments = parseTypeArgumentsOpt();
+    return new NamedTypeTree(getRange(start), element, name, typeArguments);
+  }
+
+  private TypeArgumentListTree parseTypeArgumentsOpt() {
+    if (peek(TokenKind.OPEN_ANGLE)) {
+      return parseTypeArguments();
+    }
+    return null;
+  }
+
+  private TypeArgumentListTree parseTypeArguments() {
+    Token start = peek();
+    eat(TokenKind.OPEN_ANGLE);
+    ImmutableList.Builder<ParseTree> typeArguments = new ImmutableList.Builder<ParseTree>();
+    typeArguments.add(parseType());
+    while (eatOpt(TokenKind.COMMA)) {
+      typeArguments.add(parseType());
+    }
+    eat(TokenKind.CLOSE_ANGLE);
+    return new TypeArgumentListTree(getRange(start), typeArguments.build());
+  }
+
+  private boolean peekType() {
+    switch (peekKind()) {
+    case OPEN_PAREN:
+    case IDENTIFIER:
+    case STRING:
+    case OBJECT:
+    case BOOL:
+    case NUMBER:
+    case VOID:
+      return true;
+    default:
+      return false;
+    }
+  }
+
+  private ParseTree parseKeywordType() {
+    Token start = peek();
+    nextToken();
+    return new KeywordTypeTree(getRange(start), start);
+  }
+
+  private ParseTree parseFunctionType() {
+    Token start = peek();
+    eat(TokenKind.OPEN_PAREN);
+    ImmutableList.Builder<ParseTree> parameterTypes = new ImmutableList.Builder<ParseTree>();
+    if (peekType()) {
+      parameterTypes.add(parseType());
+      while(eatOpt(TokenKind.COMMA)) {
+        parameterTypes.add(parseType());
+      }
+    }
+    eat(TokenKind.CLOSE_PAREN);
+    eat(TokenKind.ARROW);
+    ParseTree returnType = parseType();
+    return new FunctionTypeTree(getRange(start), parameterTypes.build(), returnType);
+  }
+
+  private ParseTree parseField(boolean isExtern, Token start, boolean isStatic, ParseTree type, IdentifierToken name) {
+    ImmutableList<VariableDeclarationTree> declarations;
+    if (name != null) {
+      declarations = parseRemainingVariableDeclarations(parseVariableDeclaration(name, name));
+      if (isExtern) {
+        for (VariableDeclarationTree declaration : declarations) {
+          if (declaration.initializer != null) {
+            reportError(declaration.initializer.start(), "Extern fields may not have initializers.");
+          }
+        }
+      }
+    } else {
+      declarations = ImmutableList.of();
+    }
+    eat(TokenKind.SEMI_COLON);
+    return new FieldDeclarationTree(getRange(start), isStatic, type, declarations);
+  }
+
+  private ParseTree parseMethod(boolean isExtern, Token start, boolean isNative, boolean isStatic, ParseTree returnType, IdentifierToken name) {
     FormalParameterListTree formals = parseParameterListDeclaration();
     ParseTree body;
     if (isExtern) {
@@ -148,7 +248,7 @@ public class Parser extends ParserBase {
     } else {
       body = parseBlock(isNative);
     }
-    return new MethodDeclarationTree(getRange(start), name, formals, isStatic, isNative, body);
+    return new MethodDeclarationTree(getRange(start), returnType, name, formals, isStatic, isNative, body);
   }
 
   private ParseTree parseBlock(boolean isNative) {
@@ -261,6 +361,10 @@ public class Parser extends ParserBase {
   private VariableDeclarationTree parseVariableDeclaration() {
     Token start = peek();
     IdentifierToken identifier = eatId();
+    return parseVariableDeclaration(start, identifier);
+  }
+
+  private VariableDeclarationTree parseVariableDeclaration(Token start, IdentifierToken identifier) {
     ParseTree initializer = null;
     if (eatOpt(TokenKind.EQUAL)) {
       initializer = parseExpression();
@@ -1042,7 +1146,9 @@ public class Parser extends ParserBase {
   }
 
   private IdentifierToken eatId() {
-    return eat(TokenKind.IDENTIFIER).asIdentifier();
+    Token token = eat(TokenKind.IDENTIFIER);
+
+    return token.isIdentifier() ? token.asIdentifier() : null;
   }
 
   private IdentifierToken eatIdOpt() {

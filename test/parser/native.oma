@@ -1,6 +1,6 @@
 // Hello World
 class Program {
-  native main() {
+  native void main() {
     print("Hello World!");
   }
 }

@@ -64,7 +64,7 @@ public class ParserBase {
   protected Token eat(TokenKind kind) {
     Token result = nextToken();
     if (result.kind != kind) {
-      reportError(result, "%s expected.", kind);
+      reportError(result, "%s expected.", kind.value());
     }
     return result;
   }

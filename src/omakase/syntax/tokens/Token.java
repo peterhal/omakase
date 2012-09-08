@@ -73,6 +73,10 @@ public class Token {
     return this.location.end;
   }
 
+  public boolean isIdentifier() {
+    return kind == TokenKind.IDENTIFIER;
+  }
+
   public omakase.syntax.tokens.IdentifierToken asIdentifier() {
     return (omakase.syntax.tokens.IdentifierToken) this;
   }
