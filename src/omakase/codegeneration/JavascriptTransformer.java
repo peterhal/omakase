@@ -286,7 +286,6 @@ public class JavascriptTransformer extends ParseTreeTransformer {
 
   @Override
   protected ParseTree transform(VariableStatementTree tree) {
-    // TODO: Fix this ...
     return createVariableStatement(transformList(tree.declarations));
   }
 
