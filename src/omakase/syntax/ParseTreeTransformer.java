@@ -55,6 +55,8 @@ public class ParseTreeTransformer {
       return transform(tree.asArrayAccessExpression());
     case ARRAY_LITERAL_EXPRESSION:
       return transform(tree.asArrayLiteralExpression());
+    case ARRAY_TYPE:
+      return transform(tree.asArrayType());
     case BINARY_EXPRESSION:
       return transform(tree.asBinaryExpression());
     case BLOCK:
@@ -93,18 +95,26 @@ public class ParseTreeTransformer {
       return transform(tree.asFormalParameterList());
     case FUNCTION_EXPRESSION:
       return transform(tree.asFunctionExpression());
+    case FUNCTION_TYPE:
+      return transform(tree.asFunctionType());
     case IDENTIFIER_EXPRESSION:
       return transform(tree.asIdentifierExpression());
     case IF_STATEMENT:
       return transform(tree.asIfStatement());
+    case KEYWORD_TYPE:
+      return transform(tree.asKeywordType());
     case LITERAL_EXPRESSION:
       return transform(tree.asLiteralExpression());
     case MEMBER_EXPRESSION:
       return transform(tree.asMemberExpression());
     case METHOD_DECLARATION:
       return transform(tree.asMethodDeclaration());
+    case NAMED_TYPE:
+      return transform(tree.asNamedType());
     case NEW_EXPRESSION:
       return transform(tree.asNewExpression());
+    case NULLABLE_TYPE:
+      return transform(tree.asNullableType());
     case PARAMETER_DECLARATION:
       return transform(tree.asParameterDeclaration());
     case PAREN_EXPRESSION:
@@ -123,6 +133,8 @@ public class ParseTreeTransformer {
       return transform(tree.asThrowStatement());
     case TRY_STATEMENT:
       return transform(tree.asTryStatement());
+    case TYPE_ARGUMENT_LIST:
+      return transform(tree.asTypeArgumentList());
     case UNARY_EXPRESSION:
       return transform(tree.asUnaryExpression());
     case VARIABLE_DECLARATION:
@@ -257,6 +269,16 @@ public class ParseTreeTransformer {
     return new ArrayLiteralExpressionTree(
         null,
         elements);
+  }
+
+  protected ParseTree transform(ArrayTypeTree tree) {
+    ParseTree elementType = transformAny(tree.elementType);
+    if (elementType == tree.elementType) {
+      return tree;
+    }
+    return new ArrayTypeTree(
+        null,
+        elementType);
   }
 
   protected ParseTree transform(BinaryExpressionTree tree) {
@@ -466,6 +488,19 @@ public class ParseTreeTransformer {
         body);
   }
 
+  protected ParseTree transform(FunctionTypeTree tree) {
+    ImmutableList<? extends omakase.syntax.trees.ParseTree> argumentTypes = transformList(tree.argumentTypes);
+    ParseTree returnType = transformAny(tree.returnType);
+    if (argumentTypes == tree.argumentTypes &&
+        returnType == tree.returnType) {
+      return tree;
+    }
+    return new FunctionTypeTree(
+        null,
+        argumentTypes,
+        returnType);
+  }
+
   protected ParseTree transform(IdentifierExpressionTree tree) {
     return tree;
   }
@@ -484,6 +519,10 @@ public class ParseTreeTransformer {
         condition,
         ifClause,
         elseClause);
+  }
+
+  protected ParseTree transform(KeywordTypeTree tree) {
+    return tree;
   }
 
   protected ParseTree transform(LiteralExpressionTree tree) {
@@ -517,6 +556,20 @@ public class ParseTreeTransformer {
         body);
   }
 
+  protected ParseTree transform(NamedTypeTree tree) {
+    ParseTree element = transformAny(tree.element);
+    ParseTree typeArguments = transformAny(tree.typeArguments);
+    if (element == tree.element &&
+        typeArguments == tree.typeArguments) {
+      return tree;
+    }
+    return new NamedTypeTree(
+        null,
+        element.asNamedType(),
+        tree.name,
+        typeArguments.asTypeArgumentList());
+  }
+
   protected ParseTree transform(NewExpressionTree tree) {
     ParseTree constructor = transformAny(tree.constructor);
     ParseTree arguments = transformAny(tree.arguments);
@@ -528,6 +581,16 @@ public class ParseTreeTransformer {
         null,
         constructor,
         arguments.asArguments());
+  }
+
+  protected ParseTree transform(NullableTypeTree tree) {
+    ParseTree elementType = transformAny(tree.elementType);
+    if (elementType == tree.elementType) {
+      return tree;
+    }
+    return new NullableTypeTree(
+        null,
+        elementType);
   }
 
   protected ParseTree transform(ParameterDeclarationTree tree) {
@@ -616,6 +679,16 @@ public class ParseTreeTransformer {
         body.asBlock(),
         catchClause.asCatchClause(),
         finallyClause.asBlock());
+  }
+
+  protected ParseTree transform(TypeArgumentListTree tree) {
+    ImmutableList<? extends omakase.syntax.trees.ParseTree> typeArguments = transformList(tree.typeArguments);
+    if (typeArguments == tree.typeArguments) {
+      return tree;
+    }
+    return new TypeArgumentListTree(
+        null,
+        typeArguments);
   }
 
   protected ParseTree transform(UnaryExpressionTree tree) {

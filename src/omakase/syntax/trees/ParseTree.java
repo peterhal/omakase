@@ -45,6 +45,10 @@ public class ParseTree {
     return (ArrayLiteralExpressionTree) this;
   }
 
+  public ArrayTypeTree asArrayType() {
+    return (ArrayTypeTree) this;
+  }
+
   public BinaryExpressionTree asBinaryExpression() {
     return (BinaryExpressionTree) this;
   }
@@ -121,12 +125,20 @@ public class ParseTree {
     return (FunctionExpressionTree) this;
   }
 
+  public FunctionTypeTree asFunctionType() {
+    return (FunctionTypeTree) this;
+  }
+
   public IdentifierExpressionTree asIdentifierExpression() {
     return (IdentifierExpressionTree) this;
   }
 
   public IfStatementTree asIfStatement() {
     return (IfStatementTree) this;
+  }
+
+  public KeywordTypeTree asKeywordType() {
+    return (KeywordTypeTree) this;
   }
 
   public LiteralExpressionTree asLiteralExpression() {
@@ -141,8 +153,16 @@ public class ParseTree {
     return (MethodDeclarationTree) this;
   }
 
+  public NamedTypeTree asNamedType() {
+    return (NamedTypeTree) this;
+  }
+
   public NewExpressionTree asNewExpression() {
     return (NewExpressionTree) this;
+  }
+
+  public NullableTypeTree asNullableType() {
+    return (NullableTypeTree) this;
   }
 
   public ParameterDeclarationTree asParameterDeclaration() {
@@ -179,6 +199,10 @@ public class ParseTree {
 
   public TryStatementTree asTryStatement() {
     return (TryStatementTree) this;
+  }
+
+  public TypeArgumentListTree asTypeArgumentList() {
+    return (TypeArgumentListTree) this;
   }
 
   public UnaryExpressionTree asUnaryExpression() {
@@ -389,6 +413,10 @@ public class ParseTree {
     return this.kind == ParseTreeKind.ARRAY_LITERAL_EXPRESSION;
   }
 
+  public boolean isArrayType() {
+    return this.kind == ParseTreeKind.ARRAY_TYPE;
+  }
+
   public boolean isBinaryExpression() {
     return this.kind == ParseTreeKind.BINARY_EXPRESSION;
   }
@@ -465,12 +493,20 @@ public class ParseTree {
     return this.kind == ParseTreeKind.FUNCTION_EXPRESSION;
   }
 
+  public boolean isFunctionType() {
+    return this.kind == ParseTreeKind.FUNCTION_TYPE;
+  }
+
   public boolean isIdentifierExpression() {
     return this.kind == ParseTreeKind.IDENTIFIER_EXPRESSION;
   }
 
   public boolean isIfStatement() {
     return this.kind == ParseTreeKind.IF_STATEMENT;
+  }
+
+  public boolean isKeywordType() {
+    return this.kind == ParseTreeKind.KEYWORD_TYPE;
   }
 
   public boolean isLiteralExpression() {
@@ -485,8 +521,16 @@ public class ParseTree {
     return this.kind == ParseTreeKind.METHOD_DECLARATION;
   }
 
+  public boolean isNamedType() {
+    return this.kind == ParseTreeKind.NAMED_TYPE;
+  }
+
   public boolean isNewExpression() {
     return this.kind == ParseTreeKind.NEW_EXPRESSION;
+  }
+
+  public boolean isNullableType() {
+    return this.kind == ParseTreeKind.NULLABLE_TYPE;
   }
 
   public boolean isParameterDeclaration() {
@@ -523,6 +567,10 @@ public class ParseTree {
 
   public boolean isTryStatement() {
     return this.kind == ParseTreeKind.TRY_STATEMENT;
+  }
+
+  public boolean isTypeArgumentList() {
+    return this.kind == ParseTreeKind.TYPE_ARGUMENT_LIST;
   }
 
   public boolean isUnaryExpression() {

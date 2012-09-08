@@ -43,6 +43,9 @@ public class ParseTreeVisitor {
     case ARRAY_LITERAL_EXPRESSION:
       visit(tree.asArrayLiteralExpression());
       break;
+    case ARRAY_TYPE:
+      visit(tree.asArrayType());
+      break;
     case BINARY_EXPRESSION:
       visit(tree.asBinaryExpression());
       break;
@@ -100,11 +103,17 @@ public class ParseTreeVisitor {
     case FUNCTION_EXPRESSION:
       visit(tree.asFunctionExpression());
       break;
+    case FUNCTION_TYPE:
+      visit(tree.asFunctionType());
+      break;
     case IDENTIFIER_EXPRESSION:
       visit(tree.asIdentifierExpression());
       break;
     case IF_STATEMENT:
       visit(tree.asIfStatement());
+      break;
+    case KEYWORD_TYPE:
+      visit(tree.asKeywordType());
       break;
     case LITERAL_EXPRESSION:
       visit(tree.asLiteralExpression());
@@ -115,8 +124,14 @@ public class ParseTreeVisitor {
     case METHOD_DECLARATION:
       visit(tree.asMethodDeclaration());
       break;
+    case NAMED_TYPE:
+      visit(tree.asNamedType());
+      break;
     case NEW_EXPRESSION:
       visit(tree.asNewExpression());
+      break;
+    case NULLABLE_TYPE:
+      visit(tree.asNullableType());
       break;
     case PARAMETER_DECLARATION:
       visit(tree.asParameterDeclaration());
@@ -144,6 +159,9 @@ public class ParseTreeVisitor {
       break;
     case TRY_STATEMENT:
       visit(tree.asTryStatement());
+      break;
+    case TYPE_ARGUMENT_LIST:
+      visit(tree.asTypeArgumentList());
       break;
     case UNARY_EXPRESSION:
       visit(tree.asUnaryExpression());
@@ -308,6 +326,10 @@ public class ParseTreeVisitor {
     visitList(tree.elements);
   }
 
+  protected void visit(ArrayTypeTree tree) {
+    visitAny(tree.elementType);
+  }
+
   protected void visit(BinaryExpressionTree tree) {
     visitAny(tree.left);
     visitAny(tree.right);
@@ -392,6 +414,11 @@ public class ParseTreeVisitor {
     visitAny(tree.body);
   }
 
+  protected void visit(FunctionTypeTree tree) {
+    visitList(tree.argumentTypes);
+    visitAny(tree.returnType);
+  }
+
   protected void visit(IdentifierExpressionTree tree) {
   }
 
@@ -399,6 +426,9 @@ public class ParseTreeVisitor {
     visitAny(tree.condition);
     visitAny(tree.ifClause);
     visitAny(tree.elseClause);
+  }
+
+  protected void visit(KeywordTypeTree tree) {
   }
 
   protected void visit(LiteralExpressionTree tree) {
@@ -413,9 +443,18 @@ public class ParseTreeVisitor {
     visitAny(tree.body);
   }
 
+  protected void visit(NamedTypeTree tree) {
+    visitAny(tree.element);
+    visitAny(tree.typeArguments);
+  }
+
   protected void visit(NewExpressionTree tree) {
     visitAny(tree.constructor);
     visitAny(tree.arguments);
+  }
+
+  protected void visit(NullableTypeTree tree) {
+    visitAny(tree.elementType);
   }
 
   protected void visit(ParameterDeclarationTree tree) {
@@ -453,6 +492,10 @@ public class ParseTreeVisitor {
     visitAny(tree.body);
     visitAny(tree.catchClause);
     visitAny(tree.finallyClause);
+  }
+
+  protected void visit(TypeArgumentListTree tree) {
+    visitList(tree.typeArguments);
   }
 
   protected void visit(UnaryExpressionTree tree) {
