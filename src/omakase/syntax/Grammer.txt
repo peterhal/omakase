@@ -14,7 +14,7 @@ Context
   - string
   - char?
   - number
-  - boolean
+  - bool
   - void
   - object
 - array
@@ -28,6 +28,7 @@ Context
   - (type-list-opt) => type
 - nullable
   - type ?
+  - nullable<type>
 
 Expressions
 -----------
