@@ -207,6 +207,7 @@ public class ParseTreeWriter extends ParseTreeVisitor {
   @Override
   protected void visit(SourceFileTree tree) {
     visitList(tree.declarations);
+    writeLine();
   }
 
   @Override
@@ -640,6 +641,7 @@ public class ParseTreeWriter extends ParseTreeVisitor {
 
   protected void visit(omakase.syntax.trees.javascript.ProgramTree tree) {
     visitList(tree.sourceElements);
+    writeLine();
   }
 
   protected void visit(omakase.syntax.trees.javascript.PropertyAssignmentTree tree) {

@@ -1,0 +1,180 @@
+// Hello World
+class Program {
+
+  // statements
+  parseVariableStatement() {
+    var a;
+    var a, b, c;
+    var d = a;
+    var e = a, f = b, g = c;
+  }
+
+  parseEmptyStatement() {
+    ;
+  }
+
+  parseForStatement() {
+    for (;;) ;
+    for (a;b;c) ;
+    for (var a;b;c) ;
+    for (var a = b;c;d) ;
+  }
+
+  parseForInStatement() {
+    for (a in b) ;
+    for (var a in b) ;
+  }
+
+  parseIfStatement() {
+    if (cond) {
+    }
+
+    if (cond) {
+    } else {
+    }
+
+    if (cond) ;
+
+    if (cond)  ; else ;
+  }
+
+  parseDoStatement() {
+    do {
+
+    } while (e);
+
+    do ; while (e);
+  }
+
+  parseWhileStatement() {
+    while (e) ;
+    while (e) {}
+  }
+
+  parseBreakStatement() {
+    break;
+  }
+
+  parseContinueStatement() {
+    continue;
+  }
+
+  parseReturnStatement() {
+    return;
+    return a;
+  }
+
+  parseSwitchStatement() {
+    switch(v) {
+    }
+    switch(v) {
+    case a:
+    }
+    switch(v) {
+    default:
+    }
+    switch(v) {
+    case a:
+      ;
+    case b:
+    case c:
+      ;
+
+    default:
+      ;
+    }
+  }
+
+  parseThrowStatement() {
+    throw e;
+  }
+
+  parseTryStatement() {
+    try {
+      ;
+    } catch (e) {
+      ;
+    }
+
+    try {
+
+    } finally {
+      ;
+    }
+
+    try {
+
+    } catch (e) {
+
+    } finally {
+
+    }
+  }
+
+  parseDebuggerStatement() {
+    debugger;
+  }
+
+  // expressions
+  parseFunctionExpression() {
+    a = () -> b;
+    a = (x) -> x;
+    a = (x, y) -> x + y;
+
+    a = () -> {};
+    a = (x) -> {};
+    a = (x, y) -> {};
+  }
+
+  parseConditionalExpression() {
+    a == b ? x : y;
+  }
+
+  parseAssignmentExpression() {
+    a = b;
+    a += b;
+  }
+
+  parseUnaryExpression() {
+    typeof a;
+    ++a;
+    --a;
+    +a;
+    -a;
+    ~a;
+    !a;
+  }
+
+  parsePostFixExpression() {
+    a(b);
+    a[b];
+    a.b;
+  }
+
+  parseNewExpression() {
+    new a();
+    new a(b);
+  }
+
+  parsePrimaryExpression() {
+    this;
+    [1,2,3];
+    (a);
+    a;
+    null;
+    true;
+    false;
+    1;
+    "hello";
+  }
+
+  parseBinaryExpression() {
+    a + b;
+    a + b * c;
+    // TODO: More binary expressions.
+  }
+
+  native main() {
+    print("Hello World!");
+  }
+}

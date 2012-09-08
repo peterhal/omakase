@@ -1,4 +1,5 @@
 Running Omakase Tests ...
+Scanning Tests ...
 errors/missing-hex-escape.oma (1, 4): Missing hex digit in hex escape sequence.
 errors/number-too-large.oma (1, 1): Integer literal too large.
 errors/unexpected-char.oma (1, 1): Unexpected character '@'.
@@ -66,16 +67,19 @@ scanner/test.oma (6, 10): OPEN_CURLY
 scanner/test.oma (7, 3): CLOSE_CURLY
 scanner/test.oma (8, 1): CLOSE_CURLY
 scanner/test.oma (9, 2): END_OF_FILE
+Parsing Tests ...
 class Program {
   main ( ) {
     print ( "Hello World!" ) ;
   }
 }
+
 class Program {
   native main ( ) {
     print ( "Hello World!" ) ;
   }
 }
+
 class Program {
   parseVariableStatement ( ) {
     var a ;
@@ -248,6 +252,8 @@ class Program {
     print ( "Hello World!" ) ;
   }
 }
+
+Symbol Tests ...
 A
 B
 C
@@ -255,25 +261,8 @@ A
   a
   b
   c
+Compiling Tests ...
 ( function ( ) {
-  Program = function ( ) {
-  }
-  ;
-  Program . prototype . main = function ( ) {
-    print ( "Hello World!" ) ;
-  }
-  ;
-}
-( ) )( function ( ) {
-  Program = function ( ) {
-  }
-  ;
-  Program . prototype . main = function ( ) {
-    print ( "Hello World!" ) ;
-  }
-  ;
-}
-( ) )( function ( ) {
   Program = function ( ) {
   }
   ;
@@ -482,4 +471,19 @@ A
   }
   ;
 }
-( ) )
+( ) ) ;
+
+( function ( ) {
+  A = function ( ) {
+  }
+  ;
+  A . prototype . a = null ;
+  A . prototype . b = null ;
+  A . prototype . c = function ( ) {
+    return this . a ;
+  }
+  ;
+}
+( ) ) ;
+;
+

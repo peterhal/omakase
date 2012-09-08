@@ -329,9 +329,12 @@ public class JavascriptTransformer extends ParseTreeTransformer {
     //  }());
     //
     public ParseTree transformClass() {
+      if (classTree.isExtern) {
+        return createEmptyStatement();
+      }
       createConstructor();
       createMembers();
-      return createScopedBlock(members.build());
+      return createExpressionStatement(createScopedBlock(members.build()));
     }
 
     private void createConstructor() {
