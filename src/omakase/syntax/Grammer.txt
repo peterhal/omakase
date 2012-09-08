@@ -9,7 +9,25 @@ Context
 - cast expressions
 - parameter lists
 - typeof/is/as
--
+
+- simple
+  - string
+  - char?
+  - number
+  - boolean
+  - void
+  - object
+- array
+  - type[]
+  - array<type>
+- named
+  - dotted-name
+  - dotted-name < type-list >
+- function
+  - Func/Action
+  - (type-list-opt) => type
+- nullable
+  - type ?
 
 Expressions
 -----------

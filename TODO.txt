@@ -1,8 +1,8 @@
 Next Up
 -------
-- extern declarations
-- use semantics
+- use symbols for code gen
 - type system
+  - parsing
 - hygiene
   - name table
   - semantic analyzer
