@@ -95,46 +95,59 @@ public class Parser extends ParserBase {
     eat(TokenKind.CLASS);
     IdentifierToken name = eatId();
     eat(TokenKind.OPEN_CURLY);
-    ImmutableList<ParseTree> members = parseClassMembers();
+    ImmutableList<ParseTree> members = parseClassMembers(isExtern);
     eat(TokenKind.CLOSE_CURLY);
     return new ClassDeclarationTree(getRange(start), isExtern, name, members);
   }
 
-  private ImmutableList<ParseTree> parseClassMembers() {
+  private ImmutableList<ParseTree> parseClassMembers(boolean isExtern) {
     ImmutableList.Builder<ParseTree> members = new ImmutableList.Builder<ParseTree>();
     while (peekClassMember()) {
-      members.add(parseClassMember());
+      members.add(parseClassMember(isExtern));
     }
     return members.build();
   }
 
-  private ParseTree parseClassMember() {
+  private ParseTree parseClassMember(boolean isExtern) {
     if (peekField()) {
-      return parseField();
+      return parseField(isExtern);
     }
-    return parseMethod();
+    return parseMethod(isExtern);
   }
 
   private boolean peekField() {
     return peek(TokenKind.VAR) || (peek(TokenKind.STATIC) && peek(1, TokenKind.VAR));
   }
 
-  private ParseTree parseField() {
+  private ParseTree parseField(boolean isExtern) {
     Token start = peek();
     boolean isStatic = eatOpt(TokenKind.STATIC);
     eat(TokenKind.VAR);
     ImmutableList<VariableDeclarationTree> declarations = parseVariableDeclarations();
+    if (isExtern) {
+      for (VariableDeclarationTree declaration : declarations) {
+        if (declaration.initializer != null) {
+          reportError(declaration.initializer.start(), "Extern fields may not have initializers.");
+        }
+      }
+    }
     eat(TokenKind.SEMI_COLON);
     return new FieldDeclarationTree(getRange(start), isStatic, declarations);
   }
 
-  private ParseTree parseMethod() {
+  private ParseTree parseMethod(boolean isExtern) {
     Token start = peek();
     boolean isStatic = eatOpt(TokenKind.STATIC);
     boolean isNative = eatOpt(TokenKind.NATIVE);
     IdentifierToken name = eatId();
     FormalParameterListTree formals = parseParameterListDeclaration();
-    ParseTree body = parseBlock(isNative);
+    ParseTree body;
+    if (isExtern) {
+      body = null;
+      eat(TokenKind.SEMI_COLON);
+    } else {
+      body = parseBlock(isNative);
+    }
     return new MethodDeclarationTree(getRange(start), name, formals, isStatic, isNative, body);
   }
 

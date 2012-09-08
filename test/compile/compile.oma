@@ -5,5 +5,5 @@ class A {
 
 extern class Externs {
   var a;
-  b() { }
+  b();
 }

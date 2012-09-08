@@ -44,7 +44,12 @@ public class ParserBase {
    * @param args The arguments of the format.
    */
   protected void reportError(Token token, String format, Object... args) {
-    this.reporter.reportError(token.start(), format, args);
+    SourceLocation location = token.start();
+    reportError(location, format, args);
+  }
+
+  protected void reportError(SourceLocation location, String format, Object... args) {
+    this.reporter.reportError(location, format, args);
   }
 
   protected SourceRange getRange(Token startToken) {
