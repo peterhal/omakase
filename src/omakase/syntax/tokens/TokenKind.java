@@ -28,8 +28,8 @@ public enum TokenKind {
   ERROR("error"),
 
   // literals
-  NUMBER("number literal"),
-  STRING("string literal"),
+  NUMBER_LITERAL("number literal"),
+  STRING_LITERAL("string literal"),
 
   // punctuation
   OPEN_CURLY("{"),
@@ -79,6 +79,7 @@ public enum TokenKind {
   ARROW("->"),
 
   // keywords
+  BOOL("bool"),
   BREAK("break"),
   CASE("case"),
   CATCH("catch"),
@@ -99,8 +100,10 @@ public enum TokenKind {
   NATIVE("native"),
   NEW("new"),
   NULL("null"),
+  // NUMBER_LITERAL("number"),
   RETURN("return"),
   STATIC("static"),
+  // STRING_LITERAL("string"),
   SWITCH("switch"),
   THIS("this"),
   THROW("throw"),
@@ -211,7 +214,7 @@ public enum TokenKind {
   private static final ImmutableMap<String, TokenKind> javascriptKeywords;
 
   static {
-    keywords = buildKeywords(TokenKind.BREAK, TokenKind.WHILE);
+    keywords = buildKeywords(TokenKind.BOOL, TokenKind.WHILE);
     javascriptKeywords = buildKeywords(TokenKind.JS_BREAK, TokenKind.JS_WITH);
   }
 

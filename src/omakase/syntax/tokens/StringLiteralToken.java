@@ -25,7 +25,7 @@ public class StringLiteralToken extends Token {
   public final String value;
 
   public StringLiteralToken(SourceRange range, String value) {
-    super(TokenKind.STRING, range);
+    super(TokenKind.STRING_LITERAL, range);
     this.value = value;
   }
 

@@ -25,7 +25,7 @@ public class NumericLiteralToken extends Token {
   public final int value;
 
   public NumericLiteralToken(SourceRange range, int value) {
-    super(TokenKind.NUMBER, range);
+    super(TokenKind.NUMBER_LITERAL, range);
     this.value = value;
   }
 

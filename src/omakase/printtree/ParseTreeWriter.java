@@ -778,10 +778,10 @@ public class ParseTreeWriter extends ParseTreeVisitor {
     case IDENTIFIER:
       write(token.asIdentifier());
       break;
-    case NUMBER:
+    case NUMBER_LITERAL:
       write(token.asNumericLiteral());
       break;
-    case STRING:
+    case STRING_LITERAL:
       write(token.asStringLiteral());
       break;
     default:

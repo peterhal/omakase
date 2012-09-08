@@ -57,10 +57,6 @@ import omakase.syntax.trees.UnaryExpressionTree;
 import omakase.syntax.trees.VariableDeclarationTree;
 import omakase.syntax.trees.VariableStatementTree;
 import omakase.syntax.trees.WhileStatementTree;
-import omakase.syntax.trees.javascript.*;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import static omakase.codegeneration.JavascriptParseTreeFactory.*;
 
@@ -208,9 +204,9 @@ public class JavascriptTransformer extends ParseTreeTransformer {
     switch (value.kind) {
     case FALSE:
       return new Token(TokenKind.JS_FALSE, null);
-    case NUMBER:
+    case NUMBER_LITERAL:
       return new NumericLiteralToken(null, value.asNumericLiteral().value);
-    case STRING:
+    case STRING_LITERAL:
       return new StringLiteralToken(null, value.asStringLiteral().value);
     case NULL:
       return new Token(TokenKind.JS_NULL, null);

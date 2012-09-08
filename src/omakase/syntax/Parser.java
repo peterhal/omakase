@@ -190,8 +190,8 @@ public class Parser extends ParserBase {
     case TRUE:
     case FALSE:
     case IDENTIFIER:
-    case NUMBER:
-    case STRING:
+    case NUMBER_LITERAL:
+    case STRING_LITERAL:
     case NEW:
     case TYPEOF:
     case VOID:
@@ -486,8 +486,8 @@ public class Parser extends ParserBase {
     case TRUE:
     case FALSE:
     case IDENTIFIER:
-    case NUMBER:
-    case STRING:
+    case NUMBER_LITERAL:
+    case STRING_LITERAL:
     case NEW:
     case TYPEOF:
     case VOID:
@@ -836,8 +836,8 @@ public class Parser extends ParserBase {
     case NULL:
     case TRUE:
     case FALSE:
-    case NUMBER:
-    case STRING:
+    case NUMBER_LITERAL:
+    case STRING_LITERAL:
       // TODO: Regular Expression literals go here.
       return parseLiteral();
     default:
@@ -1007,8 +1007,8 @@ public class Parser extends ParserBase {
     case TRUE:
     case FALSE:
     case IDENTIFIER:
-    case NUMBER:
-    case STRING:
+    case NUMBER_LITERAL:
+    case STRING_LITERAL:
     case NEW:
     case TYPEOF:
     case VOID:

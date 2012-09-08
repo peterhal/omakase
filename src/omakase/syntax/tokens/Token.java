@@ -50,8 +50,8 @@ public class Token {
   public boolean hasValue() {
     switch (kind) {
     case IDENTIFIER:
-    case STRING:
-    case NUMBER:
+    case STRING_LITERAL:
+    case NUMBER_LITERAL:
     case JS_IDENTIFIER:
     case JS_STRING:
     case JS_NUMBER:
