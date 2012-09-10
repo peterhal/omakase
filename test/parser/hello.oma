@@ -1,6 +1,6 @@
 // Hello World
 class Program {
-  void main() {
+  main() : void {
     print("Hello World!");
   }
 }

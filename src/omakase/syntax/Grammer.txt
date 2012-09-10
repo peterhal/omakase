@@ -5,7 +5,16 @@ Types
 
 Context
 - local variable declarations
+  var id : type = initializer;
+- parameters
+  id : type
+- function/method return values
+  id() : type body
+- fields
+  var id : type = initializer;
 - cast expressions
+  expression . as ( type )
+  expression : type
 - typeof/is/as
 
 - simple

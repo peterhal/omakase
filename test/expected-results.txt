@@ -69,28 +69,28 @@ scanner/test.oma (8, 1): CLOSE_CURLY
 scanner/test.oma (9, 2): END_OF_FILE
 Parsing Tests ...
 class Program {
-  void main ( ) {
+  main ( ) : void {
     print ( "Hello World!" ) ;
   }
 }
 
 class Program {
-  native void main ( ) {
+  native main ( ) : void {
     print ( "Hello World!" ) ;
   }
 }
 
 class Program {
-  void parseVariableStatement ( ) {
+  parseVariableStatement ( ) : void {
     var a ;
     var a b c ;
     var d = a ;
     var e = a f = b g = c ;
   }
-  void parseEmptyStatement ( ) {
+  parseEmptyStatement ( ) : void {
     ;
   }
-  void parseForStatement ( ) {
+  parseForStatement ( ) : void {
     for ( ; ; )
     ;
     for ( a ; b ; c )
@@ -102,13 +102,13 @@ class Program {
     c ; d )
     ;
   }
-  void parseForInStatement ( ) {
+  parseForInStatement ( ) : void {
     for ( a in b )
     ;
     for ( a in b )
     ;
   }
-  void parseIfStatement ( ) {
+  parseIfStatement ( ) : void {
     if ( cond )
     {
     }
@@ -125,31 +125,31 @@ class Program {
     else
       ;
   }
-  void parseDoStatement ( ) {
+  parseDoStatement ( ) : void {
     do {
     }
     while ( e ) ;
     do ;
     while ( e ) ;
   }
-  void parseWhileStatement ( ) {
+  parseWhileStatement ( ) : void {
     while ( e )
     ;
     while ( e )
     {
     }
   }
-  void parseBreakStatement ( ) {
+  parseBreakStatement ( ) : void {
     break ;
   }
-  void parseContinueStatement ( ) {
+  parseContinueStatement ( ) : void {
     continue ;
   }
-  void parseReturnStatement ( ) {
+  parseReturnStatement ( ) : void {
     return ;
     return a ;
   }
-  void parseSwitchStatement ( ) {
+  parseSwitchStatement ( ) : void {
     switch ( v )
     { } switch ( v )
     { case a :
@@ -164,10 +164,10 @@ class Program {
     default :
       ;
     } }
-  void parseThrowStatement ( ) {
+  parseThrowStatement ( ) : void {
     throw e ;
   }
-  void parseTryStatement ( ) {
+  parseTryStatement ( ) : void {
     try
     {
       ;
@@ -191,10 +191,10 @@ class Program {
     finally {
     }
   }
-  void parseDebuggerStatement ( ) {
+  parseDebuggerStatement ( ) : void {
     debugger ;
   }
-  void parseFunctionExpression ( ) {
+  parseFunctionExpression ( ) : void {
     a = ( ) -> b ;
     a = ( x ) -> x ;
     a = ( x y ) -> x + y ;
@@ -208,14 +208,14 @@ class Program {
     }
     ;
   }
-  void parseConditionalExpression ( ) {
+  parseConditionalExpression ( ) : void {
     a == b ? x : y ;
   }
-  void parseAssignmentExpression ( ) {
+  parseAssignmentExpression ( ) : void {
     a = b ;
     a += b ;
   }
-  void parseUnaryExpression ( ) {
+  parseUnaryExpression ( ) : void {
     typeof a ;
     ++ a ;
     -- a ;
@@ -224,16 +224,16 @@ class Program {
     ~ a ;
     ! a ;
   }
-  void parsePostFixExpression ( ) {
+  parsePostFixExpression ( ) : void {
     a ( b ) ;
     a [ b ] ;
     a . b ;
   }
-  void parseNewExpression ( ) {
+  parseNewExpression ( ) : void {
     new a ( ) ;
     new a ( b ) ;
   }
-  void parsePrimaryExpression ( ) {
+  parsePrimaryExpression ( ) : void {
     this ;
     [  1  2  3 ] ;
     ( a ) ;
@@ -244,11 +244,11 @@ class Program {
      1 ;
     "hello" ;
   }
-  void parseBinaryExpression ( ) {
+  parseBinaryExpression ( ) : void {
     a + b ;
     a + b * c ;
   }
-  static native void main ( ) {
+  static native main ( ) : void {
     print ( "Hello World!" ) ;
   }
 }
@@ -466,7 +466,7 @@ Compiling Tests ...
     a + b * c ;
   }
   ;
-  Program . prototype . main = function ( ) {
+  Program . main = function ( ) {
     print ( "Hello World!" ) ;
   }
   ;

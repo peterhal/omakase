@@ -24,7 +24,19 @@ import omakase.util.SourceFile;
 import omakase.util.SourceRange;
 
 /**
+ * Parser for the Omakase language.
  *
+ * There are 3 kinds of methods - parsing, peeking and scanning.
+ *
+ * parse* methods, parse a given construct returning the parsed tree. The position is advanced to the end of the parsed
+ *    construct. Parsing methods must report any parse errors encountered.
+ *
+ * peek* methods do simple lookahead for simple disambiguation. The return value is a boolean indicating the presence of
+ *    the peeked construct. The position in the token stream is unchanged. Peek methods must never report errors.
+ *
+ * scan* methods do complex disambiguation. They return enums indicating one of several alternatives, or an indication
+ *    that the lookahead was ambiguous and more lookahead will be needed to resolve the ambiguity. Scan methods leave
+ *    the token stream at the end of the scanned construct. Scanning must never report errors.
  */
 public class Parser extends ParserBase {
   public Parser(ErrorReporter reporter, SourceFile file) {
@@ -81,18 +93,17 @@ public class Parser extends ParserBase {
 
   private ParameterDeclarationTree parseParameter() {
     Token start = peek();
-    ParseTree type;
-    if (peekUntypedParameter()) {
-      type = null;
-    } else {
-      type = parseType();
-    }
     IdentifierToken name = eatId();
+    ParseTree type = parseColonTypeOpt();
     return new ParameterDeclarationTree(getRange(start), type, name);
   }
 
-  private boolean peekUntypedParameter() {
-    return peek(TokenKind.IDENTIFIER) && (peek(1, TokenKind.COMMA) || peek(1, TokenKind.CLOSE_PAREN));
+  private ParseTree parseColonTypeOpt() {
+    ParseTree type = null;
+    if (eatOpt(TokenKind.COLON)) {
+      type = parseType();
+    }
+    return type;
   }
 
   private boolean peekParameter() {
@@ -105,18 +116,10 @@ public class Parser extends ParserBase {
 
   private boolean peekClassMember() {
     switch (peekKind()) {
-    // Modifiers
     case NATIVE:
     case STATIC:
-
-    // Types
-    case OPEN_PAREN:
+    case VAR:
     case IDENTIFIER:
-    case STRING:
-    case OBJECT:
-    case BOOL:
-    case NUMBER:
-    case VOID:
       return true;
     }
     return false;
@@ -149,19 +152,72 @@ public class Parser extends ParserBase {
     Token start = peek();
     boolean isStatic = eatOpt(TokenKind.STATIC);
     boolean isNative = eatOpt(TokenKind.NATIVE);
-    ParseTree type = parseType();
-    IdentifierToken name = eatId();
-    if (peek(TokenKind.OPEN_PAREN)) {
-      return parseMethod(isExtern, start, isNative, isStatic, type, name);
-    } else {
+    if (peek(TokenKind.VAR)) {
       if (isNative) {
-        reportError(name, "Fields may not be native.");
+        reportError(start, "Fields may not be native.");
       }
-      return parseField(isExtern, start, isStatic, type, name);
+      return parseField(start, isExtern, isStatic);
     }
+    return parseMethod(start, isExtern, isNative, isStatic);
   }
 
+  private ParseTree parseField(Token start, boolean isExtern, boolean isStatic) {
+    eat(TokenKind.VAR);
+    ImmutableList<VariableDeclarationTree> declarations = parseVariableDeclarations();
+    if (isExtern) {
+      for (VariableDeclarationTree declaration : declarations) {
+        if (declaration.initializer != null) {
+          reportError(declaration.initializer.start(), "Extern fields may not have initializers.");
+        }
+      }
+    }
+    eat(TokenKind.SEMI_COLON);
+    return new FieldDeclarationTree(getRange(start), isStatic, declarations);
+  }
+
+  private ParseTree parseMethod(Token start, boolean isExtern, boolean isNative, boolean isStatic) {
+    IdentifierToken name = eatId();
+    FormalParameterListTree formals = parseParameterListDeclaration(true);
+    ParseTree returnType = parseColonType();
+    ParseTree body;
+    if (isExtern) {
+      body = null;
+      eat(TokenKind.SEMI_COLON);
+    } else {
+      body = parseBlock(isNative);
+    }
+    return new MethodDeclarationTree(getRange(start), returnType, name, formals, isStatic, isNative, body);
+  }
+
+  private ParseTree parseColonType() {
+    eat(TokenKind.COLON);
+    return parseType();
+  }
+
+  private ParseTree parseBlock(boolean isNative) {
+    return isNative ? parseNativeBlock() : parseBlock();
+  }
+
+  private ParseTree parseNativeBlock() {
+    JavascriptParser nativeParser = new JavascriptParser(reporter,
+        new SourceRange(this.file(), this.getPosition(), this.file().length()));
+    ParseTree result = nativeParser.parseBlock();
+    this.setPosition(nativeParser.getPosition());
+    return result;
+  }
+
+  // Types
   private ParseTree parseType() {
+    Token start = peek();
+    ParseTree elementType = parseElementType();
+    while (eatOpt(TokenKind.OPEN_SQUARE)) {
+      eat(TokenKind.CLOSE_SQUARE);
+      elementType = new ArrayTypeTree(getRange(start), elementType);
+    }
+    return elementType;
+  }
+
+  private ParseTree parseElementType() {
     switch (peekKind()) {
     case OPEN_PAREN:
       return parseFunctionType();
@@ -250,48 +306,6 @@ public class Parser extends ParserBase {
     return new FunctionTypeTree(getRange(start), parameterTypes.build(), returnType);
   }
 
-  private ParseTree parseField(boolean isExtern, Token start, boolean isStatic, ParseTree type, IdentifierToken name) {
-    ImmutableList<VariableDeclarationTree> declarations;
-    if (name != null) {
-      declarations = parseRemainingVariableDeclarations(parseVariableDeclaration(name, name));
-      if (isExtern) {
-        for (VariableDeclarationTree declaration : declarations) {
-          if (declaration.initializer != null) {
-            reportError(declaration.initializer.start(), "Extern fields may not have initializers.");
-          }
-        }
-      }
-    } else {
-      declarations = ImmutableList.of();
-    }
-    eat(TokenKind.SEMI_COLON);
-    return new FieldDeclarationTree(getRange(start), isStatic, type, declarations);
-  }
-
-  private ParseTree parseMethod(boolean isExtern, Token start, boolean isNative, boolean isStatic, ParseTree returnType, IdentifierToken name) {
-    FormalParameterListTree formals = parseParameterListDeclaration(true);
-    ParseTree body;
-    if (isExtern) {
-      body = null;
-      eat(TokenKind.SEMI_COLON);
-    } else {
-      body = parseBlock(isNative);
-    }
-    return new MethodDeclarationTree(getRange(start), returnType, name, formals, isStatic, isNative, body);
-  }
-
-  private ParseTree parseBlock(boolean isNative) {
-    return isNative ? parseNativeBlock() : parseBlock();
-  }
-
-  private ParseTree parseNativeBlock() {
-    JavascriptParser nativeParser = new JavascriptParser(reporter,
-        new SourceRange(this.file(), this.getPosition(), this.file().length()));
-    ParseTree result = nativeParser.parseBlock();
-    this.setPosition(nativeParser.getPosition());
-    return result;
-  }
-
   // Statements
   private BlockTree parseBlock() {
     Token start = peek();
@@ -313,17 +327,21 @@ public class Parser extends ParserBase {
     switch (peekKind()) {
     // expression
     case OPEN_PAREN:
+    case IDENTIFIER:
+    case VOID:
+    case STRING:
+    case OBJECT:
+    case BOOL:
+    case NUMBER:
     case OPEN_SQUARE:
     case NULL:
     case THIS:
     case TRUE:
     case FALSE:
-    case IDENTIFIER:
     case NUMBER_LITERAL:
     case STRING_LITERAL:
     case NEW:
     case TYPEOF:
-    case VOID:
     case PLUS_PLUS:
     case MINUS_MINUS:
     case PLUS:
@@ -394,11 +412,12 @@ public class Parser extends ParserBase {
   }
 
   private VariableDeclarationTree parseVariableDeclaration(Token start, IdentifierToken identifier) {
+    ParseTree type = parseColonTypeOpt();
     ParseTree initializer = null;
     if (eatOpt(TokenKind.EQUAL)) {
       initializer = parseExpression();
     }
-    return new VariableDeclarationTree(getRange(start), identifier, initializer);
+    return new VariableDeclarationTree(getRange(start), identifier, type, initializer);
   }
 
   private ParseTree parseEmptyStatement() {

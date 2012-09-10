@@ -21,11 +21,13 @@ import omakase.util.SourceRange;
  */
 public class VariableDeclarationTree extends ParseTree {
   public final IdentifierToken name;
+  public final ParseTree type;
   public final ParseTree initializer;
 
-  public VariableDeclarationTree(SourceRange location, IdentifierToken name, ParseTree initializer) {
+  public VariableDeclarationTree(SourceRange location, IdentifierToken name, ParseTree type, ParseTree initializer) {
     super(location, ParseTreeKind.VARIABLE_DECLARATION);
     this.name = name;
+    this.type = type;
     this.initializer = initializer;
   }
 }

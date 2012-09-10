@@ -1,4 +1,4 @@
 class A {
-  string a, b;
-  number c() { return this.a; }
+  var a : string, b : string;
+  c() : number { return this.a; }
 }

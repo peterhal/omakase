@@ -369,8 +369,8 @@ public class ParseTreeWriter extends ParseTreeVisitor {
 
   @Override
   protected void visit(ParameterDeclarationTree tree) {
-    visitAny(tree.type);
     write(tree.name);
+    writeColonType(tree.type);
   }
 
   @Override
@@ -378,7 +378,6 @@ public class ParseTreeWriter extends ParseTreeVisitor {
     if (tree.isStatic) {
       write(TokenKind.STATIC);
     }
-    visitAny(tree.type);
     writeCommaSeparatedList(tree.declarations);
     write(TokenKind.SEMI_COLON);
   }
@@ -391,9 +390,9 @@ public class ParseTreeWriter extends ParseTreeVisitor {
     if (tree.isNative) {
       write(TokenKind.NATIVE);
     }
-    visitAny(tree.returnType);
     write(tree.name);
     visitAny(tree.formals);
+    writeColonType(tree.returnType);
 
     visitAny(tree.body);
   }
@@ -783,6 +782,13 @@ public class ParseTreeWriter extends ParseTreeVisitor {
     write(TokenKind.JS_CLOSE_PAREN);
     writeLine();
     visitAny(tree.body);
+  }
+
+  private void writeColonType(ParseTree type) {
+    if (type != null) {
+      write(TokenKind.COLON);
+      visitAny(type);
+    }
   }
 
   private void writeCommaSeparatedList(ImmutableList<? extends ParseTree> trees) {
