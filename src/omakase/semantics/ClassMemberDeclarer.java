@@ -40,24 +40,44 @@ public class ClassMemberDeclarer {
     }
   }
 
-  // TODO: declare member types
   private void declareMember(ClassSymbol clazz, ParseTree tree) {
     if (tree.isMethodDeclaration()) {
-      MethodDeclarationTree methodTree = tree.asMethodDeclaration();
-      String name = methodTree.name.value;
-      if (!checkForDuplicateMember(clazz, name, tree)) {
-        new MethodSymbol(clazz, name, methodTree);
-      }
+      declareMethod(clazz, tree.asMethodDeclaration());
     } else {
       FieldDeclarationTree fieldsTree = tree.asFieldDeclaration();
-      for (ParseTree t : fieldsTree.declarations) {
-        VariableDeclarationTree fieldTree = t.asVariableDeclaration();
-        String name = fieldTree.name.value;
-        if (!checkForDuplicateMember(clazz, name, t)) {
-          new FieldSymbol(clazz, name, fieldTree);
-        }
+      for (VariableDeclarationTree fieldTree : fieldsTree.declarations) {
+        declareField(clazz, fieldTree);
       }
     }
+  }
+
+  private void declareMethod(ClassSymbol clazz, MethodDeclarationTree methodTree) {
+    String name = methodTree.name.value;
+    // TODO: Build parameter symbols?
+    FunctionType type = bindMethodType(methodTree);
+    if (!checkForDuplicateMember(clazz, name, methodTree)) {
+      new MethodSymbol(clazz, name, methodTree, type);
+    }
+  }
+
+  private FunctionType bindMethodType(MethodDeclarationTree methodTree) {
+    return new TypeBinder(project).bindFunctionType(methodTree.returnType, methodTree.formals);
+  }
+
+  private void declareField(ClassSymbol clazz, VariableDeclarationTree fieldTree) {
+    String name = fieldTree.name.value;
+    Type type = bindType(fieldTree.type);
+    if (!checkForDuplicateMember(clazz, name, fieldTree)) {
+      new FieldSymbol(clazz, name, fieldTree, type);
+    }
+  }
+
+  private Type bindType(ParseTree type) {
+    return new TypeBinder(project).bindType(type);
+  }
+
+  private Types types() {
+    return project.getTypes();
   }
 
   private boolean checkForDuplicateMember(ClassSymbol clazz, String name, ParseTree tree) {

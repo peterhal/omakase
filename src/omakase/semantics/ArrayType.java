@@ -16,8 +16,11 @@ package omakase.semantics;
 
 /**
  */
-public enum SymbolKind {
-  CLASS,
-  METHOD,
-  FIELD, TYPE_VARIABLE,
+public class ArrayType extends Type {
+  public final Type elementType;
+
+  public ArrayType(Type elementType) {
+    super(TypeKind.ARRAY);
+    this.elementType = elementType;
+  }
 }

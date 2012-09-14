@@ -14,10 +14,17 @@
 
 package omakase.semantics;
 
+import com.google.common.collect.ImmutableList;
+
 /**
  */
-public enum SymbolKind {
-  CLASS,
-  METHOD,
-  FIELD, TYPE_VARIABLE,
+public class FunctionType extends Type {
+  public final Type returnType;
+  public final ImmutableList<Type> parameterTypes;
+
+  public FunctionType(Type returnType, ImmutableList<Type> parameterTypes) {
+    super(TypeKind.FUNCTION);
+    this.returnType = returnType;
+    this.parameterTypes = parameterTypes;
+  }
 }

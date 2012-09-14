@@ -14,6 +14,7 @@
 
 package omakase.semantics;
 
+import omakase.syntax.tokens.TokenKind;
 import omakase.syntax.trees.SourceFileTree;
 import omakase.util.ErrorReporter;
 import omakase.util.SourceFile;
@@ -27,6 +28,7 @@ public class Project {
   private final Map<String, SourceFile> files = new LinkedHashMap<String, SourceFile>();
   private final Map<SourceFile, SourceFileTree> trees = new LinkedHashMap<SourceFile, SourceFileTree>();
   private final Map<String, ClassSymbol> classes = new LinkedHashMap<String, ClassSymbol>();
+  private final Types types = new Types();
   private final ErrorReporter reporter;
 
   public Project(ErrorReporter reporter) {
@@ -68,9 +70,14 @@ public class Project {
 
   public void addClass(ClassSymbol classSymbol) {
     classes.put(classSymbol.name, classSymbol);
+    types.addClassType(classSymbol);
   }
 
   public Iterable<ClassSymbol> getClasses() {
     return classes.values();
+  }
+
+  public Types getTypes() {
+    return this.types;
   }
 }

@@ -16,8 +16,10 @@ package omakase.semantics;
 
 /**
  */
-public enum SymbolKind {
-  CLASS,
-  METHOD,
-  FIELD, TYPE_VARIABLE,
+public class Type {
+  public final TypeKind kind;
+
+  public Type(TypeKind kind) {
+    this.kind = kind;
+  }
 }

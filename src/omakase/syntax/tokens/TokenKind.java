@@ -88,6 +88,7 @@ public enum TokenKind {
   DEBUGGER("debugger"),
   DEFAULT("default"),
   DO("do"),
+  DYNAMIC("dynamic"),
   ELSE("else"),
   EXTERN("extern"),
   FALSE("false"),

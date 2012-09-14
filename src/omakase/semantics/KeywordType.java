@@ -14,10 +14,15 @@
 
 package omakase.semantics;
 
+import omakase.syntax.tokens.TokenKind;
+
 /**
  */
-public enum SymbolKind {
-  CLASS,
-  METHOD,
-  FIELD, TYPE_VARIABLE,
+public class KeywordType extends Type {
+  public final TokenKind keyword;
+
+  public KeywordType(TokenKind keyword) {
+    super(TypeKind.KEYWORD);
+    this.keyword = keyword;
+  }
 }

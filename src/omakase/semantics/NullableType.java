@@ -16,8 +16,11 @@ package omakase.semantics;
 
 /**
  */
-public enum SymbolKind {
-  CLASS,
-  METHOD,
-  FIELD, TYPE_VARIABLE,
+public class NullableType extends Type {
+  public final Type elementType;
+
+  public NullableType(Type elementType) {
+    super(TypeKind.NULLABLE);
+    this.elementType = elementType;
+  }
 }

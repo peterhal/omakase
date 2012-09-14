@@ -14,10 +14,13 @@
 
 package omakase.semantics;
 
+import omakase.syntax.tokens.IdentifierToken;
+
 /**
  */
-public enum SymbolKind {
-  CLASS,
-  METHOD,
-  FIELD, TYPE_VARIABLE,
+public class TypeVariableSymbol extends Symbol {
+  public TypeVariableSymbol(IdentifierToken name) {
+    // TODO: Need Parse tree.
+    super(SymbolKind.TYPE_VARIABLE, name.value, null);
+  }
 }

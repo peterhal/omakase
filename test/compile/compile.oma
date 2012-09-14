@@ -1,5 +1,5 @@
 class A {
-  var a : number, b : number;
+  var a : A, b : number;
   c() : string { return this.a; }
 }
 

@@ -56,16 +56,16 @@ public class SemanticAnalyzer {
     }
   }
 
-  private void checkTypes() {
-    new TypeChecker(project).checkAllTypes();
+  private void declareClasses() {
+    new ClassDeclarer(project).declareClasses();
   }
 
   private void declareClassMembers() {
     new ClassMemberDeclarer(project).declareMembers();
   }
 
-  private void declareClasses() {
-    new ClassDeclarer(project).declareClasses();
+  private void checkTypes() {
+    new TypeChecker(project).checkAllTypes();
   }
 
   private boolean hadError() {

@@ -21,11 +21,13 @@ import omakase.syntax.trees.VariableDeclarationTree;
 public class FieldSymbol extends Symbol {
   private final ClassSymbol parent;
   private final VariableDeclarationTree tree;
+  private final Type type;
 
-  public FieldSymbol(ClassSymbol parent, String name, VariableDeclarationTree tree) {
+  public FieldSymbol(ClassSymbol parent, String name, VariableDeclarationTree tree, Type type) {
     super(SymbolKind.FIELD, name, tree);
     this.parent = parent;
     this.tree = tree;
+    this.type = type;
     parent.addMember(this);
   }
 }

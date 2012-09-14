@@ -16,8 +16,11 @@ package omakase.semantics;
 
 /**
  */
-public enum SymbolKind {
-  CLASS,
-  METHOD,
-  FIELD, TYPE_VARIABLE,
+public class TypeVariableType extends Type {
+  public final TypeVariableSymbol typeVariable;
+
+  public TypeVariableType(TypeVariableSymbol typeVariable) {
+    super(TypeKind.VARIABLE);
+    this.typeVariable = typeVariable;
+  }
 }

@@ -210,11 +210,21 @@ public class Parser extends ParserBase {
   private ParseTree parseType() {
     Token start = peek();
     ParseTree elementType = parseElementType();
-    while (eatOpt(TokenKind.OPEN_SQUARE)) {
-      eat(TokenKind.CLOSE_SQUARE);
-      elementType = new ArrayTypeTree(getRange(start), elementType);
-    }
-    return elementType;
+    do {
+      switch (peekKind()) {
+      case OPEN_SQUARE:
+        eat(TokenKind.OPEN_SQUARE);
+        eat(TokenKind.CLOSE_SQUARE);
+        elementType = new ArrayTypeTree(getRange(start), elementType);
+        break;
+      case QUESTION:
+        eat(TokenKind.QUESTION);
+        elementType = new NullableTypeTree(getRange(start), elementType);
+        break;
+      default:
+        return elementType;
+      }
+    } while (true);
   }
 
   private ParseTree parseElementType() {
@@ -223,10 +233,11 @@ public class Parser extends ParserBase {
       return parseFunctionType();
     case IDENTIFIER:
       return parseNamedType();
-    case STRING:
-    case OBJECT:
     case BOOL:
+    case DYNAMIC:
     case NUMBER:
+    case OBJECT:
+    case STRING:
     case VOID:
       return parseKeywordType();
     default:
@@ -271,12 +282,13 @@ public class Parser extends ParserBase {
 
   private boolean peekType() {
     switch (peekKind()) {
-    case OPEN_PAREN:
-    case IDENTIFIER:
-    case STRING:
-    case OBJECT:
     case BOOL:
+    case DYNAMIC:
+    case IDENTIFIER:
     case NUMBER:
+    case OBJECT:
+    case OPEN_PAREN:
+    case STRING:
     case VOID:
       return true;
     default:
@@ -332,6 +344,7 @@ public class Parser extends ParserBase {
     case STRING:
     case OBJECT:
     case BOOL:
+    case DYNAMIC:
     case NUMBER:
     case OPEN_SQUARE:
     case NULL:

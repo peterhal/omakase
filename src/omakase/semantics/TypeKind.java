@@ -16,8 +16,11 @@ package omakase.semantics;
 
 /**
  */
-public enum SymbolKind {
+public enum TypeKind {
+  ARRAY,
   CLASS,
-  METHOD,
-  FIELD, TYPE_VARIABLE,
+  FUNCTION,
+  KEYWORD,
+  NULLABLE,
+  VARIABLE,
 }
