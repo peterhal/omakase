@@ -997,6 +997,8 @@ public class Parser extends ParserBase {
     case OPEN_PAREN:
       return parseParenExpression();
     case IDENTIFIER:
+      // TODO: Type ArgumentList opt
+      // Note: Must disambiguate with relational expression.
       return parseIdentifier();
     case NULL:
     case TRUE:
@@ -1075,6 +1077,8 @@ public class Parser extends ParserBase {
 
   private ParseTree parseMemberAccessSuffix(Token start, ParseTree operand) {
     eat(TokenKind.PERIOD);
+    // TODO: Add Type argument list opt
+    // Note: Must disambiguate with relational expression.
     return new MemberExpressionTree(getRange(start), operand, eatId());
   }
 
