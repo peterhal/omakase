@@ -2,10 +2,10 @@ Next Up
 -------
 - use symbols for code gen
 - type system
-  - parsing
+  - name lookup
+  - type check statements/expressions
 - hygiene
   - name table
-  - semantic analyzer
 
 TODO
 ----

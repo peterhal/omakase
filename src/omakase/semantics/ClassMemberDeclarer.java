@@ -40,6 +40,7 @@ public class ClassMemberDeclarer {
     }
   }
 
+  // TODO: declare member types
   private void declareMember(ClassSymbol clazz, ParseTree tree) {
     if (tree.isMethodDeclaration()) {
       MethodDeclarationTree methodTree = tree.asMethodDeclaration();

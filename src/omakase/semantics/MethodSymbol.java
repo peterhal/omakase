@@ -19,11 +19,13 @@ import omakase.syntax.trees.MethodDeclarationTree;
 /**
  */
 public class MethodSymbol extends Symbol{
+  private final ClassSymbol parent;
   public final MethodDeclarationTree tree;
 
-  public MethodSymbol(ClassSymbol clazz, String name, MethodDeclarationTree tree) {
+  public MethodSymbol(ClassSymbol parent, String name, MethodDeclarationTree tree) {
     super(SymbolKind.METHOD, name, tree);
+    this.parent = parent;
     this.tree = tree;
-    clazz.addMember(this);
+    parent.addMember(this);
   }
 }

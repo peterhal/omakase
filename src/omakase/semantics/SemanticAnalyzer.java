@@ -49,6 +49,15 @@ public class SemanticAnalyzer {
     if (hadError()) {
       return;
     }
+
+    checkTypes();
+    if (hadError()) {
+      return;
+    }
+  }
+
+  private void checkTypes() {
+    new TypeChecker(project).checkAllTypes();
   }
 
   private void declareClassMembers() {

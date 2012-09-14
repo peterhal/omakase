@@ -28,4 +28,12 @@ public class Symbol {
     this.name = name;
     this.location = location;
   }
+
+  public MethodSymbol asMethod() {
+    return (MethodSymbol) this;
+  }
+
+  public FieldSymbol asField() {
+    return (FieldSymbol) this;
+  }
 }
