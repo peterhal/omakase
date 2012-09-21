@@ -23,4 +23,10 @@ public class TypeVariableSymbol extends Symbol {
     // TODO: Need Parse tree.
     super(SymbolKind.TYPE_VARIABLE, name.value, null);
   }
+
+  @Override
+  public Type getType() {
+    // TODO: generics
+    return null;
+  }
 }

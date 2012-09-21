@@ -38,6 +38,7 @@ public class Types {
     this.keywordTypes = new HashMap<TokenKind, KeywordType>();
     addKeywordType(TokenKind.BOOL);
     addKeywordType(TokenKind.DYNAMIC);
+    addKeywordType(TokenKind.NULL);
     addKeywordType(TokenKind.NUMBER);
     addKeywordType(TokenKind.OBJECT);
     addKeywordType(TokenKind.STRING);
@@ -127,5 +128,26 @@ public class Types {
     }
 
     return result;
+  }
+
+  public KeywordType getBoolType() {
+    return getKeywordType(TokenKind.BOOL);
+  }
+
+  // Internal only - used for typing 'null' literal expressions.
+  public KeywordType getNullType() {
+    return getKeywordType(TokenKind.NULL);
+  }
+
+  public KeywordType getStringType() {
+    return getKeywordType(TokenKind.STRING);
+  }
+
+  public KeywordType getNumberType() {
+    return getKeywordType(TokenKind.NUMBER);
+  }
+
+  public KeywordType getDynamicType() {
+    return getKeywordType(TokenKind.DYNAMIC);
   }
 }

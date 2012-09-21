@@ -18,7 +18,7 @@ import omakase.syntax.trees.MethodDeclarationTree;
 
 /**
  */
-public class MethodSymbol extends Symbol{
+public class MethodSymbol extends Symbol {
   private final ClassSymbol parent;
   public final MethodDeclarationTree tree;
   private final FunctionType type;
@@ -29,5 +29,10 @@ public class MethodSymbol extends Symbol{
     this.tree = tree;
     this.type = type;
     parent.addMember(this);
+  }
+
+  @Override
+  public Type getType() {
+    return type;
   }
 }

@@ -51,8 +51,10 @@ public class TypeChecker {
   }
 
   private void checkField(FieldSymbol member) {
-    //
-    // TODO: initializers
+    ParseTree initializer = member.tree.initializer;
+    if (initializer != null) {
+      new ExpressionBinder(new ExpressionBindingContext(project)).bind(initializer);
+    }
   }
 
   private void checkMethod(MethodSymbol member) {

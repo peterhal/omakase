@@ -14,6 +14,8 @@
 
 package omakase.semantics;
 
+import omakase.syntax.tokens.TokenKind;
+
 /**
  */
 public class Type {
@@ -21,5 +23,41 @@ public class Type {
 
   public Type(TypeKind kind) {
     this.kind = kind;
+  }
+
+  public boolean isBoolType() {
+    return isKeywordType(TokenKind.BOOL);
+  }
+
+  public boolean isDynamicType() {
+    return isKeywordType(TokenKind.DYNAMIC);
+  }
+
+  public boolean isNumberType() {
+    return isKeywordType(TokenKind.NUMBER);
+  }
+
+  private boolean isKeywordType(TokenKind keyword) {
+    return isKeywordType() && this.asKeywordType().keyword == keyword;
+  }
+
+  public boolean isKeywordType() {
+    return kind == TypeKind.KEYWORD;
+  }
+
+  public boolean isClassType() {
+    return kind == TypeKind.CLASS;
+  }
+
+  public boolean isArrayType() {
+    return kind == TypeKind.ARRAY;
+  }
+
+  public KeywordType asKeywordType() {
+    return (KeywordType) this;
+  }
+
+  public ArrayType asArrayType() {
+    return (ArrayType) this;
   }
 }

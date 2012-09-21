@@ -14,25 +14,36 @@
 
 package omakase.semantics;
 
-import omakase.syntax.trees.VariableDeclarationTree;
+import omakase.util.ErrorReporter;
 
 /**
  */
-public class FieldSymbol extends Symbol {
-  public final ClassSymbol parent;
-  public final VariableDeclarationTree tree;
-  public final Type type;
+public class ExpressionBindingContext {
+  private final Project project;
+  private final Type thisType;
 
-  public FieldSymbol(ClassSymbol parent, String name, VariableDeclarationTree tree, Type type) {
-    super(SymbolKind.FIELD, name, tree);
-    this.parent = parent;
-    this.tree = tree;
-    this.type = type;
-    parent.addMember(this);
+  public ExpressionBindingContext(Project project) {
+    this.project = project;
+    this.thisType = null;
   }
 
-  @Override
-  public Type getType() {
-    return type;
+  public Types getTypes() {
+    return project.getTypes();
+  }
+
+  public ErrorReporter errorReporter() {
+    return project.errorReporter();
+  }
+
+  public boolean hasThis() {
+    return thisType != null;
+  }
+
+  public Type getThisType() {
+    return thisType;
+  }
+
+  public Symbol lookupIdentifier(String value) {
+    return null;
   }
 }

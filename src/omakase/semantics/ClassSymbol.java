@@ -42,4 +42,10 @@ public class ClassSymbol extends Symbol {
   public Symbol getMember(String name) {
     return members.get(name);
   }
+
+  @Override
+  public Type getType() {
+    // TODO: Class static type?
+    return null;
+  }
 }

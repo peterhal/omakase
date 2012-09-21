@@ -18,7 +18,7 @@ import omakase.syntax.trees.ParseTree;
 
 /**
  */
-public class Symbol {
+public abstract class Symbol {
   public final String name;
   public final SymbolKind kind;
   public final ParseTree location;
@@ -35,5 +35,11 @@ public class Symbol {
 
   public FieldSymbol asField() {
     return (FieldSymbol) this;
+  }
+
+  public abstract Type getType();
+
+  public boolean isClassSymbol() {
+    return kind == SymbolKind.CLASS;
   }
 }
