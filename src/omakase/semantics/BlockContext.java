@@ -14,6 +14,9 @@
 
 package omakase.semantics;
 
+import omakase.semantics.symbols.LocalVariableSymbol;
+import omakase.semantics.symbols.Symbol;
+
 import java.util.Map;
 
 /**

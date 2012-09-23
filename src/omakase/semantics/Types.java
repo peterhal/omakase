@@ -15,9 +15,8 @@
 package omakase.semantics;
 
 import com.google.common.collect.ImmutableList;
+import omakase.semantics.symbols.ClassSymbol;
 import omakase.syntax.tokens.TokenKind;
-import omakase.syntax.trees.FormalParameterListTree;
-import omakase.syntax.trees.ParseTree;
 
 import java.util.HashMap;
 import java.util.Map;

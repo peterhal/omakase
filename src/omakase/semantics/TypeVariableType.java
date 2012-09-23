@@ -14,6 +14,8 @@
 
 package omakase.semantics;
 
+import omakase.semantics.symbols.TypeVariableSymbol;
+
 /**
  */
 public class TypeVariableType extends Type {

@@ -14,6 +14,8 @@
 
 package omakase.semantics;
 
+import omakase.semantics.symbols.Symbol;
+
 /**
  */
 public abstract class StatementBindingContext extends ExpressionBindingContext {

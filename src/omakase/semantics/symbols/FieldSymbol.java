@@ -12,18 +12,24 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package omakase.semantics;
+package omakase.semantics.symbols;
 
-import omakase.syntax.trees.ParameterDeclarationTree;
+import omakase.semantics.Type;
+import omakase.syntax.trees.VariableDeclarationTree;
 
 /**
  */
-public class ParameterSymbol extends Symbol {
+public class FieldSymbol extends Symbol {
+  public final ClassSymbol parent;
+  public final VariableDeclarationTree tree;
   public final Type type;
 
-  public ParameterSymbol(ParameterDeclarationTree tree, Type type) {
-    super(SymbolKind.PARAMETER, tree.name.value, tree);
+  public FieldSymbol(ClassSymbol parent, String name, VariableDeclarationTree tree, Type type) {
+    super(SymbolKind.FIELD, name, tree);
+    this.parent = parent;
+    this.tree = tree;
     this.type = type;
+    parent.addMember(this);
   }
 
   @Override

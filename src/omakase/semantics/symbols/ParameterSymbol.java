@@ -12,15 +12,23 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package omakase.semantics;
+package omakase.semantics.symbols;
+
+import omakase.semantics.Type;
+import omakase.syntax.trees.ParameterDeclarationTree;
 
 /**
  */
-public enum SymbolKind {
-  CLASS,
-  METHOD,
-  FIELD,
-  TYPE_VARIABLE,
-  PARAMETER,
-  LOCAL_VARIABLE,
+public class ParameterSymbol extends Symbol {
+  public final Type type;
+
+  public ParameterSymbol(ParameterDeclarationTree tree, Type type) {
+    super(SymbolKind.PARAMETER, tree.name.value, tree);
+    this.type = type;
+  }
+
+  @Override
+  public Type getType() {
+    return type;
+  }
 }

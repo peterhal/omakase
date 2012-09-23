@@ -12,23 +12,30 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package omakase.semantics;
+package omakase.semantics.symbols;
 
-import omakase.semantics.symbols.LocalVariableSymbol;
-import omakase.semantics.symbols.Symbol;
+import omakase.semantics.Type;
+import omakase.syntax.trees.ParseTree;
 
 /**
  */
-public class LocalVariableContext extends StatementBindingContext {
-  private final LocalVariableSymbol variable;
+public class LocalVariableSymbol extends Symbol {
+  private Type type;
 
-  public LocalVariableContext(LocalVariableSymbol variable, StatementBindingContext context) {
-    super(context);
-    this.variable = variable;
+  public LocalVariableSymbol(String name, ParseTree tree, Type type) {
+    super(SymbolKind.LOCAL_VARIABLE, name, tree);
+    this.type = type;
   }
 
   @Override
-  public Symbol lookupIdentifier(String value) {
-    return value == variable.name ? variable : super.lookupIdentifier(value);
+  public Type getType() {
+    return type;
+  }
+
+  public void setInferredType(Type type) {
+    if (this.type != null) {
+      throw new RuntimeException("Cannot infer variable's type more than once.");
+    }
+    this.type = type;
   }
 }

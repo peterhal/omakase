@@ -14,10 +14,9 @@
 
 package omakase.semantics;
 
-import com.google.common.collect.ImmutableBiMap;
 import com.google.common.collect.ImmutableMap;
+import omakase.semantics.symbols.*;
 import omakase.syntax.trees.*;
-import omakase.util.SourceLocation;
 
 import java.util.HashMap;
 import java.util.Map;

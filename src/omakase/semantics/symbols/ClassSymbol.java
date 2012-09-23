@@ -12,8 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package omakase.semantics;
+package omakase.semantics.symbols;
 
+import omakase.semantics.Type;
 import omakase.syntax.trees.ClassDeclarationTree;
 
 import java.util.LinkedHashMap;

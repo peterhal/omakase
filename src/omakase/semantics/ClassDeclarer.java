@@ -14,7 +14,8 @@
 
 package omakase.semantics;
 
-import omakase.syntax.tokens.IdentifierToken;
+import omakase.semantics.symbols.ClassSymbol;
+import omakase.semantics.symbols.Symbol;
 import omakase.syntax.tokens.Token;
 import omakase.syntax.trees.ClassDeclarationTree;
 import omakase.syntax.trees.ParseTree;

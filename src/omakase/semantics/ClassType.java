@@ -14,6 +14,8 @@
 
 package omakase.semantics;
 
+import omakase.semantics.symbols.ClassSymbol;
+
 /**
  */
 public class ClassType extends Type {

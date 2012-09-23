@@ -12,27 +12,40 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package omakase.semantics;
+package omakase.semantics.symbols;
 
-import omakase.syntax.trees.VariableDeclarationTree;
+import omakase.semantics.FunctionType;
+import omakase.semantics.Type;
+import omakase.syntax.trees.MethodDeclarationTree;
+
+import java.util.Map;
 
 /**
  */
-public class FieldSymbol extends Symbol {
+public class MethodSymbol extends Symbol {
   public final ClassSymbol parent;
-  public final VariableDeclarationTree tree;
-  public final Type type;
+  public final MethodDeclarationTree tree;
+  public final boolean isStatic;
+  public final FunctionType type;
+  public final Map<String, ParameterSymbol> parameters;
 
-  public FieldSymbol(ClassSymbol parent, String name, VariableDeclarationTree tree, Type type) {
-    super(SymbolKind.FIELD, name, tree);
+  public MethodSymbol(ClassSymbol parent, MethodDeclarationTree tree, FunctionType type,
+                      Map<String, ParameterSymbol> parameters) {
+    super(SymbolKind.METHOD, tree.name.value, tree);
     this.parent = parent;
     this.tree = tree;
     this.type = type;
+    this.parameters = parameters;
+    this.isStatic = tree.isStatic;
     parent.addMember(this);
   }
 
   @Override
   public Type getType() {
     return type;
+  }
+
+  public Type getReturnType() {
+    return type.returnType;
   }
 }

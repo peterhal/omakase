@@ -14,6 +14,10 @@
 
 package omakase.semantics;
 
+import omakase.semantics.symbols.ClassSymbol;
+import omakase.semantics.symbols.FieldSymbol;
+import omakase.semantics.symbols.MethodSymbol;
+import omakase.semantics.symbols.Symbol;
 import omakase.syntax.trees.ParseTree;
 
 /**

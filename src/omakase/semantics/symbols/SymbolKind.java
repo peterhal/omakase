@@ -12,21 +12,15 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package omakase.semantics;
-
-import omakase.syntax.tokens.IdentifierToken;
+package omakase.semantics.symbols;
 
 /**
  */
-public class TypeVariableSymbol extends Symbol {
-  public TypeVariableSymbol(IdentifierToken name) {
-    // TODO: Need Parse tree.
-    super(SymbolKind.TYPE_VARIABLE, name.value, null);
-  }
-
-  @Override
-  public Type getType() {
-    // TODO: generics
-    return null;
-  }
+public enum SymbolKind {
+  CLASS,
+  METHOD,
+  FIELD,
+  TYPE_VARIABLE,
+  PARAMETER,
+  LOCAL_VARIABLE,
 }

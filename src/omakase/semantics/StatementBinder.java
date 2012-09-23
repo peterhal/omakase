@@ -14,6 +14,7 @@
 
 package omakase.semantics;
 
+import omakase.semantics.symbols.LocalVariableSymbol;
 import omakase.syntax.ParseTreeVisitor;
 import omakase.syntax.trees.*;
 

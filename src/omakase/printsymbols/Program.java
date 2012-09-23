@@ -15,6 +15,8 @@
 package omakase.printsymbols;
 
 import omakase.semantics.*;
+import omakase.semantics.symbols.ClassSymbol;
+import omakase.semantics.symbols.Symbol;
 import omakase.util.ConsoleErrorReporter;
 import omakase.util.IndentedWriter;
 
