@@ -16,11 +16,16 @@ package omakase.semantics;
 
 /**
  */
-public enum SymbolKind {
-  CLASS,
-  METHOD,
-  FIELD,
-  TYPE_VARIABLE,
-  PARAMETER,
-  LOCAL_VARIABLE,
+public class CatchContext extends StatementBindingContext {
+  private final LocalVariableSymbol exceptionVariable;
+
+  public CatchContext(LocalVariableSymbol exceptionVariable, StatementBindingContext context) {
+    super(context);
+    this.exceptionVariable = exceptionVariable;
+  }
+
+  @Override
+  public Symbol lookupIdentifier(String value) {
+    return value == exceptionVariable.name ? exceptionVariable : super.lookupIdentifier(value);
+  }
 }

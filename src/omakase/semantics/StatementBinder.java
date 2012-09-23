@@ -17,6 +17,9 @@ package omakase.semantics;
 import omakase.syntax.ParseTreeVisitor;
 import omakase.syntax.trees.*;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * Binds all expressions in statements.
  * NOTE: Does not do flow control.
@@ -34,7 +37,30 @@ public class StatementBinder extends ParseTreeVisitor {
 
   @Override
   protected void visit(BlockTree tree) {
-    super.visit(tree);
+    // Declare all local variables
+    Map<String, LocalVariableSymbol> locals = null;
+    for (ParseTree statement : tree.statements) {
+      if (statement.isVariableStatement()) {
+        VariableStatementTree variableStatement = statement.asVariableStatement();
+        for (VariableDeclarationTree variableTree : variableStatement.declarations) {
+          String name = variableTree.name.value;
+          if ((locals != null && locals.containsKey(name)) || context.containsLocal(name)) {
+            reportError(variableTree, "Duplicate local variable '%s'.", name);
+          }
+
+          Type type = null;
+          if (variableTree.type != null) {
+            type = bindType(variableTree.type);
+          }
+          locals = locals == null? new HashMap<String, LocalVariableSymbol>() : locals;
+          locals.put(name, new LocalVariableSymbol(name, variableTree, type));
+        }
+      }
+    }
+    StatementBindingContext innerContext = locals == null ? context : new BlockContext(context, locals);
+    for (ParseTree statement : tree.statements) {
+      bindInnerStatement(innerContext, statement);
+    }
   }
 
   @Override
@@ -56,7 +82,12 @@ public class StatementBinder extends ParseTreeVisitor {
 
   @Override
   protected void visit(CatchClauseTree tree) {
-    // TODO
+    String name = tree.identifier.value;
+    if (context.containsLocal(name)) {
+      reportError(tree, "Duplicate local variable name '%s'.");
+    }
+    // TODO: What types should be allowed to catch?
+    bindInnerStatement(new CatchContext(new LocalVariableSymbol(name, tree, context.getTypes().getDynamicType()), context), tree.block);
   }
 
   @Override
@@ -149,7 +180,7 @@ public class StatementBinder extends ParseTreeVisitor {
   @Override
   protected void visit(TryStatementTree tree) {
     bind(tree.body);
-    visit(tree.catchClause);
+    visitAny(tree.catchClause);
     if (tree.finallyClause != null) {
       bindInnerStatement(new FinallyContext(this.context), tree.finallyClause);
     }
@@ -157,8 +188,18 @@ public class StatementBinder extends ParseTreeVisitor {
 
   @Override
   protected void visit(VariableDeclarationTree tree) {
-    // TODO
-    super.visit(tree);
+    // Most of the heavy lifting has been done in the Block processing.
+    LocalVariableSymbol symbol = context.lookupIdentifier(tree.name.value).asLocalVariable();
+    if (tree.initializer != null) {
+      if (tree.type == null) {
+        // inferred type of local
+        Type actualType = bindExpression(tree.initializer);
+        // TODO: Validate that the type is a valid local variable type.
+        symbol.setInferredType(actualType);
+      } else {
+        bindExpression(tree.initializer, symbol.getType());
+      }
+    }
   }
 
   @Override
@@ -170,6 +211,11 @@ public class StatementBinder extends ParseTreeVisitor {
   @Override
   protected void visit(VariableStatementTree tree) {
     super.visit(tree);
+  }
+
+  private Type bindType(ParseTree type) {
+    // TODO: Bind type in class/method/field context.
+    return new TypeBinder(context.project).bindType(type);
   }
 
   private void bindInnerStatement(StatementBindingContext context, ParseTree body) {

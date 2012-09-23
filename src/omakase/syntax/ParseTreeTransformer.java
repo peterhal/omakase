@@ -466,7 +466,7 @@ public class ParseTreeTransformer {
   }
 
   protected ParseTree transform(FormalParameterListTree tree) {
-    ImmutableList<? extends omakase.syntax.trees.ParseTree> parameters = transformList(tree.parameters);
+    ImmutableList<? extends omakase.syntax.trees.ParameterDeclarationTree> parameters = transformList(tree.parameters);
     if (parameters == tree.parameters) {
       return tree;
     }

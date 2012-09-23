@@ -33,6 +33,13 @@ public class SourceLocation {
     this.offset = offset;
   }
 
+  public boolean isBefore(SourceLocation other) {
+    if (this.file != other.file) {
+      throw new RuntimeException("Cannot compare locations from different files.");
+    }
+    return this.offset < other.offset;
+  }
+
   @Override
   public String toString() {
     return String.format("%s (%d, %d)", file.name, line() + 1, column() + 1);

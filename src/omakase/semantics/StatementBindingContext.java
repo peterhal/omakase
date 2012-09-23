@@ -48,4 +48,14 @@ public abstract class StatementBindingContext extends ExpressionBindingContext {
   public Type getReturnType() {
     return outerContext.getReturnType();
   }
+
+  @Override
+  public Symbol lookupIdentifier(String value) {
+    return outerContext == null ? null : outerContext.lookupIdentifier(value);
+  }
+
+  public boolean containsLocal(String name) {
+    Symbol result = lookupIdentifier(name);
+    return result == null ? false : result.isLocalVariable() || result.isParameter();
+  }
 }

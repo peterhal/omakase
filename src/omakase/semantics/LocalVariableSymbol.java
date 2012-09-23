@@ -14,13 +14,27 @@
 
 package omakase.semantics;
 
+import omakase.syntax.trees.ParseTree;
+
 /**
  */
-public enum SymbolKind {
-  CLASS,
-  METHOD,
-  FIELD,
-  TYPE_VARIABLE,
-  PARAMETER,
-  LOCAL_VARIABLE,
+public class LocalVariableSymbol extends Symbol {
+  private Type type;
+
+  public LocalVariableSymbol(String name, ParseTree tree, Type type) {
+    super(SymbolKind.LOCAL_VARIABLE, name, tree);
+    this.type = type;
+  }
+
+  @Override
+  public Type getType() {
+    return type;
+  }
+
+  public void setInferredType(Type type) {
+    if (this.type != null) {
+      throw new RuntimeException("Cannot infer variable's type more than once.");
+    }
+    this.type = type;
+  }
 }

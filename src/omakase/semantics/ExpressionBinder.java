@@ -17,9 +17,6 @@ package omakase.semantics;
 import omakase.syntax.ParseTreeVisitor;
 import omakase.syntax.trees.*;
 
-import java.util.HashMap;
-import java.util.Map;
-
 /**
  * Binds Types to expressions.
  * Symbols to identifiers.
@@ -120,6 +117,12 @@ public class ExpressionBinder extends ParseTreeVisitor {
       reportError(tree, "'%s' not in scope.", name);
       return;
     }
+    if (symbol.isLocalVariable()) {
+      // Check for use before declaration.
+      if (tree.location.start.isBefore(symbol.location.start())) {
+        reportError(tree, "Use of '%s' before declaration.", name);
+      }
+    }
     setSymbol(tree, symbol);
     setExpressionType(tree, symbol.getType());
   }
@@ -148,7 +151,7 @@ public class ExpressionBinder extends ParseTreeVisitor {
     super.visit(tree);
 
     Symbol symbol = getSymbol(tree.object);
-    if (symbol != null && symbol.isClassSymbol()) {
+    if (symbol != null && symbol.isClass()) {
       // TODO: lookup static member.
     } else {
       Type objectType = getExpressionType(tree.object);

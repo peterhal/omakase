@@ -14,11 +14,12 @@
 
 package omakase.semantics;
 
-import omakase.syntax.trees.FieldDeclarationTree;
-import omakase.syntax.trees.MethodDeclarationTree;
-import omakase.syntax.trees.ParseTree;
-import omakase.syntax.trees.VariableDeclarationTree;
+import com.google.common.collect.ImmutableBiMap;
+import com.google.common.collect.ImmutableMap;
+import omakase.syntax.trees.*;
+import omakase.util.SourceLocation;
 
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -55,12 +56,33 @@ public class ClassMemberDeclarer {
 
   private void declareMethod(ClassSymbol clazz, MethodDeclarationTree methodTree) {
     String name = methodTree.name.value;
-    // TODO: Build parameter symbols?
     FunctionType type = bindMethodType(methodTree);
-    // TODO Map<String, ParameterSymbol> parameters = buildParameters(methodTree.formals);
+    Map<String, ParameterSymbol> parameters = buildParameters(methodTree.formals);
     if (!checkForDuplicateMember(clazz, name, methodTree)) {
-      new MethodSymbol(clazz, name, methodTree, type);
+      new MethodSymbol(clazz, methodTree, type, parameters);
     }
+  }
+
+  private Map<String, ParameterSymbol> buildParameters(FormalParameterListTree formals) {
+    Map<String, ParameterSymbol> parameters = new HashMap<String, ParameterSymbol>();
+    for (ParameterDeclarationTree tree : formals.parameters) {
+      String name = tree.name.value;
+      Type type = null;
+      if (tree.type != null) {
+        type = bindType(tree.type);
+      }
+      if (parameters.containsKey(name)) {
+        reportError(tree, "Duplicate parameter '%s'.", name);
+      } else {
+        ParameterSymbol parameter = new ParameterSymbol(tree, type);
+        parameters.put(name, parameter);
+      }
+    }
+    return ImmutableMap.copyOf(parameters);
+  }
+
+  private void reportError(ParseTree tree, String message, Object... args) {
+    project.errorReporter().reportError(tree.location.start, message, args);
   }
 
   private FunctionType bindMethodType(MethodDeclarationTree methodTree) {
@@ -86,8 +108,8 @@ public class ClassMemberDeclarer {
   private boolean checkForDuplicateMember(ClassSymbol clazz, String name, ParseTree tree) {
     Symbol member = clazz.getMember(name);
     if (member != null) {
-      project.errorReporter().reportError(tree.location.start, "Duplicate member '%s' in class '%s'.", name, clazz);
-      project.errorReporter().reportError(member.location.start(), "Location of duplicate member.");
+      reportError(tree, "Duplicate member '%s' in class '%s'.", name, clazz);
+      reportError(member.location, "Location of duplicate member.");
       return true;
     }
     return false;

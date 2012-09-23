@@ -18,47 +18,17 @@ import java.util.Map;
 
 /**
  */
-public class MethodBindingContext extends StatementBindingContext {
-  private final MethodSymbol method;
+public class BlockContext extends StatementBindingContext {
+  private final Map<String, LocalVariableSymbol> locals;
 
-  public MethodBindingContext(Project project, MethodSymbol method) {
-    super(project, new BindingResults());
-    this.method = method;
-  }
-
-  @Override
-  public boolean hasBreakLabel() {
-    return false;
-  }
-
-  @Override
-  public boolean hasContinueLabel() {
-    return false;
-  }
-
-  @Override
-  public boolean canReturn() {
-    return true;
-  }
-
-  @Override
-  public Type getReturnType() {
-    return method.getReturnType();
-  }
-
-  @Override
-  public boolean hasThis() {
-    return !method.isStatic;
-  }
-
-  @Override
-  public Type getThisType() {
-    return getTypes().getClassType(method.parent);
+  public BlockContext(StatementBindingContext context, Map<String, LocalVariableSymbol> locals) {
+    super(context);
+    this.locals = locals;
   }
 
   @Override
   public Symbol lookupIdentifier(String value) {
-    Symbol result = method.parameters.get(value);
+    Symbol result = locals.get(value);
     return result == null ? super.lookupIdentifier(value) : result;
   }
 }

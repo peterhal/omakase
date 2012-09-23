@@ -16,19 +16,24 @@ package omakase.semantics;
 
 import omakase.syntax.trees.MethodDeclarationTree;
 
+import java.util.Map;
+
 /**
  */
 public class MethodSymbol extends Symbol {
   public final ClassSymbol parent;
   public final MethodDeclarationTree tree;
   public final boolean isStatic;
-  private final FunctionType type;
+  public final FunctionType type;
+  public final Map<String, ParameterSymbol> parameters;
 
-  public MethodSymbol(ClassSymbol parent, String name, MethodDeclarationTree tree, FunctionType type) {
-    super(SymbolKind.METHOD, name, tree);
+  public MethodSymbol(ClassSymbol parent, MethodDeclarationTree tree, FunctionType type,
+                      Map<String, ParameterSymbol> parameters) {
+    super(SymbolKind.METHOD, tree.name.value, tree);
     this.parent = parent;
     this.tree = tree;
     this.type = type;
+    this.parameters = parameters;
     this.isStatic = tree.isStatic;
     parent.addMember(this);
   }

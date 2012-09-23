@@ -21,9 +21,9 @@ import omakase.util.SourceRange;
  *
  */
 public class FormalParameterListTree extends ParseTree {
-  public final ImmutableList<? extends ParseTree> parameters;
+  public final ImmutableList<? extends ParameterDeclarationTree> parameters;
 
-  public FormalParameterListTree(SourceRange location, ImmutableList<? extends ParseTree> parameters) {
+  public FormalParameterListTree(SourceRange location, ImmutableList<? extends ParameterDeclarationTree> parameters) {
     super(location, ParseTreeKind.FORMAL_PARAMETER_LIST);
     this.parameters = parameters;
   }

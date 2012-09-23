@@ -29,6 +29,20 @@ public abstract class Symbol {
     this.location = location;
   }
 
+  public abstract Type getType();
+
+  public boolean isClass() {
+    return kind == SymbolKind.CLASS;
+  }
+
+  public boolean isLocalVariable() {
+    return kind == SymbolKind.LOCAL_VARIABLE;
+  }
+
+  public boolean isParameter() {
+    return kind == SymbolKind.PARAMETER;
+  }
+
   public MethodSymbol asMethod() {
     return (MethodSymbol) this;
   }
@@ -37,9 +51,7 @@ public abstract class Symbol {
     return (FieldSymbol) this;
   }
 
-  public abstract Type getType();
-
-  public boolean isClassSymbol() {
-    return kind == SymbolKind.CLASS;
+  public LocalVariableSymbol asLocalVariable() {
+    return (LocalVariableSymbol) this;
   }
 }
