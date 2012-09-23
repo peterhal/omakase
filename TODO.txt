@@ -2,8 +2,10 @@ Next Up
 -------
 - use symbols for code gen
 - type system
-  - name lookup
-  - type check statements/expressions
+  - name lookup of classes/members
+  - type check expressions
+- namespaces
+- stdlib
 - hygiene
   - name table
 
