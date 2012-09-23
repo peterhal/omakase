@@ -14,24 +14,29 @@
 
 package omakase.semantics;
 
+import com.google.common.collect.ImmutableMap;
 import omakase.semantics.symbols.LocalVariableSymbol;
 import omakase.semantics.symbols.Symbol;
 
 import java.util.Map;
 
 /**
- */
-public class BlockContext extends StatementBindingContext {
+*/
+class LocalVariableLookupContext implements IdentifierLookupContext {
+  private final IdentifierLookupContext outerContext;
   private final Map<String, LocalVariableSymbol> locals;
 
-  public BlockContext(StatementBindingContext context, Map<String, LocalVariableSymbol> locals) {
-    super(context);
+  public LocalVariableLookupContext(IdentifierLookupContext outerContext, Map<String, LocalVariableSymbol> locals) {
+    this.outerContext = outerContext;
     this.locals = locals;
   }
 
-  @Override
+  public LocalVariableLookupContext(IdentifierLookupContext outerContext, LocalVariableSymbol local) {
+    this(outerContext, ImmutableMap.of(local.name, local));
+  }
+
   public Symbol lookupIdentifier(String value) {
     Symbol result = locals.get(value);
-    return result == null ? super.lookupIdentifier(value) : result;
+    return result != null ? result : outerContext.lookupIdentifier(value);
   }
 }

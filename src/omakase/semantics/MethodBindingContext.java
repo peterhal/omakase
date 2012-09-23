@@ -24,7 +24,23 @@ public class MethodBindingContext extends StatementBindingContext {
   private final MethodSymbol method;
 
   public MethodBindingContext(Project project, MethodSymbol method) {
-    super(project, new BindingResults());
+    super(
+        project,
+        new BindingResults(),
+        new IdentifierLookupContext() {
+          public Symbol lookupIdentifier(String value) {
+            // TODO: Lookup class members.
+            return null;
+          }
+        },
+        method.isStatic
+            ? null
+            : project.getTypes().getClassType(method.parent),
+        false,
+        false,
+        null,
+        true,
+        method.getReturnType());
     this.method = method;
   }
 

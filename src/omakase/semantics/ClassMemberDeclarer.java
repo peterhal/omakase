@@ -51,7 +51,7 @@ public class ClassMemberDeclarer {
     } else {
       FieldDeclarationTree fieldsTree = tree.asFieldDeclaration();
       for (VariableDeclarationTree fieldTree : fieldsTree.declarations) {
-        declareField(clazz, fieldTree);
+        declareField(clazz, fieldTree, fieldsTree.isStatic);
       }
     }
   }
@@ -91,11 +91,11 @@ public class ClassMemberDeclarer {
     return new TypeBinder(project).bindFunctionType(methodTree.returnType, methodTree.formals);
   }
 
-  private void declareField(ClassSymbol clazz, VariableDeclarationTree fieldTree) {
+  private void declareField(ClassSymbol clazz, VariableDeclarationTree fieldTree, boolean isStatic) {
     String name = fieldTree.name.value;
     Type type = bindType(fieldTree.type);
     if (!checkForDuplicateMember(clazz, name, fieldTree)) {
-      new FieldSymbol(clazz, name, fieldTree, type);
+      new FieldSymbol(clazz, name, fieldTree, type, isStatic);
     }
   }
 

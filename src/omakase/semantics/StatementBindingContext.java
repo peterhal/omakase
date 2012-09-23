@@ -14,51 +14,114 @@
 
 package omakase.semantics;
 
+import omakase.semantics.symbols.LocalVariableSymbol;
 import omakase.semantics.symbols.Symbol;
 import omakase.semantics.types.Type;
 
+import java.util.Map;
+
 /**
  */
-public abstract class StatementBindingContext extends ExpressionBindingContext {
-  private final StatementBindingContext outerContext;
+public class StatementBindingContext extends ExpressionBindingContext {
+  private final boolean hasBreak;
+  private final boolean hasContinue;
+  private final Type switchType;
+  private final boolean canReturn;
+  private final Type returnType;
 
-  public StatementBindingContext(Project project, BindingResults results) {
-    super(project, results);
-    outerContext = null;
+  public StatementBindingContext(
+      Project project,
+      BindingResults results,
+      IdentifierLookupContext lookupContext,
+      Type thisType,
+      boolean hasBreak,
+      boolean hasContinue,
+      Type switchType,
+      boolean canReturn,
+      Type returnType) {
+    super(project, results, lookupContext, thisType);
+    this.hasBreak = hasBreak;
+    this.hasContinue = hasContinue;
+    this.switchType = switchType;
+    this.canReturn = canReturn;
+    this.returnType = returnType;
   }
 
-  protected StatementBindingContext(StatementBindingContext outerContext) {
-    super(outerContext.project, outerContext.getResults());
-    this.outerContext = outerContext;
+  public StatementBindingContext createLoopContext() {
+    return new StatementBindingContext(
+        this.project,
+        this.getResults(),
+        this.lookupContext,
+        this.getThisType(),
+        true,
+        true,
+        this.switchType,
+        this.canReturn,
+        this.returnType);
+  }
+
+  public StatementBindingContext createFinallyContext() {
+    return new StatementBindingContext(
+        this.project,
+        this.getResults(),
+        this.lookupContext,
+        this.getThisType(),
+        false,
+        false,
+        this.switchType,
+        false,
+        this.returnType);
+  }
+
+  public StatementBindingContext createSwitchContext(Type switchExpressionType) {
+    return new StatementBindingContext(
+        this.project,
+        this.getResults(),
+        this.lookupContext,
+        this.getThisType(),
+        true,
+        this.hasContinue,
+        switchExpressionType,
+        this.canReturn,
+        this.returnType);
+  }
+
+  public StatementBindingContext createLookupContext(IdentifierLookupContext context) {
+    return new StatementBindingContext(
+        this.project,
+        this.getResults(),
+        context,
+        this.getThisType(),
+        this.hasBreak,
+        this.hasContinue,
+        this.switchType,
+        this.canReturn,
+        this.returnType);
   }
 
   public boolean hasBreakLabel() {
-    return outerContext.hasBreakLabel();
+    return hasBreak;
   }
 
   public boolean hasContinueLabel() {
-    return outerContext.hasContinueLabel();
+    return hasContinue;
   }
 
   public Type getSwitchExpressionType() {
-    throw new RuntimeException("Parser should ensure case labels never occur outside of switch statements.");
+    // Parser ensures case labels never occur outside of switch statements.
+    return switchType;
   }
 
   public boolean canReturn() {
-    return outerContext.canReturn();
+    return this.canReturn;
   }
 
   public Type getReturnType() {
-    return outerContext.getReturnType();
-  }
-
-  @Override
-  public Symbol lookupIdentifier(String value) {
-    return outerContext == null ? null : outerContext.lookupIdentifier(value);
+    return returnType;
   }
 
   public boolean containsLocal(String name) {
     Symbol result = lookupIdentifier(name);
-    return result == null ? false : result.isLocalVariable() || result.isParameter();
+    return result != null && (result.isLocalVariable() || result.isParameter());
   }
 }

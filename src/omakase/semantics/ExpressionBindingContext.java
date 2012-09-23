@@ -23,13 +23,15 @@ import omakase.util.ErrorReporter;
  */
 public class ExpressionBindingContext {
   public final Project project;
-  private final Type thisType;
   private final BindingResults results;
+  protected final IdentifierLookupContext lookupContext;
+  private final Type thisType;
 
-  public ExpressionBindingContext(Project project, BindingResults results) {
+  public ExpressionBindingContext(Project project, BindingResults results, IdentifierLookupContext lookupContext, Type thisType) {
     this.project = project;
     this.results = results;
-    this.thisType = null;
+    this.lookupContext = lookupContext;
+    this.thisType = thisType;
   }
 
   public TypeContainer getTypes() {
@@ -49,7 +51,7 @@ public class ExpressionBindingContext {
   }
 
   public Symbol lookupIdentifier(String value) {
-    return null;
+    return lookupContext.lookupIdentifier(value);
   }
 
   public BindingResults getResults() {

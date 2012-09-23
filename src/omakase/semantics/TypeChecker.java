@@ -57,7 +57,20 @@ public class TypeChecker {
   private void checkField(FieldSymbol member) {
     ParseTree initializer = member.tree.initializer;
     if (initializer != null) {
-      new ExpressionBinder(new ExpressionBindingContext(project, new BindingResults())).bind(initializer, member.type);
+      new ExpressionBinder(
+          new ExpressionBindingContext(
+              project,
+              new BindingResults(),
+              new IdentifierLookupContext() {
+                public Symbol lookupIdentifier(String value) {
+                  // TODO: Lookup class members.
+                  return null;
+                }
+              },
+              member.isStatic
+                  ? null
+                  : project.getTypes().getClassType(member.parent)))
+          .bind(initializer, member.type);
     }
   }
 

@@ -23,12 +23,14 @@ public class FieldSymbol extends Symbol {
   public final ClassSymbol parent;
   public final VariableDeclarationTree tree;
   public final Type type;
+  public final boolean isStatic;
 
-  public FieldSymbol(ClassSymbol parent, String name, VariableDeclarationTree tree, Type type) {
+  public FieldSymbol(ClassSymbol parent, String name, VariableDeclarationTree tree, Type type, boolean isStatic) {
     super(SymbolKind.FIELD, name, tree);
     this.parent = parent;
     this.tree = tree;
     this.type = type;
+    this.isStatic = isStatic;
     parent.addMember(this);
   }
 

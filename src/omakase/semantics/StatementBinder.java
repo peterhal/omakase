@@ -15,6 +15,7 @@
 package omakase.semantics;
 
 import omakase.semantics.symbols.LocalVariableSymbol;
+import omakase.semantics.symbols.Symbol;
 import omakase.semantics.types.Type;
 import omakase.syntax.ParseTreeVisitor;
 import omakase.syntax.trees.*;
@@ -46,7 +47,7 @@ public class StatementBinder extends ParseTreeVisitor {
         locals = bindLocalVariableDeclarations(statement.asVariableStatement(), locals);
       }
     }
-    StatementBindingContext innerContext = locals == null ? context : new BlockContext(context, locals);
+    StatementBindingContext innerContext = locals == null ? context : context.createLookupContext(new LocalVariableLookupContext(context.lookupContext, locals));
     for (ParseTree statement : tree.statements) {
       bindInnerStatement(innerContext, statement);
     }
@@ -76,7 +77,10 @@ public class StatementBinder extends ParseTreeVisitor {
       reportError(tree, "Duplicate local variable name '%s'.");
     }
     // TODO: What types should be allowed to catch?
-    bindInnerStatement(new LocalVariableContext(new LocalVariableSymbol(name, tree, context.getTypes().getDynamicType()), context), tree.block);
+    LocalVariableSymbol exceptionVariable = new LocalVariableSymbol(name, tree, context.getTypes().getDynamicType());
+    StatementBindingContext innerContext = context
+        .createLookupContext(new LocalVariableLookupContext(context.lookupContext, exceptionVariable));
+    bindInnerStatement(innerContext, tree.block);
   }
 
   @Override
@@ -99,7 +103,7 @@ public class StatementBinder extends ParseTreeVisitor {
 
   @Override
   protected void visit(DoStatementTree tree) {
-    bindInnerStatement(new LoopStatementContext(context), tree.statement);
+    bindInnerStatement(context.createLoopContext(), tree.statement);
     bindBooleanExpression(tree.condition);
   }
 
@@ -134,7 +138,9 @@ public class StatementBinder extends ParseTreeVisitor {
       }
     }
 
-    LocalVariableContext innerContext = new LocalVariableContext(iterationVariable, new LoopStatementContext(this.context));
+    StatementBindingContext innerContext = context
+        .createLoopContext()
+        .createLookupContext(new LocalVariableLookupContext(context.lookupContext, iterationVariable));
     bindInnerStatement(innerContext, tree.body);
   }
 
@@ -143,7 +149,7 @@ public class StatementBinder extends ParseTreeVisitor {
     StatementBindingContext context;
     if (tree.initializer != null && tree.isVariableStatement()) {
       Map<String, LocalVariableSymbol> locals = bindLocalVariableDeclarations(tree.asVariableStatement(), null);
-      context = new BlockContext(this.context, locals);
+      context = this.context.createLookupContext(new LocalVariableLookupContext(this.context.lookupContext, locals));
     } else {
       context = this.context;
     }
@@ -191,7 +197,7 @@ public class StatementBinder extends ParseTreeVisitor {
       reportError(tree.expression, "Switch expression must be string or number. Found '%s'.", expressionType);
     }
     for (ParseTree clause : tree.caseClauses) {
-      bindInnerStatement(new SwitchStatementContext(context, expressionType), clause);
+      bindInnerStatement(context.createSwitchContext(expressionType), clause);
     }
   }
 
@@ -206,7 +212,7 @@ public class StatementBinder extends ParseTreeVisitor {
     bind(tree.body);
     visitAny(tree.catchClause);
     if (tree.finallyClause != null) {
-      bindInnerStatement(new FinallyContext(this.context), tree.finallyClause);
+      bindInnerStatement(this.context.createFinallyContext(), tree.finallyClause);
     }
   }
 
@@ -229,7 +235,7 @@ public class StatementBinder extends ParseTreeVisitor {
   @Override
   protected void visit(WhileStatementTree tree) {
     bindBooleanExpression(tree.condition);
-    bindInnerStatement(new LoopStatementContext(this.context), tree.body);
+    bindInnerStatement(this.context.createLoopContext(), tree.body);
   }
 
   @Override

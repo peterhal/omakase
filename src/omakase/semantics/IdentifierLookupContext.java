@@ -14,21 +14,10 @@
 
 package omakase.semantics;
 
-import omakase.semantics.symbols.LocalVariableSymbol;
 import omakase.semantics.symbols.Symbol;
 
 /**
  */
-public class LocalVariableContext extends StatementBindingContext {
-  private final LocalVariableSymbol variable;
-
-  public LocalVariableContext(LocalVariableSymbol variable, StatementBindingContext context) {
-    super(context);
-    this.variable = variable;
-  }
-
-  @Override
-  public Symbol lookupIdentifier(String value) {
-    return value == variable.name ? variable : super.lookupIdentifier(value);
-  }
+public interface IdentifierLookupContext {
+  Symbol lookupIdentifier(String value);
 }

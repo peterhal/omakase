@@ -24,6 +24,7 @@ import java.util.Map;
  */
 public class ClassSymbol extends Symbol {
   public final ClassDeclarationTree declaration;
+  // TODO: Static and instance members with same name.
   private final Map<String, Symbol> members;
 
   public ClassSymbol(String name, ClassDeclarationTree declaration) {
