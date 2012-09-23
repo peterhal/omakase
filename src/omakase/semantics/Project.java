@@ -15,6 +15,7 @@
 package omakase.semantics;
 
 import omakase.semantics.symbols.ClassSymbol;
+import omakase.semantics.types.TypeContainer;
 import omakase.syntax.trees.SourceFileTree;
 import omakase.util.ErrorReporter;
 import omakase.util.SourceFile;

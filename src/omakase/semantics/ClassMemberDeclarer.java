@@ -18,6 +18,7 @@ import com.google.common.collect.ImmutableMap;
 import omakase.semantics.symbols.*;
 import omakase.semantics.types.FunctionType;
 import omakase.semantics.types.Type;
+import omakase.semantics.types.TypeContainer;
 import omakase.syntax.trees.*;
 
 import java.util.HashMap;
