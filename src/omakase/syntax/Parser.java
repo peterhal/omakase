@@ -551,8 +551,17 @@ public class Parser extends ParserBase {
     eat(TokenKind.CLOSE_PAREN);
     eat(TokenKind.OPEN_CURLY);
     ImmutableList.Builder<ParseTree> caseClauses = new ImmutableList.Builder<ParseTree>();
+    ParseTree defaultClause = null;
     while (peekCaseClause()) {
-      caseClauses.add(parseCaseClause());
+      ParseTree clause = parseCaseClause();
+      if (clause.isDefaultClause()) {
+        if (defaultClause == null) {
+          defaultClause = clause;
+        } else {
+          reportError(clause.start(), "Duplicate default clause in switch.");
+        }
+      }
+      caseClauses.add(clause);
     }
     eat(TokenKind.CLOSE_CURLY);
     return new SwitchStatementTree(getRange(start), expression, caseClauses.build());

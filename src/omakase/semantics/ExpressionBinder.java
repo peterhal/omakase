@@ -23,20 +23,28 @@ import java.util.Map;
 /**
  * Binds Types to expressions.
  * Symbols to identifiers.
+ *
+ * TODO: Should move to creating full semantic trees.
  */
 public class ExpressionBinder extends ParseTreeVisitor {
   private final ExpressionBindingContext context;
-  private final Map<ParseTree, Type> expressionTypes;
-  private final Map<ParseTree, Symbol> expressionSymbols;
 
   public ExpressionBinder(ExpressionBindingContext context) {
     this.context = context;
-    this.expressionTypes = new HashMap<ParseTree, Type>();
-    this.expressionSymbols = new HashMap<ParseTree, Symbol>();
   }
 
-  public void bind(ParseTree initializer) {
-    this.visitAny(initializer);
+  public void bind(ParseTree expression) {
+    this.visitAny(expression);
+  }
+
+  public void bindBooleanExpression(ParseTree expression) {
+    bind(expression, context.getTypes().getBoolType());
+  }
+
+  public void bind(ParseTree expression, Type expectedType) {
+    bind(expression);
+    Type actualType = getExpressionType(expression);
+    mustConvert(expression, actualType, expectedType);
   }
 
   @Override
@@ -89,9 +97,7 @@ public class ExpressionBinder extends ParseTreeVisitor {
     // Bind children.
     super.visit(tree);
 
-    if (!ensureBoolType(getExpressionType(tree.condition))) {
-      reportError(tree.condition, "Conditional expression must be of boolean type. Found '%s'.", getExpressionType(tree.condition));
-    }
+    ensureBoolType(tree.condition);
 
     Type left = getExpressionType(tree.left);
     Type right = getExpressionType(tree.right);
@@ -110,7 +116,7 @@ public class ExpressionBinder extends ParseTreeVisitor {
   protected void visit(IdentifierExpressionTree tree) {
     String name = tree.name.value;
     Symbol symbol = context.lookupIdentifier(name);
-    if (symbol != null) {
+    if (symbol == null) {
       reportError(tree, "'%s' not in scope.", name);
       return;
     }
@@ -209,27 +215,60 @@ public class ExpressionBinder extends ParseTreeVisitor {
     return null;
   }
 
-  private boolean ensureBoolType(Type type) {
-    return (type == null) || type.isBoolType();
+  private void ensureBoolType(ParseTree tree) {
+    mustConvert(tree, getExpressionType(tree), context.getTypes().getBoolType());
+  }
+
+  private void mustConvert(ParseTree tree, Type actualType, Type expectedType) {
+    if (canConvert(actualType, expectedType)) {
+      return;
+    }
+
+    reportError(tree, "Expected expression of type '%s' but found '%s'.", expectedType, actualType);
+  }
+
+  private boolean canConvert(Type from, Type to) {
+    if (from == null || to == null) {
+      // There was an error earlier in the binding.
+      return true;
+    }
+
+    if (from == to) {
+      return true;
+    }
+    if (to.isDynamicType() || from.isDynamicType()) {
+      return true;
+    }
+    if (from.isNullType() && to.isClassType()) {
+      return true;
+    }
+    if (from.isNullType() && to.isNullableType()) {
+      return true;
+    }
+    if (to.isNullableType() &&
+        to.asNullableType().elementType == from) {
+      return true;
+    }
+    return false;
   }
 
   private Type getExpressionType(ParseTree tree) {
-    return expressionTypes.get(tree);
+    return context.getResults().getType(tree);
   }
 
   private void setExpressionType(ParseTree tree, Type type) {
     if (type != null) {
-      expressionTypes.put(tree, type);
+      context.getResults().setType(tree, type);
     }
   }
 
   private Symbol getSymbol(ParseTree tree) {
-    return expressionSymbols.get(tree);
+    return context.getResults().getSymbol(tree);
   }
 
   private void setSymbol(ParseTree tree, Symbol symbol) {
     if (symbol != null) {
-      expressionSymbols.put(tree, symbol);
+      context.getResults().setSymbol(tree, symbol);
     }
   }
 

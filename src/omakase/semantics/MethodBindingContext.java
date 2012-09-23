@@ -14,31 +14,45 @@
 
 package omakase.semantics;
 
-import omakase.syntax.trees.MethodDeclarationTree;
+import java.util.Map;
 
 /**
  */
-public class MethodSymbol extends Symbol {
-  public final ClassSymbol parent;
-  public final MethodDeclarationTree tree;
-  public final boolean isStatic;
-  private final FunctionType type;
+public class MethodBindingContext extends StatementBindingContext {
+  private final MethodSymbol method;
 
-  public MethodSymbol(ClassSymbol parent, String name, MethodDeclarationTree tree, FunctionType type) {
-    super(SymbolKind.METHOD, name, tree);
-    this.parent = parent;
-    this.tree = tree;
-    this.type = type;
-    this.isStatic = tree.isStatic;
-    parent.addMember(this);
+  public MethodBindingContext(Project project, MethodSymbol method) {
+    super(project, new BindingResults());
+    this.method = method;
   }
 
   @Override
-  public Type getType() {
-    return type;
+  public boolean hasBreakLabel() {
+    return false;
   }
 
+  @Override
+  public boolean hasContinueLabel() {
+    return false;
+  }
+
+  @Override
+  public boolean canReturn() {
+    return true;
+  }
+
+  @Override
   public Type getReturnType() {
-    return type.returnType;
+    return method.getReturnType();
+  }
+
+  @Override
+  public boolean hasThis() {
+    return !method.isStatic;
+  }
+
+  @Override
+  public Type getThisType() {
+    return getTypes().getClassType(method.parent);
   }
 }

@@ -37,6 +37,18 @@ public class Type {
     return isKeywordType(TokenKind.NUMBER);
   }
 
+  public boolean isStringType() {
+    return isKeywordType(TokenKind.STRING);
+  }
+
+  public boolean isNullType() {
+    return isKeywordType(TokenKind.NULL);
+  }
+
+  public boolean isVoidType() {
+    return isKeywordType(TokenKind.VOID);
+  }
+
   private boolean isKeywordType(TokenKind keyword) {
     return isKeywordType() && this.asKeywordType().keyword == keyword;
   }
@@ -53,11 +65,19 @@ public class Type {
     return kind == TypeKind.ARRAY;
   }
 
+  public boolean isNullableType() {
+    return kind == TypeKind.NULLABLE;
+  }
+
   public KeywordType asKeywordType() {
     return (KeywordType) this;
   }
 
   public ArrayType asArrayType() {
     return (ArrayType) this;
+  }
+
+  public NullableType asNullableType() {
+    return (NullableType) this;
   }
 }

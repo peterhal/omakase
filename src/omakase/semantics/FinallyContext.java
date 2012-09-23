@@ -16,8 +16,23 @@ package omakase.semantics;
 
 /**
  */
-public enum SymbolKind {
-  CLASS,
-  METHOD,
-  FIELD, TYPE_VARIABLE, PARAMETER,
+public class FinallyContext extends StatementBindingContext {
+  public FinallyContext(StatementBindingContext context) {
+    super(context);
+  }
+
+  @Override
+  public boolean hasBreakLabel() {
+    return false;
+  }
+
+  @Override
+  public boolean hasContinueLabel() {
+    return false;
+  }
+
+  @Override
+  public boolean canReturn() {
+    return false;
+  }
 }

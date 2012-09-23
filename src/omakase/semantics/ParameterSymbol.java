@@ -14,10 +14,20 @@
 
 package omakase.semantics;
 
+import omakase.syntax.trees.ParameterDeclarationTree;
+
 /**
  */
-public enum SymbolKind {
-  CLASS,
-  METHOD,
-  FIELD, TYPE_VARIABLE, PARAMETER,
+public class ParameterSymbol extends Symbol {
+  public final Type type;
+
+  public ParameterSymbol(ParameterDeclarationTree tree, Type type) {
+    super(SymbolKind.PARAMETER, tree.name.value, tree);
+    this.type = type;
+  }
+
+  @Override
+  public Type getType() {
+    return type;
+  }
 }

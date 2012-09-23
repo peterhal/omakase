@@ -52,11 +52,11 @@ class Program {
   }
 
   parseBreakStatement() : void {
-    break;
+    while (true) break;
   }
 
   parseContinueStatement() : void {
-    continue;
+    while (true) continue;
   }
 
   parseReturnStatement() : void {

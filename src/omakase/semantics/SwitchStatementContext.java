@@ -16,8 +16,16 @@ package omakase.semantics;
 
 /**
  */
-public enum SymbolKind {
-  CLASS,
-  METHOD,
-  FIELD, TYPE_VARIABLE, PARAMETER,
+public class SwitchStatementContext extends StatementBindingContext {
+  private final Type expressionType;
+
+  public SwitchStatementContext(StatementBindingContext context, Type expressionType) {
+    super(context);
+    this.expressionType = expressionType;
+  }
+
+  @Override
+  public Type getSwitchExpressionType() {
+    return expressionType;
+  }
 }

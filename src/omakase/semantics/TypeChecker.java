@@ -53,12 +53,14 @@ public class TypeChecker {
   private void checkField(FieldSymbol member) {
     ParseTree initializer = member.tree.initializer;
     if (initializer != null) {
-      new ExpressionBinder(new ExpressionBindingContext(project)).bind(initializer);
+      new ExpressionBinder(new ExpressionBindingContext(project, new BindingResults())).bind(initializer, member.type);
     }
   }
 
   private void checkMethod(MethodSymbol member) {
-    // TODO: method bodies
+    if (!member.isStatic) {
+      new StatementBinder(new MethodBindingContext(project, member)).bind(member.tree.body);
+    }
   }
 
 }

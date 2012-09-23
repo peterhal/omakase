@@ -19,6 +19,8 @@ import omakase.syntax.trees.MethodDeclarationTree;
 import omakase.syntax.trees.ParseTree;
 import omakase.syntax.trees.VariableDeclarationTree;
 
+import java.util.Map;
+
 /**
  */
 public class ClassMemberDeclarer {
@@ -55,6 +57,7 @@ public class ClassMemberDeclarer {
     String name = methodTree.name.value;
     // TODO: Build parameter symbols?
     FunctionType type = bindMethodType(methodTree);
+    // TODO Map<String, ParameterSymbol> parameters = buildParameters(methodTree.formals);
     if (!checkForDuplicateMember(clazz, name, methodTree)) {
       new MethodSymbol(clazz, name, methodTree, type);
     }

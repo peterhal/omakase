@@ -16,8 +16,18 @@ package omakase.semantics;
 
 /**
  */
-public enum SymbolKind {
-  CLASS,
-  METHOD,
-  FIELD, TYPE_VARIABLE, PARAMETER,
+public class LoopStatementContext extends StatementBindingContext {
+  public LoopStatementContext(StatementBindingContext outerContext) {
+    super(outerContext);
+  }
+
+  @Override
+  public boolean hasBreakLabel() {
+    return true;
+  }
+
+  @Override
+  public boolean hasContinueLabel() {
+    return true;
+  }
 }

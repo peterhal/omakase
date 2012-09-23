@@ -19,11 +19,13 @@ import omakase.util.ErrorReporter;
 /**
  */
 public class ExpressionBindingContext {
-  private final Project project;
+  public final Project project;
   private final Type thisType;
+  private final BindingResults results;
 
-  public ExpressionBindingContext(Project project) {
+  public ExpressionBindingContext(Project project, BindingResults results) {
     this.project = project;
+    this.results = results;
     this.thisType = null;
   }
 
@@ -45,5 +47,9 @@ public class ExpressionBindingContext {
 
   public Symbol lookupIdentifier(String value) {
     return null;
+  }
+
+  public BindingResults getResults() {
+    return results;
   }
 }
