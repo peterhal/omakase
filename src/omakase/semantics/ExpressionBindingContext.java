@@ -30,7 +30,7 @@ public class ExpressionBindingContext {
     this.thisType = null;
   }
 
-  public Types getTypes() {
+  public TypeContainer getTypes() {
     return project.getTypes();
   }
 

@@ -276,7 +276,7 @@ public class ExpressionBinder extends ParseTreeVisitor {
     }
   }
 
-  private Types getTypes() {
+  private TypeContainer getTypes() {
     return context.getTypes();
   }
 

@@ -28,7 +28,7 @@ public class Project {
   private final Map<String, SourceFile> files = new LinkedHashMap<String, SourceFile>();
   private final Map<SourceFile, SourceFileTree> trees = new LinkedHashMap<SourceFile, SourceFileTree>();
   private final Map<String, ClassSymbol> classes = new LinkedHashMap<String, ClassSymbol>();
-  private final Types types = new Types();
+  private final TypeContainer types = new TypeContainer();
   private final ErrorReporter reporter;
 
   public Project(ErrorReporter reporter) {
@@ -77,7 +77,7 @@ public class Project {
     return classes.values();
   }
 
-  public Types getTypes() {
+  public TypeContainer getTypes() {
     return this.types;
   }
 }

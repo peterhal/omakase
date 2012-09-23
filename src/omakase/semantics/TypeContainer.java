@@ -24,7 +24,7 @@ import java.util.Map;
 /**
  * Container of all type information for a project.
  */
-public class Types {
+public class TypeContainer {
   private final Map<TokenKind, KeywordType> keywordTypes;
   private final Map<ClassSymbol, ClassType> classTypes;
   private final Map<Type, ArrayType> arrayTypes;
@@ -33,7 +33,7 @@ public class Types {
   private final Map<ImmutableList<Type>, Map<Type, ImmutableList<Type>>> typeArrays;
   private final Map<ImmutableList<Type>, Map<Type, FunctionType>> functionTypes;
 
-  public Types() {
+  public TypeContainer() {
     this.keywordTypes = new HashMap<TokenKind, KeywordType>();
     addKeywordType(TokenKind.BOOL);
     addKeywordType(TokenKind.DYNAMIC);

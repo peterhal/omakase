@@ -100,7 +100,7 @@ public class ClassMemberDeclarer {
     return new TypeBinder(project).bindType(type);
   }
 
-  private Types types() {
+  private TypeContainer types() {
     return project.getTypes();
   }
 

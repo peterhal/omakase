@@ -27,7 +27,7 @@ public class TypeBinder {
     this.project = project;
   }
 
-  private Types types() {
+  private TypeContainer types() {
     return project.getTypes();
   }
 
