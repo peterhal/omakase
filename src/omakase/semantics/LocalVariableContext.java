@@ -12,21 +12,20 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package omakase.syntax.trees;
-
-import omakase.util.SourceRange;
+package omakase.semantics;
 
 /**
  */
-public class ForInStatementTree extends ParseTree {
-  public final VariableDeclarationTree element;
-  public final ParseTree collection;
-  public final ParseTree body;
+public class LocalVariableContext extends StatementBindingContext {
+  private final LocalVariableSymbol variable;
 
-  public ForInStatementTree(SourceRange location, VariableDeclarationTree element, ParseTree collection, ParseTree body) {
-    super(location, ParseTreeKind.FOR_IN_STATEMENT);
-    this.element = element;
-    this.collection = collection;
-    this.body = body;
+  public LocalVariableContext(LocalVariableSymbol variable, StatementBindingContext context) {
+    super(context);
+    this.variable = variable;
+  }
+
+  @Override
+  public Symbol lookupIdentifier(String value) {
+    return value == variable.name ? variable : super.lookupIdentifier(value);
   }
 }

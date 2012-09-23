@@ -21,7 +21,7 @@ class Program {
   }
 
   parseForInStatement() : void {
-    for (a in b) ;
+    
     for (var a in b) ;
   }
 

@@ -484,6 +484,9 @@ public class Parser extends ParserBase {
       eat(TokenKind.VAR);
       VariableDeclarationTree variableDeclaration = parseVariableDeclaration();
       if (eatOpt(TokenKind.IN)) {
+        if (variableDeclaration.initializer != null) {
+          reportError(variableDeclaration.initializer.start(), "Variable declared in for-in statement may not have an initializer.");
+        }
         return parseForIn(start, variableDeclaration);
       } else {
         return parseForStatement(start,
@@ -493,11 +496,7 @@ public class Parser extends ParserBase {
       return parseForStatement(start, null);
     default:
       ParseTree initializer = parseExpression();
-      if (eatOpt(TokenKind.IN)) {
-        return parseForIn(start, initializer);
-      } else {
-        return parseForStatement(start, initializer);
-      }
+      return parseForStatement(start, initializer);
     }
   }
 
@@ -510,7 +509,7 @@ public class Parser extends ParserBase {
     return new ForStatementTree(getRange(start), initializer, condition, increment, parseStatement());
   }
 
-  private ParseTree parseForIn(Token start, ParseTree variableDeclaration) {
+  private ParseTree parseForIn(Token start, VariableDeclarationTree variableDeclaration) {
     ParseTree collection = parseExpression();
     eat(TokenKind.CLOSE_PAREN);
     return new ForInStatementTree(getRange(start), variableDeclaration, collection, parseStatement());

@@ -441,7 +441,7 @@ public class ParseTreeTransformer {
     }
     return new ForInStatementTree(
         null,
-        element,
+        element.asVariableDeclaration(),
         collection,
         body);
   }

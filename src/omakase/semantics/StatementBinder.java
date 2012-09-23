@@ -87,7 +87,7 @@ public class StatementBinder extends ParseTreeVisitor {
       reportError(tree, "Duplicate local variable name '%s'.");
     }
     // TODO: What types should be allowed to catch?
-    bindInnerStatement(new CatchContext(new LocalVariableSymbol(name, tree, context.getTypes().getDynamicType()), context), tree.block);
+    bindInnerStatement(new LocalVariableContext(new LocalVariableSymbol(name, tree, context.getTypes().getDynamicType()), context), tree.block);
   }
 
   @Override
@@ -126,7 +126,32 @@ public class StatementBinder extends ParseTreeVisitor {
 
   @Override
   protected void visit(ForInStatementTree tree) {
-    // TODO
+    Type elementType = null;
+    if (tree.element.type != null) {
+      elementType = bindType(tree.element.type);
+    }
+
+    Type collectionType = bindExpression(tree.collection);
+    if (collectionType != null) {
+      if (!collectionType.isArrayType()) {
+        reportError(tree.collection, "Collection in for-in statement must be an array. Found '%s'", collectionType);
+      } else {
+        if (elementType == null) {
+          // Infer element type.
+          elementType = collectionType.asArrayType().elementType;
+        } else if (elementType != collectionType.asArrayType().elementType) {
+          reportError(tree.collection, "Iteration variable type '%s' not compatible with collection type '%s'.", elementType, collectionType);
+          elementType = null;
+        }
+      }
+    }
+
+    LocalVariableSymbol iterationVariable = new LocalVariableSymbol(tree.element.name.value, tree.element, elementType);
+    if (context.containsLocal(iterationVariable.name)) {
+      reportError(iterationVariable.location, "Duplicate local variable '%s'.", iterationVariable.name);
+    }
+
+    bindInnerStatement(new LocalVariableContext(iterationVariable, new LoopStatementContext(this.context)), tree.body);
   }
 
   @Override
