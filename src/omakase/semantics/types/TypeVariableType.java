@@ -12,17 +12,17 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package omakase.semantics;
+package omakase.semantics.types;
 
-import omakase.semantics.symbols.ClassSymbol;
+import omakase.semantics.symbols.TypeVariableSymbol;
 
 /**
  */
-public class ClassType extends Type {
-  public final ClassSymbol clazz;
+public class TypeVariableType extends Type {
+  public final TypeVariableSymbol typeVariable;
 
-  public ClassType(ClassSymbol clazz) {
-    super(TypeKind.CLASS);
-    this.clazz = clazz;
+  public TypeVariableType(TypeVariableSymbol typeVariable) {
+    super(TypeKind.VARIABLE);
+    this.typeVariable = typeVariable;
   }
 }

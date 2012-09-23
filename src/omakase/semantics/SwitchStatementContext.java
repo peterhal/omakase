@@ -14,6 +14,8 @@
 
 package omakase.semantics;
 
+import omakase.semantics.types.Type;
+
 /**
  */
 public class SwitchStatementContext extends StatementBindingContext {

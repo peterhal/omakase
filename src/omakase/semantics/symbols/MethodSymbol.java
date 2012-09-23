@@ -14,8 +14,8 @@
 
 package omakase.semantics.symbols;
 
-import omakase.semantics.FunctionType;
-import omakase.semantics.Type;
+import omakase.semantics.types.FunctionType;
+import omakase.semantics.types.Type;
 import omakase.syntax.trees.MethodDeclarationTree;
 
 import java.util.Map;

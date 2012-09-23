@@ -15,6 +15,7 @@
 package omakase.semantics;
 
 import omakase.semantics.symbols.Symbol;
+import omakase.semantics.types.Type;
 import omakase.syntax.trees.ParseTree;
 
 import java.util.HashMap;

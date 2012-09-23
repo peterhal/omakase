@@ -16,6 +16,8 @@ package omakase.semantics;
 
 import com.google.common.collect.ImmutableList;
 import omakase.semantics.symbols.ClassSymbol;
+import omakase.semantics.types.FunctionType;
+import omakase.semantics.types.Type;
 import omakase.syntax.trees.*;
 
 /**

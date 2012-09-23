@@ -12,15 +12,15 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package omakase.semantics;
+package omakase.semantics.types;
 
 /**
  */
-public class NullableType extends Type {
+public class ArrayType extends Type {
   public final Type elementType;
 
-  public NullableType(Type elementType) {
-    super(TypeKind.NULLABLE);
+  public ArrayType(Type elementType) {
+    super(TypeKind.ARRAY);
     this.elementType = elementType;
   }
 }

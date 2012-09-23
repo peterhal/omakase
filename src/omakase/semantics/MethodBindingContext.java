@@ -16,6 +16,7 @@ package omakase.semantics;
 
 import omakase.semantics.symbols.MethodSymbol;
 import omakase.semantics.symbols.Symbol;
+import omakase.semantics.types.Type;
 
 /**
  */

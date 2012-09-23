@@ -12,19 +12,17 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package omakase.semantics;
+package omakase.semantics.types;
 
-import com.google.common.collect.ImmutableList;
+import omakase.semantics.symbols.ClassSymbol;
 
 /**
  */
-public class FunctionType extends Type {
-  public final Type returnType;
-  public final ImmutableList<Type> parameterTypes;
+public class ClassType extends Type {
+  public final ClassSymbol clazz;
 
-  public FunctionType(Type returnType, ImmutableList<Type> parameterTypes) {
-    super(TypeKind.FUNCTION);
-    this.returnType = returnType;
-    this.parameterTypes = parameterTypes;
+  public ClassType(ClassSymbol clazz) {
+    super(TypeKind.CLASS);
+    this.clazz = clazz;
   }
 }

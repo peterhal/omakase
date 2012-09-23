@@ -12,17 +12,15 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package omakase.semantics;
-
-import omakase.semantics.symbols.TypeVariableSymbol;
+package omakase.semantics.types;
 
 /**
  */
-public class TypeVariableType extends Type {
-  public final TypeVariableSymbol typeVariable;
-
-  public TypeVariableType(TypeVariableSymbol typeVariable) {
-    super(TypeKind.VARIABLE);
-    this.typeVariable = typeVariable;
-  }
+public enum TypeKind {
+  ARRAY,
+  CLASS,
+  FUNCTION,
+  KEYWORD,
+  NULLABLE,
+  VARIABLE,
 }

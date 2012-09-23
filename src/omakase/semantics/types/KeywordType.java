@@ -12,15 +12,17 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package omakase.semantics;
+package omakase.semantics.types;
+
+import omakase.syntax.tokens.TokenKind;
 
 /**
  */
-public enum TypeKind {
-  ARRAY,
-  CLASS,
-  FUNCTION,
-  KEYWORD,
-  NULLABLE,
-  VARIABLE,
+public class KeywordType extends Type {
+  public final TokenKind keyword;
+
+  public KeywordType(TokenKind keyword) {
+    super(TypeKind.KEYWORD);
+    this.keyword = keyword;
+  }
 }

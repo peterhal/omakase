@@ -14,7 +14,7 @@
 
 package omakase.semantics.symbols;
 
-import omakase.semantics.Type;
+import omakase.semantics.types.Type;
 import omakase.syntax.tokens.IdentifierToken;
 
 /**
