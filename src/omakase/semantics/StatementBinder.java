@@ -41,20 +41,7 @@ public class StatementBinder extends ParseTreeVisitor {
     Map<String, LocalVariableSymbol> locals = null;
     for (ParseTree statement : tree.statements) {
       if (statement.isVariableStatement()) {
-        VariableStatementTree variableStatement = statement.asVariableStatement();
-        for (VariableDeclarationTree variableTree : variableStatement.declarations) {
-          String name = variableTree.name.value;
-          if ((locals != null && locals.containsKey(name)) || context.containsLocal(name)) {
-            reportError(variableTree, "Duplicate local variable '%s'.", name);
-          }
-
-          Type type = null;
-          if (variableTree.type != null) {
-            type = bindType(variableTree.type);
-          }
-          locals = locals == null? new HashMap<String, LocalVariableSymbol>() : locals;
-          locals.put(name, new LocalVariableSymbol(name, variableTree, type));
-        }
+        locals = bindLocalVariableDeclarations(statement.asVariableStatement(), locals);
       }
     }
     StatementBindingContext innerContext = locals == null ? context : new BlockContext(context, locals);
@@ -131,32 +118,42 @@ public class StatementBinder extends ParseTreeVisitor {
       elementType = bindType(tree.element.type);
     }
 
+    LocalVariableSymbol iterationVariable = declareLocalVariable(tree.element.name.value, elementType, tree.element);
     Type collectionType = bindExpression(tree.collection);
     if (collectionType != null) {
       if (!collectionType.isArrayType()) {
         reportError(tree.collection, "Collection in for-in statement must be an array. Found '%s'", collectionType);
       } else {
         if (elementType == null) {
-          // Infer element type.
-          elementType = collectionType.asArrayType().elementType;
+          iterationVariable.setInferredType(collectionType.asArrayType().elementType);
         } else if (elementType != collectionType.asArrayType().elementType) {
           reportError(tree.collection, "Iteration variable type '%s' not compatible with collection type '%s'.", elementType, collectionType);
-          elementType = null;
         }
       }
     }
 
-    LocalVariableSymbol iterationVariable = new LocalVariableSymbol(tree.element.name.value, tree.element, elementType);
-    if (context.containsLocal(iterationVariable.name)) {
-      reportError(iterationVariable.location, "Duplicate local variable '%s'.", iterationVariable.name);
-    }
-
-    bindInnerStatement(new LocalVariableContext(iterationVariable, new LoopStatementContext(this.context)), tree.body);
+    LocalVariableContext innerContext = new LocalVariableContext(iterationVariable, new LoopStatementContext(this.context));
+    bindInnerStatement(innerContext, tree.body);
   }
 
   @Override
   protected void visit(ForStatementTree tree) {
-    // TODO
+    StatementBindingContext context;
+    if (tree.initializer != null && tree.isVariableStatement()) {
+      Map<String, LocalVariableSymbol> locals = bindLocalVariableDeclarations(tree.asVariableStatement(), null);
+      context = new BlockContext(this.context, locals);
+    } else {
+      context = this.context;
+    }
+
+    StatementBinder binder = new StatementBinder(context);
+    if (context != this.context) {
+      // Binds the variable initializers.
+      binder.bind(tree.initializer);
+    }
+    binder.bindBooleanExpression(tree.initializer);
+    binder.bindExpression(tree.increment);
+    binder.bind(tree.body);
   }
 
   @Override
@@ -236,6 +233,31 @@ public class StatementBinder extends ParseTreeVisitor {
   @Override
   protected void visit(VariableStatementTree tree) {
     super.visit(tree);
+  }
+
+  private Map<String, LocalVariableSymbol> bindLocalVariableDeclarations(VariableStatementTree variableStatement, Map<String, LocalVariableSymbol> locals) {
+    for (VariableDeclarationTree variableTree : variableStatement.declarations) {
+      String name = variableTree.name.value;
+      if ((locals != null && locals.containsKey(name)) || context.containsLocal(name)) {
+        reportError(variableTree, "Duplicate local variable '%s'.", name);
+      }
+
+      Type type = null;
+      if (variableTree.type != null) {
+        type = bindType(variableTree.type);
+      }
+      locals = locals == null? new HashMap<String, LocalVariableSymbol>() : locals;
+      locals.put(name, new LocalVariableSymbol(name, variableTree, type));
+    }
+    return locals;
+  }
+
+  private LocalVariableSymbol declareLocalVariable(String name, Type type, VariableDeclarationTree variableTree) {
+    LocalVariableSymbol iterationVariable = new LocalVariableSymbol(name, variableTree, type);
+    if (context.containsLocal(name)) {
+      reportError(variableTree, "Duplicate local variable '%s'.", name);
+    }
+    return iterationVariable;
   }
 
   private Type bindType(ParseTree type) {
