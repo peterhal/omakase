@@ -31,4 +31,10 @@ public class ParameterSymbol extends Symbol {
   public Type getType() {
     return type;
   }
+
+  @Override
+  public boolean isWritable() {
+    // TODO: Const parameters.
+    return true;
+  }
 }

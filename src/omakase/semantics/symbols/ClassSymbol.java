@@ -50,4 +50,9 @@ public class ClassSymbol extends Symbol {
     // TODO: Class static type?
     return null;
   }
+
+  @Override
+  public boolean isWritable() {
+    return false;
+  }
 }

@@ -4,6 +4,11 @@ Next Up
 - type system
   - name lookup of classes/members
   - type check expressions
+    - names
+    - member reference
+    - functions
+    - call
+    - new
 - namespaces
 - stdlib
 - hygiene

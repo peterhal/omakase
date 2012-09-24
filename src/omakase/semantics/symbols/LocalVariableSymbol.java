@@ -38,4 +38,10 @@ public class LocalVariableSymbol extends Symbol {
     }
     this.type = type;
   }
+
+  @Override
+  public boolean isWritable() {
+    // TODO: const locals.
+    return true;
+  }
 }

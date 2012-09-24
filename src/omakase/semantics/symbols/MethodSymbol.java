@@ -48,4 +48,9 @@ public class MethodSymbol extends Symbol {
   public Type getReturnType() {
     return type.returnType;
   }
+
+  @Override
+  public boolean isWritable() {
+    return false;
+  }
 }

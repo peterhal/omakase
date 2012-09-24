@@ -30,4 +30,9 @@ public class TypeVariableSymbol extends Symbol {
     // TODO: generics
     return null;
   }
+
+  @Override
+  public boolean isWritable() {
+    return false;
+  }
 }

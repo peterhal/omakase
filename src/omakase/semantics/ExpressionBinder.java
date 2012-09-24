@@ -225,11 +225,6 @@ public class ExpressionBinder extends ParseTreeVisitor {
     }
   }
 
-  private Type bindType(ParseTree type) {
-    // TODO: Bind type in class/method/field context.
-    return new TypeBinder(context.project).bindType(type);
-  }
-
   private void bindBinaryExpression(BinaryExpressionTree tree, Type expectedType) {
     bind(tree.left, expectedType);
     bind(tree.right, expectedType);
@@ -275,10 +270,12 @@ public class ExpressionBinder extends ParseTreeVisitor {
       // Check for use before declaration.
       if (tree.location.start.isBefore(symbol.location.start())) {
         reportError(tree, "Use of '%s' before declaration.", name);
+        return;
       }
     }
     setSymbol(tree, symbol);
     setExpressionType(tree, symbol.getType());
+    setWritable(tree, symbol.isWritable());
   }
 
   @Override
@@ -328,9 +325,7 @@ public class ExpressionBinder extends ParseTreeVisitor {
 
   @Override
   protected void visit(ParenExpressionTree tree) {
-    super.visit(tree);
-
-    setExpressionType(tree, getExpressionType(tree.expression));
+    setExpressionType(tree, bind(tree.expression));
   }
 
   @Override
@@ -445,6 +440,11 @@ public class ExpressionBinder extends ParseTreeVisitor {
       return true;
     }
     return false;
+  }
+
+  private Type bindType(ParseTree type) {
+    // TODO: Bind type in class/method/field context.
+    return new TypeBinder(context.project).bindType(type);
   }
 
   private Type getExpressionType(ParseTree tree) {

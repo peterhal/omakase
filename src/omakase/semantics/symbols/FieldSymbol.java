@@ -38,4 +38,10 @@ public class FieldSymbol extends Symbol {
   public Type getType() {
     return type;
   }
+
+  @Override
+  public boolean isWritable() {
+    // TODO: Const fields
+    return true;
+  }
 }

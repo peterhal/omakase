@@ -55,4 +55,6 @@ public abstract class Symbol {
   public LocalVariableSymbol asLocalVariable() {
     return (LocalVariableSymbol) this;
   }
+
+  public abstract boolean isWritable();
 }
