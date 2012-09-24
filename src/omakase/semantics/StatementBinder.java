@@ -15,7 +15,6 @@
 package omakase.semantics;
 
 import omakase.semantics.symbols.LocalVariableSymbol;
-import omakase.semantics.symbols.Symbol;
 import omakase.semantics.types.Type;
 import omakase.syntax.ParseTreeVisitor;
 import omakase.syntax.trees.*;
@@ -288,7 +287,7 @@ public class StatementBinder extends ParseTreeVisitor {
   }
 
   private void bindBooleanExpression(ParseTree tree) {
-    new ExpressionBinder(context).bindBooleanExpression(tree);
+    new ExpressionBinder(context).bindBoolExpression(tree);
   }
 
   private void reportError(ParseTree tree, String message, Object... args) {

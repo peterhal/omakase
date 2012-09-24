@@ -15,6 +15,7 @@
 package omakase.semantics;
 
 import omakase.semantics.symbols.Symbol;
+import omakase.semantics.types.KeywordType;
 import omakase.semantics.types.Type;
 import omakase.semantics.types.TypeContainer;
 import omakase.syntax.ParseTreeVisitor;
@@ -33,44 +34,58 @@ public class ExpressionBinder extends ParseTreeVisitor {
     this.context = context;
   }
 
-  public void bind(ParseTree expression) {
+  public Type bind(ParseTree expression) {
     this.visitAny(expression);
+    return getExpressionType(expression);
   }
 
-  public void bindBooleanExpression(ParseTree expression) {
-    bind(expression, context.getTypes().getBoolType());
+  public void bindBoolExpression(ParseTree expression) {
+    bind(expression, getBoolType());
   }
 
-  public void bind(ParseTree expression, Type expectedType) {
+  private KeywordType getBoolType() {
+    return context.getTypes().getBoolType();
+  }
+
+  private KeywordType getNumberType() {
+    return context.getTypes().getNumberType();
+  }
+
+  private KeywordType getStringType() {
+    return context.getTypes().getStringType();
+  }
+
+  public Type bind(ParseTree expression, Type expectedType) {
     bind(expression);
     Type actualType = getExpressionType(expression);
-    mustConvert(expression, actualType, expectedType);
+    if (mustConvert(expression, actualType, expectedType)) {
+      return expectedType;
+    } else {
+      return null;
+    }
   }
 
   @Override
   protected void visit(ArrayAccessExpressionTree tree) {
-    super.visit(tree);
-
-    Type arrayType = getExpressionType(tree.object);
+    Type arrayType = bind(tree.object);
     Type elementType = null;
-    boolean anyIndexType = false;
     if (arrayType != null) {
       if (arrayType.isArrayType()) {
         elementType = arrayType.asArrayType().elementType;
       } else if (arrayType.isDynamicType()) {
         elementType = getTypes().getDynamicType();
-        anyIndexType = true;
       } else {
         reportError(tree.object, "'%s' not an array type.", arrayType);
       }
     }
 
-    Type indexType = getExpressionType(tree.member);
-    if (indexType != null && !anyIndexType) {
-      if (!indexType.isNumberType()) {
-        reportError(tree.member, "Array index must be number. Found '%s'", indexType);
-      }
+    if (arrayType != null && arrayType.isDynamicType()) {
+      bind(tree.member);
+    } else {
+      bind(tree.member, context.getTypes().getNumberType());
     }
+
+    setExpressionType(tree, elementType);
   }
 
   @Override
@@ -81,8 +96,143 @@ public class ExpressionBinder extends ParseTreeVisitor {
 
   @Override
   protected void visit(BinaryExpressionTree tree) {
-    super.visit(tree);
-    // TODO:
+    switch (tree.operator.kind) {
+    case EQUAL:
+    case AMPERSAND_EQUAL:
+    case BAR_EQUAL:
+    case STAR_EQUAL:
+    case SLASH_EQUAL:
+    case PERCENT_EQUAL:
+    case PLUS_EQUAL:
+    case MINUS_EQUAL:
+    case LEFT_SHIFT_EQUAL:
+    case RIGHT_SHIFT_EQUAL:
+    case HAT_EQUAL:
+      bindAssignmentOperator(tree);
+      break;
+
+    case BAR_BAR:
+    case AMPERSAND_AMPERSAND:
+      bindBinaryExpression(tree, getBoolType());
+      break;
+    case AMPERSAND:
+    case BAR:
+      bindBinaryExpression(tree, getNumberType());
+      break;
+    case EQUAL_EQUAL:
+    case NOT_EQUAL:
+      bindEqualityOperator(tree);
+      break;
+    case OPEN_ANGLE:
+    case CLOSE_ANGLE:
+    case GREATER_EQUAL:
+    case LESS_EQUAL:
+      // TODO: Comparison of strings.
+      bindBinaryExpression(tree, getNumberType());
+      break;
+    case INSTANCEOF:
+      bind(tree.left);
+      bindType(tree.right);
+      // TODO: Check for provably true/false results.
+      setExpressionType(tree, getBoolType());
+      break;
+    case SHIFT_LEFT:
+    case SHIFT_RIGHT:
+      bindBinaryExpression(tree, getNumberType());
+      break;
+    case PLUS:
+      bindPlusOperator(tree);
+      break;
+    case MINUS:
+    case STAR:
+    case SLASH:
+    case PERCENT:
+      bindBinaryExpression(tree, getNumberType());
+      break;
+    }
+  }
+
+  private void bindAssignmentOperator(BinaryExpressionTree tree) {
+    Type leftType;
+
+    switch (tree.operator.kind) {
+    case EQUAL:
+      leftType = bind(tree.left);
+      break;
+    case AMPERSAND_EQUAL:
+    case BAR_EQUAL:
+    case STAR_EQUAL:
+    case SLASH_EQUAL:
+    case PERCENT_EQUAL:
+    case MINUS_EQUAL:
+    case LEFT_SHIFT_EQUAL:
+    case RIGHT_SHIFT_EQUAL:
+    case HAT_EQUAL:
+      leftType = bind(tree.left, getNumberType());
+      break;
+    case PLUS_EQUAL:
+      leftType = bind(tree.left);
+      if (leftType != null) {
+        if (!leftType.isNumberType() && !leftType.isStringType()) {
+          reportError(tree.left, "Left hand side of '+=' must be number or string. Found '%s'", leftType);
+          leftType = null;
+        }
+      }
+      break;
+    default:
+      throw new RuntimeException("Unrecognized assignment operator");
+    }
+
+    if (leftType != null && !isWritable(tree.left)) {
+      reportError(tree.left, "Left hand side of assignment operator must be writable.");
+      leftType = null;
+    }
+
+    bind(tree.right, leftType);
+
+    setExpressionType(tree, leftType);
+    setWritable(tree, true);
+  }
+
+  private void bindEqualityOperator(BinaryExpressionTree tree) {
+    Type leftType = bind(tree.left);
+    Type rightType = bind(tree.right);
+    if (leftType == null || rightType == null) {
+      return;
+    }
+    Type comparisonType = findCommonType(leftType, rightType);
+    if (comparisonType == null) {
+      reportError(tree, "Cannot compare values of type '%s' and '%s'.", leftType, rightType);
+    }
+
+    setExpressionType(tree, getBoolType());
+  }
+
+  private void bindPlusOperator(BinaryExpressionTree tree) {
+    Type leftType = bind(tree.left);
+    Type rightType = bind(tree.right);
+    if (leftType == null || rightType == null) {
+      return;
+    }
+
+    if (leftType.isNumberType() && rightType.isNumberType()) {
+      setExpressionType(tree, getNumberType());
+    } else if (leftType.isStringType() && rightType.isStringType()) {
+      setExpressionType(tree, getStringType());
+    } else {
+      reportError(tree, "'+' requires both operands to be numbers or strings. Found '%s' and '%s'.", leftType, rightType);
+    }
+  }
+
+  private Type bindType(ParseTree type) {
+    // TODO: Bind type in class/method/field context.
+    return new TypeBinder(context.project).bindType(type);
+  }
+
+  private void bindBinaryExpression(BinaryExpressionTree tree, Type expectedType) {
+    bind(tree.left, expectedType);
+    bind(tree.right, expectedType);
+    setExpressionType(tree, expectedType);
   }
 
   @Override
@@ -215,6 +365,7 @@ public class ExpressionBinder extends ParseTreeVisitor {
     // TODO
     // Classes & null
     // Nullable & Element Type
+    // Nullable & null
     // Classes & Base Classes
     // Dynamic
 
@@ -222,15 +373,17 @@ public class ExpressionBinder extends ParseTreeVisitor {
   }
 
   private void ensureBoolType(ParseTree tree) {
-    mustConvert(tree, getExpressionType(tree), context.getTypes().getBoolType());
+    mustConvert(tree, getExpressionType(tree), getBoolType());
   }
 
-  private void mustConvert(ParseTree tree, Type actualType, Type expectedType) {
+  private boolean mustConvert(ParseTree tree, Type actualType, Type expectedType) {
     if (canConvert(actualType, expectedType)) {
-      return;
+      setExpressionType(tree, expectedType);
+      return true;
     }
 
     reportError(tree, "Expected expression of type '%s' but found '%s'.", expectedType, actualType);
+    return false;
   }
 
   private boolean canConvert(Type from, Type to) {
@@ -245,14 +398,14 @@ public class ExpressionBinder extends ParseTreeVisitor {
     if (to.isDynamicType() || from.isDynamicType()) {
       return true;
     }
+    // TODO: Should classes be nullable by default?
     if (from.isNullType() && to.isClassType()) {
       return true;
     }
     if (from.isNullType() && to.isNullableType()) {
       return true;
     }
-    if (to.isNullableType() &&
-        to.asNullableType().elementType == from) {
+    if (to.isNullableType() && to.asNullableType().elementType == from) {
       return true;
     }
     return false;
@@ -276,6 +429,14 @@ public class ExpressionBinder extends ParseTreeVisitor {
     if (symbol != null) {
       context.getResults().setSymbol(tree, symbol);
     }
+  }
+
+  private void setWritable(BinaryExpressionTree tree, boolean value) {
+    context.getResults().setWritable(tree, value);
+  }
+
+  private boolean isWritable(ParseTree tree) {
+    return context.getResults().isWritable(tree);
   }
 
   private TypeContainer getTypes() {

@@ -25,27 +25,49 @@ import java.util.Map;
  * TODO: Should create expression trees rather than these maps.
  */
 public class BindingResults {
-  private final Map<ParseTree, Type> expressionTypes;
-  private final Map<ParseTree, Symbol> expressionSymbols;
+  private static class BindingResult {
+    public ParseTree tree;
+    public Type type;
+    public Symbol symbol;
+    public boolean isWritable;
+  }
+  private final Map<ParseTree, BindingResult> results;
 
   public BindingResults() {
-    this.expressionTypes = new HashMap<ParseTree, Type>();
-    this.expressionSymbols = new HashMap<ParseTree, Symbol>();
+    this.results = new HashMap<ParseTree, BindingResult>();
+  }
+
+  private BindingResult getResult(ParseTree tree) {
+    BindingResult result = results.get(tree);
+    if (result == null) {
+      result = new BindingResult();
+      result.tree = tree;
+      results.put(tree, result);
+    }
+    return result;
   }
 
   public Type getType(ParseTree tree) {
-    return expressionTypes.get(tree);
+    return getResult(tree).type;
   }
 
   public void setType(ParseTree tree, Type type) {
-    expressionTypes.put(tree, type);
+    getResult(tree).type = type;
   }
 
   public Symbol getSymbol(ParseTree tree) {
-    return expressionSymbols.get(tree);
+    return getResult(tree).symbol;
   }
 
   public void setSymbol(ParseTree tree, Symbol symbol) {
-    expressionSymbols.put(tree, symbol);
+    getResult(tree).symbol = symbol;
+  }
+
+  public boolean isWritable(ParseTree tree) {
+    return getResult(tree).isWritable;
+  }
+
+  public void setWritable(ParseTree tree, boolean writable) {
+    getResult(tree).isWritable = writable;
   }
 }

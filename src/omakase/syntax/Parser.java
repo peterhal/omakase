@@ -825,7 +825,7 @@ public class Parser extends ParserBase {
   private ParseTree parseBitwiseXorExpression() {
     Token start = peek();
     ParseTree left = parseBitwiseAndExpression();
-    while (peek(TokenKind.BAR)) {
+    while (peek(TokenKind.HAT)) {
       Token operator = nextToken();
       ParseTree right = parseBitwiseAndExpression();
       left = new BinaryExpressionTree(getRange(start), left, operator, right);
@@ -836,7 +836,7 @@ public class Parser extends ParserBase {
   private ParseTree parseBitwiseAndExpression() {
     Token start = peek();
     ParseTree left = parseEqualityExpression();
-    while (peek(TokenKind.BAR)) {
+    while (peek(TokenKind.AMPERSAND)) {
       Token operator = nextToken();
       ParseTree right = parseEqualityExpression();
       left = new BinaryExpressionTree(getRange(start), left, operator, right);
@@ -857,10 +857,21 @@ public class Parser extends ParserBase {
 
   private ParseTree parseRelationalExpression() {
     Token start = peek();
-    ParseTree left = parseShiftExpression();
+    ParseTree left = parseInstanceOfExpression();
     while (peekRelationalOperator()) {
       Token operator = nextToken();
-      ParseTree right = parseShiftExpression();
+      ParseTree right = parseInstanceOfExpression();
+      left = new BinaryExpressionTree(getRange(start), left, operator, right);
+    }
+    return left;
+  }
+
+  private ParseTree parseInstanceOfExpression() {
+    Token start = peek();
+    ParseTree left = parseShiftExpression();
+    while (peek(TokenKind.INSTANCEOF)) {
+      Token operator = nextToken();
+      ParseTree right = parseType();
       left = new BinaryExpressionTree(getRange(start), left, operator, right);
     }
     return left;
@@ -960,7 +971,6 @@ public class Parser extends ParserBase {
     case CLOSE_ANGLE:
     case GREATER_EQUAL:
     case LESS_EQUAL:
-    case INSTANCEOF:
       return true;
     default:
       return false;
