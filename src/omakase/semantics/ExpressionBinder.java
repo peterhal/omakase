@@ -26,6 +26,7 @@ import omakase.syntax.trees.*;
  * Symbols to identifiers.
  *
  * TODO: Should move to creating full semantic trees.
+ * TODO: Need to check for dynamic types throughout.
  */
 public class ExpressionBinder extends ParseTreeVisitor {
   private final ExpressionBindingContext context;
@@ -350,9 +351,37 @@ public class ExpressionBinder extends ParseTreeVisitor {
 
   @Override
   protected void visit(UnaryExpressionTree tree) {
-    super.visit(tree);
+    switch (tree.operator.kind) {
+    case TYPEOF:
+      if (bind(tree.operand) != null) {
+        // TODO: Better semantics here? Hook into Reflection?
+        setExpressionType(tree, getStringType());
+      }
+      break;
+    case PLUS_PLUS:
+    case MINUS_MINUS:
+      if (bindUnaryOperator(tree, getNumberType()) != null) {
+        if (!isWritable(tree.operand)) {
+          reportError(tree.operand, "Operand of '++' or '--' must be writable.");
+          setExpressionType(tree, null);
+        }
+      }
+      break;
+    case PLUS:
+    case MINUS:
+    case TILDE:
+      bindUnaryOperator(tree, getNumberType());
+      break;
+    case BANG:
+      bindUnaryOperator(tree, getBoolType());
+      break;
+    default:
+      throw new RuntimeException("Unexpected unary operator.");
+    }
+  }
 
-    // TODO
+  private Type bindUnaryOperator(UnaryExpressionTree tree, Type type) {
+    return setExpressionType(tree, bind(tree.operand, type));
   }
 
   private Type findCommonType(Type left, Type right) {
@@ -415,10 +444,11 @@ public class ExpressionBinder extends ParseTreeVisitor {
     return context.getResults().getType(tree);
   }
 
-  private void setExpressionType(ParseTree tree, Type type) {
+  private Type setExpressionType(ParseTree tree, Type type) {
     if (type != null) {
       context.getResults().setType(tree, type);
     }
+    return type;
   }
 
   private Symbol getSymbol(ParseTree tree) {
