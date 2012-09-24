@@ -1172,7 +1172,8 @@ public class Parser extends ParserBase {
 
   private boolean peekPostfixOperator() {
     switch (peekKind()) {
-    case OPEN_PAREN:
+    case PLUS_PLUS:
+    case MINUS_MINUS:
       return true;
     default:
       return false;

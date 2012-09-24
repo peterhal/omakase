@@ -335,9 +335,14 @@ public class ExpressionBinder extends ParseTreeVisitor {
 
   @Override
   protected void visit(PostfixExpressionTree tree) {
-    super.visit(tree);
-
-    // TODO
+    if (setExpressionType(tree, bind(tree.operand, getNumberType())) != null) {
+      if (!isWritable(tree.operand)) {
+        reportError(tree.operand, "Operand of '++' or '--' must be writable.");
+        setExpressionType(tree, null);
+      } else {
+        setWritable(tree, true);
+      }
+    }
   }
 
   @Override
@@ -364,6 +369,8 @@ public class ExpressionBinder extends ParseTreeVisitor {
         if (!isWritable(tree.operand)) {
           reportError(tree.operand, "Operand of '++' or '--' must be writable.");
           setExpressionType(tree, null);
+        } else {
+          setWritable(tree, true);
         }
       }
       break;
@@ -461,7 +468,7 @@ public class ExpressionBinder extends ParseTreeVisitor {
     }
   }
 
-  private void setWritable(BinaryExpressionTree tree, boolean value) {
+  private void setWritable(ParseTree tree, boolean value) {
     context.getResults().setWritable(tree, value);
   }
 
