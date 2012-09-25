@@ -14,13 +14,15 @@
 
 package omakase.semantics.types;
 
+import omakase.syntax.trees.FunctionExpressionTree;
+
 /**
  */
-public enum TypeKind {
-  ARRAY,
-  CLASS,
-  FUNCTION,
-  KEYWORD,
-  NULLABLE,
-  VARIABLE, UNBOUND_FUNCTION_LITERAL,
+public class UnboundFunctionLiteralType extends Type {
+  public final FunctionExpressionTree tree;
+
+  public UnboundFunctionLiteralType(FunctionExpressionTree tree) {
+    super(TypeKind.UNBOUND_FUNCTION_LITERAL);
+    this.tree = tree;
+  }
 }

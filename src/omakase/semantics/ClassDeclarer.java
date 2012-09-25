@@ -47,7 +47,7 @@ public class ClassDeclarer {
           reportRelatedError(project.getClass(className));
           return;
         }
-        project.addClass(new ClassSymbol(className, classDeclaration));
+        project.addClass(new ClassSymbol(className, classDeclaration, project.getTypes().getClassSymbolType()));
       }
     }
   }

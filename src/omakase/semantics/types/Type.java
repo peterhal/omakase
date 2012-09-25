@@ -14,6 +14,7 @@
 
 package omakase.semantics.types;
 
+import omakase.semantics.symbols.ClassSymbol;
 import omakase.syntax.tokens.TokenKind;
 
 /**
@@ -49,6 +50,10 @@ public class Type {
     return isKeywordType(TokenKind.VOID);
   }
 
+  public boolean isClassSymbolType() {
+    return isKeywordType(TokenKind.CLASS);
+  }
+
   private boolean isKeywordType(TokenKind keyword) {
     return isKeywordType() && this.asKeywordType().keyword == keyword;
   }
@@ -61,6 +66,10 @@ public class Type {
     return kind == TypeKind.CLASS;
   }
 
+  public boolean isFunctionType() {
+    return kind == TypeKind.FUNCTION;
+  }
+
   public boolean isArrayType() {
     return kind == TypeKind.ARRAY;
   }
@@ -69,8 +78,16 @@ public class Type {
     return kind == TypeKind.NULLABLE;
   }
 
+  public boolean isUnboundFunctionLiteral() {
+    return kind == TypeKind.UNBOUND_FUNCTION_LITERAL;
+  }
+
   public KeywordType asKeywordType() {
     return (KeywordType) this;
+  }
+
+  public FunctionType asFunctionType() {
+    return (FunctionType) this;
   }
 
   public ArrayType asArrayType() {
@@ -79,5 +96,13 @@ public class Type {
 
   public NullableType asNullableType() {
     return (NullableType) this;
+  }
+
+  public UnboundFunctionLiteralType asUnboundFunctionLiteral() {
+    return (UnboundFunctionLiteralType) this;
+  }
+
+  public ClassType asClassType() {
+    return (ClassType) this;
   }
 }

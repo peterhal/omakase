@@ -113,7 +113,8 @@ public class StatementBinder extends ParseTreeVisitor {
 
   @Override
   protected void visit(ExpressionStatementTree tree) {
-    new ExpressionBinder(context).bind(tree.expression);
+    // TODO: Check for expressions which do no work.
+    new ExpressionBinder(context).bindAndInfer(tree.expression);
   }
 
   @Override
@@ -282,8 +283,7 @@ public class StatementBinder extends ParseTreeVisitor {
   }
 
   private Type bindExpression(ParseTree expression) {
-    new ExpressionBinder(context).bind(expression);
-    return context.getResults().getType(expression);
+    return new ExpressionBinder(context).bindAndInfer(expression);
   }
 
   private void bindBooleanExpression(ParseTree tree) {

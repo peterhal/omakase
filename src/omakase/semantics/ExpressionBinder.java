@@ -14,7 +14,10 @@
 
 package omakase.semantics;
 
+import com.google.common.collect.ImmutableList;
+import omakase.semantics.symbols.ClassSymbol;
 import omakase.semantics.symbols.Symbol;
+import omakase.semantics.types.FunctionType;
 import omakase.semantics.types.KeywordType;
 import omakase.semantics.types.Type;
 import omakase.semantics.types.TypeContainer;
@@ -40,25 +43,12 @@ public class ExpressionBinder extends ParseTreeVisitor {
     return getExpressionType(expression);
   }
 
-  public void bindBoolExpression(ParseTree expression) {
-    bind(expression, getBoolType());
-  }
-
-  private KeywordType getBoolType() {
-    return context.getTypes().getBoolType();
-  }
-
-  private KeywordType getNumberType() {
-    return context.getTypes().getNumberType();
-  }
-
-  private KeywordType getStringType() {
-    return context.getTypes().getStringType();
+  public Type bindBoolExpression(ParseTree expression) {
+    return bind(expression, getBoolType());
   }
 
   public Type bind(ParseTree expression, Type expectedType) {
-    bind(expression);
-    Type actualType = getExpressionType(expression);
+    Type actualType = bind(expression);
     if (mustConvert(expression, actualType, expectedType)) {
       return expectedType;
     } else {
@@ -81,7 +71,7 @@ public class ExpressionBinder extends ParseTreeVisitor {
     }
 
     if (arrayType != null && arrayType.isDynamicType()) {
-      bind(tree.member);
+      bindAndInfer(tree.member);
     } else {
       bind(tree.member, context.getTypes().getNumberType());
     }
@@ -132,7 +122,7 @@ public class ExpressionBinder extends ParseTreeVisitor {
       bindBinaryExpression(tree, getNumberType());
       break;
     case INSTANCEOF:
-      bind(tree.left);
+      bindAndInfer(tree.left);
       bindType(tree.right);
       // TODO: Check for provably true/false results.
       setExpressionType(tree, getBoolType());
@@ -196,8 +186,8 @@ public class ExpressionBinder extends ParseTreeVisitor {
   }
 
   private void bindEqualityOperator(BinaryExpressionTree tree) {
-    Type leftType = bind(tree.left);
-    Type rightType = bind(tree.right);
+    Type leftType = bindAndInfer(tree.left);
+    Type rightType = bindAndInfer(tree.right);
     if (leftType == null || rightType == null) {
       return;
     }
@@ -232,21 +222,47 @@ public class ExpressionBinder extends ParseTreeVisitor {
   }
 
   @Override
+  // TODO: Type inference of function parameters goes here.
   protected void visit(CallExpressionTree tree) {
-    super.visit(tree);
+    Type function = bind(tree.function);
+    ArgumentsTree argumentsTree = tree.arguments;
+    ImmutableList<? extends ParseTree> arguments = argumentsTree.arguments;
+    ArgumentBinder argumentBinder = new ArgumentBinder(argumentsTree).invoke();
+    boolean hadError = argumentBinder.hadError();
+    ImmutableList<Type> argumentTypes = argumentBinder.getArgumentTypes();
 
-    // TODO:
+    if (!hadError) {
+      if (function.isDynamicType()) {
+        setExpressionType(tree, getDynamicType());
+        // TODO: Check for unbound function expression.
+      } else if (function.isFunctionType()) {
+        FunctionType functionType = function.asFunctionType();
+        ImmutableList<Type> parameterTypes = functionType.parameterTypes;
+        if (parameterTypes.size() != argumentTypes.size()) {
+          reportError(tree, "Expected '%d' arguments but found '%d'.", parameterTypes.size(), argumentTypes.size());
+          setExpressionType(tree, null);
+        } else {
+          for (int i = 0; i < parameterTypes.size(); i++) {
+            hadError |= mustConvert(arguments.get(i), argumentTypes.get(i), parameterTypes.get(i));
+          }
+          if (hadError) {
+            setExpressionType(tree, null);
+          } else {
+            setExpressionType(tree, functionType.returnType);
+          }
+        }
+      } else {
+        reportError(tree, "Cannot call '%s' because it is not a function.", function);
+        setExpressionType(tree, null);
+      }
+    }
   }
 
   @Override
   protected void visit(ConditionalExpressionTree tree) {
-    // Bind children.
-    super.visit(tree);
-
-    ensureBoolType(tree.condition);
-
-    Type left = getExpressionType(tree.left);
-    Type right = getExpressionType(tree.right);
+    bindBoolExpression(tree.condition);
+    Type left = bind(tree.left);
+    Type right = bind(tree.right);
     Type result = findCommonType(left, right);
     if (left != null && right != null && result == null) {
       reportError(tree, "Incompatible types in conditional expression. Found '%s' and '%s'.", left, right);
@@ -255,7 +271,8 @@ public class ExpressionBinder extends ParseTreeVisitor {
 
   @Override
   protected void visit(FunctionExpressionTree tree) {
-    // TODO
+    // This'll get bound at the use site.
+    setExpressionType(tree, getTypes().getUnboundFunctionLiteralType(tree));
   }
 
   @Override
@@ -274,8 +291,6 @@ public class ExpressionBinder extends ParseTreeVisitor {
       }
     }
     setSymbol(tree, symbol);
-    setExpressionType(tree, symbol.getType());
-    setWritable(tree, symbol.isWritable());
   }
 
   @Override
@@ -299,28 +314,60 @@ public class ExpressionBinder extends ParseTreeVisitor {
 
   @Override
   protected void visit(MemberExpressionTree tree) {
-    super.visit(tree);
-
-    Symbol symbol = getSymbol(tree.object);
-    if (symbol != null && symbol.isClass()) {
-      // TODO: lookup static member.
-    } else {
-      Type objectType = getExpressionType(tree.object);
-      if (objectType != null) {
-        if (objectType.isClassType()) {
-          // TODO: lookup instance member.
-        } else {
-          reportError(tree, "Cannot lookup member on type '%s'.", objectType);
-        }
-      }
+    Type objectType = bind(tree.object);
+    if (objectType == null) {
+      return;
     }
+    if (objectType.isDynamicType()) {
+      setExpressionType(tree, getDynamicType());
+    }
+    ClassSymbol clazz;
+    boolean isStatic;
+    if (objectType.isClassType()) {
+      clazz = objectType.asClassType().clazz;
+      isStatic = false;
+    } else if (objectType.isClassSymbolType()) {
+      clazz = getSymbol(tree.object).asClass();
+      isStatic = true;
+    } else {
+      reportError(tree, "Cannot lookup member on expression of type '%s'.", objectType);
+      return;
+    }
+
+    String name = tree.name.value;
+    Symbol result = clazz.lookupMember(name, isStatic);
+    if (result == null) {
+      reportError(tree, "Class '%s' does not contain a member '%s'.", clazz, name);
+      return;
+    }
+    setSymbol(tree, result);
   }
 
   @Override
   protected void visit(NewExpressionTree tree) {
-    super.visit(tree);
+    Type constructorType = bind(tree.constructor);
+    if (constructorType == null) {
+      return;
+    }
 
-    // TODO
+    ArgumentBinder argumentBinder = new ArgumentBinder(tree.arguments).invoke();
+    boolean hadError = argumentBinder.hadError();
+    ImmutableList<Type> argumentTypes = argumentBinder.getArgumentTypes();
+
+    if (hadError) {
+      return;
+    }
+    if (constructorType.isDynamicType()) {
+      setExpressionType(tree, getDynamicType());
+    }
+    if (constructorType.isClassSymbolType()) {
+      // TODO: Constructor binding here.
+      ClassSymbol clazz = getSymbol(tree.constructor).asClass();
+      setExpressionType(tree, getTypes().getClassType(clazz));
+    } else {
+      reportError(tree, "Cannot new an expression of type '%s'.", constructorType);
+      return;
+    }
   }
 
   @Override
@@ -353,7 +400,7 @@ public class ExpressionBinder extends ParseTreeVisitor {
   protected void visit(UnaryExpressionTree tree) {
     switch (tree.operator.kind) {
     case TYPEOF:
-      if (bind(tree.operand) != null) {
+      if (bindAndInfer(tree.operand) != null) {
         // TODO: Better semantics here? Hook into Reflection?
         setExpressionType(tree, getStringType());
       }
@@ -399,6 +446,7 @@ public class ExpressionBinder extends ParseTreeVisitor {
     // Nullable & null
     // Classes & Base Classes
     // Dynamic
+    // Unbound function literals
 
     return null;
   }
@@ -408,6 +456,7 @@ public class ExpressionBinder extends ParseTreeVisitor {
   }
 
   private boolean mustConvert(ParseTree tree, Type actualType, Type expectedType) {
+    // TODO: Check for unbound function expression.
     if (canConvert(actualType, expectedType)) {
       setExpressionType(tree, expectedType);
       return true;
@@ -447,6 +496,22 @@ public class ExpressionBinder extends ParseTreeVisitor {
     return new TypeBinder(context.project).bindType(type);
   }
 
+  private KeywordType getBoolType() {
+    return context.getTypes().getBoolType();
+  }
+
+  private KeywordType getNumberType() {
+    return context.getTypes().getNumberType();
+  }
+
+  private KeywordType getStringType() {
+    return context.getTypes().getStringType();
+  }
+
+  private KeywordType getDynamicType() {
+    return context.getTypes().getDynamicType();
+  }
+
   private Type getExpressionType(ParseTree tree) {
     return context.getResults().getType(tree);
   }
@@ -465,6 +530,8 @@ public class ExpressionBinder extends ParseTreeVisitor {
   private void setSymbol(ParseTree tree, Symbol symbol) {
     if (symbol != null) {
       context.getResults().setSymbol(tree, symbol);
+      setExpressionType(tree, symbol.getType());
+      setWritable(tree, symbol.isWritable());
     }
   }
 
@@ -482,5 +549,48 @@ public class ExpressionBinder extends ParseTreeVisitor {
 
   private void reportError(ParseTree tree, String message, Object... args) {
     context.errorReporter().reportError(tree.location.start, message, args);
+  }
+
+  public Type bindAndInfer(ParseTree expression) {
+    Type type = bind(expression);
+    if (type == null) {
+      return null;
+    }
+    if (type.isUnboundFunctionLiteral()) {
+      // TODO: Bind the function expression and infer the return type if possible.
+    }
+    return null;
+  }
+
+  private class ArgumentBinder {
+    private ArgumentsTree tree;
+    private boolean hadError;
+    private ImmutableList<Type> argumentTypes;
+
+    public ArgumentBinder(ArgumentsTree tree) {
+      this.tree = tree;
+    }
+
+    public boolean hadError() {
+      return hadError;
+    }
+
+    public ImmutableList<Type> getArgumentTypes() {
+      return argumentTypes;
+    }
+
+    public ArgumentBinder invoke() {
+      hadError = false;
+      argumentTypes = getTypes().getEmptyTypeArray();
+      for (ParseTree argument : tree.arguments) {
+        Type argumentType = bind(argument);
+        if (argumentType == null) {
+          hadError = true;
+        } else {
+          getTypes().getTypeArray(argumentTypes, argumentType);
+        }
+      }
+      return this;
+    }
   }
 }

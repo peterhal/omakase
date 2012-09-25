@@ -24,12 +24,14 @@ import java.util.Map;
  */
 public class ClassSymbol extends Symbol {
   public final ClassDeclarationTree declaration;
+  private final Type type;
   // TODO: Static and instance members with same name.
   private final Map<String, Symbol> members;
 
-  public ClassSymbol(String name, ClassDeclarationTree declaration) {
+  public ClassSymbol(String name, ClassDeclarationTree declaration, Type type) {
     super(SymbolKind.CLASS, name, declaration);
     this.declaration = declaration;
+    this.type = type;
     this.members = new LinkedHashMap<String, Symbol>();
   }
 
@@ -47,12 +49,16 @@ public class ClassSymbol extends Symbol {
 
   @Override
   public Type getType() {
-    // TODO: Class static type?
-    return null;
+    return type;
   }
 
   @Override
   public boolean isWritable() {
     return false;
+  }
+
+  public Symbol lookupMember(String name, boolean isStatic) {
+    // TODO: isStatic
+    return members.get(name);
   }
 }

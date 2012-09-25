@@ -18,6 +18,7 @@ import com.google.common.collect.ImmutableList;
 import omakase.semantics.symbols.ClassSymbol;
 import omakase.semantics.types.*;
 import omakase.syntax.tokens.TokenKind;
+import omakase.syntax.trees.FunctionExpressionTree;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -33,6 +34,7 @@ public class TypeContainer {
   private final ImmutableList<Type> emptyTypeArray;
   private final Map<ImmutableList<Type>, Map<Type, ImmutableList<Type>>> typeArrays;
   private final Map<ImmutableList<Type>, Map<Type, FunctionType>> functionTypes;
+  private final Map<FunctionExpressionTree, UnboundFunctionLiteralType> unboundFunctionLiterals;
 
   public TypeContainer() {
     this.keywordTypes = new HashMap<TokenKind, KeywordType>();
@@ -43,6 +45,7 @@ public class TypeContainer {
     addKeywordType(TokenKind.OBJECT);
     addKeywordType(TokenKind.STRING);
     addKeywordType(TokenKind.VOID);
+    addKeywordType(TokenKind.CLASS); // Kinda hacky -
 
     this.classTypes = new HashMap<ClassSymbol, ClassType>();
 
@@ -54,6 +57,8 @@ public class TypeContainer {
     this.typeArrays = new HashMap<ImmutableList<Type>, Map<Type, ImmutableList<Type>>>();
 
     this.functionTypes = new HashMap<ImmutableList<Type>, Map<Type, FunctionType>>();
+
+    this.unboundFunctionLiterals = new HashMap<FunctionExpressionTree, UnboundFunctionLiteralType>();
   }
 
   private void addKeywordType(TokenKind kind) {
@@ -149,5 +154,19 @@ public class TypeContainer {
 
   public KeywordType getDynamicType() {
     return getKeywordType(TokenKind.DYNAMIC);
+  }
+
+  public UnboundFunctionLiteralType getUnboundFunctionLiteralType(FunctionExpressionTree tree) {
+    UnboundFunctionLiteralType result = unboundFunctionLiterals.get(tree);
+    if (result == null) {
+      result = new UnboundFunctionLiteralType(tree);
+      unboundFunctionLiterals.put(tree, result);
+    }
+    return result;
+  }
+
+  // The type of an expression which names a class.
+  public Type getClassSymbolType() {
+    return getKeywordType(TokenKind.CLASS);
   }
 }

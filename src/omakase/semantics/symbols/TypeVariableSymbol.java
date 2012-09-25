@@ -28,7 +28,7 @@ public class TypeVariableSymbol extends Symbol {
   @Override
   public Type getType() {
     // TODO: generics
-    return null;
+    throw new RuntimeException("NYI");
   }
 
   @Override
