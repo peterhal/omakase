@@ -1,6 +1,6 @@
 class A {
   var a : A, b : number;
-  c() : string { return this.a; }
+  c() : A { return this.a; }
 }
 
 extern class Externs {

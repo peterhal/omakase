@@ -4,7 +4,7 @@ class Program {
   // statements
   parseVariableStatement() : void {
     var a;
-    var a, b, c;
+    var h, b, c;
     var d = a;
     var e = a, f = b, g = c;
   }
