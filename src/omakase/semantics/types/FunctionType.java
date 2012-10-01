@@ -27,4 +27,20 @@ public class FunctionType extends Type {
     this.returnType = returnType;
     this.parameterTypes = parameterTypes;
   }
+
+  @Override
+  protected String computeDisplayName() {
+    String result = "(";
+    boolean isFirst = true;
+    for (Type parameterType : parameterTypes) {
+      if (isFirst) {
+        isFirst = false;
+      } else {
+        result += ", ";
+      }
+      result += parameterType.toString();
+    }
+    result += ") => " + returnType.toString();
+    return result;
+  }
 }

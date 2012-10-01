@@ -16,6 +16,7 @@ package omakase.semantics;
 
 import com.google.common.collect.ImmutableList;
 import omakase.semantics.symbols.ClassSymbol;
+import omakase.semantics.symbols.LocalVariableSymbol;
 import omakase.semantics.symbols.Symbol;
 import omakase.semantics.types.FunctionType;
 import omakase.semantics.types.KeywordType;
@@ -23,6 +24,9 @@ import omakase.semantics.types.Type;
 import omakase.semantics.types.TypeContainer;
 import omakase.syntax.ParseTreeVisitor;
 import omakase.syntax.trees.*;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Binds Types to expressions.
@@ -234,7 +238,10 @@ public class ExpressionBinder extends ParseTreeVisitor {
     if (!hadError) {
       if (function.isDynamicType()) {
         setExpressionType(tree, getDynamicType());
+      } else if (function.isUnboundFunctionLiteral()) {
         // TODO: Check for unbound function expression.
+        reportError(tree, "TODO: inference of unbound function literal at call site");
+        setExpressionType(tree, null);
       } else if (function.isFunctionType()) {
         FunctionType functionType = function.asFunctionType();
         ImmutableList<Type> parameterTypes = functionType.parameterTypes;
@@ -456,10 +463,14 @@ public class ExpressionBinder extends ParseTreeVisitor {
   }
 
   private boolean mustConvert(ParseTree tree, Type actualType, Type expectedType) {
-    // TODO: Check for unbound function expression.
     if (canConvert(actualType, expectedType)) {
       setExpressionType(tree, expectedType);
       return true;
+    }
+    if (actualType.isUnboundFunctionLiteral() && expectedType.isFunctionType()) {
+      return null != setExpressionType(tree,
+          new FunctionLiteralBinder(actualType.asUnboundFunctionLiteral().tree)
+              .bind(expectedType.asFunctionType()));
     }
 
     reportError(tree, "Expected expression of type '%s' but found '%s'.", expectedType, actualType);
@@ -557,9 +568,193 @@ public class ExpressionBinder extends ParseTreeVisitor {
       return null;
     }
     if (type.isUnboundFunctionLiteral()) {
-      // TODO: Bind the function expression and infer the return type if possible.
+      return setExpressionType(expression, new FunctionLiteralBinder(type.asUnboundFunctionLiteral().tree).bindAndInfer());
     }
-    return null;
+    return type;
+  }
+
+  private class FunctionLiteralBinder {
+    private final FunctionExpressionTree tree;
+    private boolean hadError;
+    private ImmutableList<Type> parameterTypes;
+    private Map<String, LocalVariableSymbol> parameters;
+    private ReturnInferenceContext returnContext;
+
+    public FunctionLiteralBinder(FunctionExpressionTree tree) {
+      this.tree = tree;
+    }
+
+    public Type bindAndInfer() {
+      if (tree.hasUntypedParameters()) {
+        reportError(tree, "Cannot infer parameter types.");
+        setExpressionType(tree, null);
+        hadError = true;
+        return null;
+      } else {
+        bindTypedParameters();
+        if (hadError) {
+          return null;
+        }
+
+        // Bind the function
+        returnContext = new ReturnInferenceContext(tree);
+        LocalVariableLookupContext lookupContext = new LocalVariableLookupContext(context.lookupContext, parameters);
+        if (tree.body.isBlock()) {
+          StatementBindingContext innerContext = new StatementBindingContext(
+              context.project,
+              returnContext,
+              context.getResults(),
+              lookupContext,
+              context.getThisType(),
+              false,
+              false,
+              null,
+              true,
+              null);
+          new StatementBinder(innerContext).bind(tree.body);
+        } else {
+          ExpressionBindingContext innerContext = new ExpressionBindingContext(
+              context.project,
+              context.getResults(),
+              lookupContext,
+              context.getThisType());
+          Type returnType = new ExpressionBinder(innerContext).bind(tree.body);
+          hadError |= returnType ==  null;
+          returnContext.addReturn(tree.body, returnType);
+        }
+        if (hadError) {
+          return null;
+        }
+
+        // Infer return type
+        Type returnType = null;
+        Map<ParseTree, Type> returns = returnContext.returns;
+        for (ParseTree returnTree : returns.keySet()) {
+          Type type1 = returns.get(returnTree);
+          if (returnType == null) {
+            returnType = type1;
+          } else {
+            Type resultType = findCommonType(returnType, type1);
+            if (resultType == null) {
+              reportError(returnTree, "Can't infer common type between '%s' and '%s'.", returnType, type1);
+              hadError = true;
+            } else {
+              returnType = resultType;
+            }
+          }
+        }
+        if (hadError) {
+          return null;
+        }
+
+        Type functionType = context.getTypes().getFunctionType(parameterTypes, returnType);
+        setExpressionType(this.tree, functionType);
+        return functionType;
+      }
+    }
+
+    private void bindTypedParameters() {
+      parameterTypes = context.getTypes().getEmptyTypeArray();
+      parameters = new HashMap<String, LocalVariableSymbol>();
+      for (ParameterDeclarationTree parameterTree : tree.parameters.parameters) {
+        String name = parameterTree.name.value;
+        if (parameters.containsKey(name)) {
+          reportError(parameterTree, "Duplicate parameter '%s'", name);
+          hadError = true;
+        } else {
+          Type parameterType = bindType(parameterTree.type);
+          if (parameterType == null) {
+            hadError = true;
+          } else {
+            parameters.put(name, new LocalVariableSymbol(name, parameterTree, parameterType));
+            parameterTypes = context.getTypes().getTypeArray(parameterTypes, parameterType);
+          }
+        }
+      }
+    }
+
+    public Type bind(FunctionType expectedType) {
+      // Parameters
+      if (tree.hasUntypedParameters()) {
+        if (tree.parameters.size() != expectedType.parameterTypes.size()) {
+          reportError(
+              tree,
+              "Unexpected number of parameters. Expected '%d' found '%s'",
+              expectedType.parameterTypes.size(),
+              tree.parameters.size());
+          hadError = true;
+        } else {
+          parameterTypes = expectedType.parameterTypes;
+          parameters = new HashMap<String, LocalVariableSymbol>();
+          int index = 0;
+          for (ParameterDeclarationTree parameterTree : tree.parameters.parameters) {
+            String name = parameterTree.name.value;
+            if (parameters.containsKey(name)) {
+              reportError(parameterTree, "Duplicate parameter '%s'", name);
+              hadError = true;
+            } else {
+              parameters.put(name, new LocalVariableSymbol(name, parameterTree, parameterTypes.get(index)));
+            }
+            index += 1;
+          }
+        }
+      } else {
+        bindTypedParameters();
+        if (!hadError) {
+          ImmutableList<Type> actualTypes = this.parameterTypes;
+          if (actualTypes.size() != expectedType.parameterTypes.size()) {
+            reportError(
+                tree,
+                "Unexpected number of parameters. Expected '%d' found '%s'",
+                expectedType.parameterTypes.size(),
+                actualTypes.size());
+            hadError = true;
+          } else {
+            for (int index = 0; index < actualTypes.size(); index++) {
+              // TODO: Variance in parameter types.
+              if (actualTypes.get(index) != expectedType.parameterTypes.get(index)) {
+                reportError(tree, "Incompatible parameter types");
+                hadError = true;
+              }
+            }
+          }
+        }
+      }
+      if (hadError) {
+        return null;
+      }
+
+      // body
+      LocalVariableLookupContext lookupContext = new LocalVariableLookupContext(context.lookupContext, parameters);
+      if (tree.body.isBlock()) {
+        StatementBindingContext innerContext = new StatementBindingContext(
+            context.project,
+            null,
+            context.getResults(),
+            lookupContext,
+            context.getThisType(),
+            false,
+            false,
+            null,
+            true,
+            expectedType.returnType);
+        new StatementBinder(innerContext).bind(tree.body);
+      } else {
+        ExpressionBindingContext innerContext = new ExpressionBindingContext(
+            context.project,
+            context.getResults(),
+            lookupContext,
+            context.getThisType());
+        Type returnType = new ExpressionBinder(innerContext).bind(tree.body, expectedType.returnType);
+        hadError |= returnType ==  null;
+        returnContext.addReturn(tree.body, returnType);
+      }
+      if (hadError) {
+        return null;
+      }
+
+      return expectedType;
+    }
   }
 
   private class ArgumentBinder {

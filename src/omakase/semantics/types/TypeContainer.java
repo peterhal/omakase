@@ -156,6 +156,10 @@ public class TypeContainer {
     return getKeywordType(TokenKind.DYNAMIC);
   }
 
+  public KeywordType getVoidType() {
+    return getKeywordType(TokenKind.VOID);
+  }
+
   public UnboundFunctionLiteralType getUnboundFunctionLiteralType(FunctionExpressionTree tree) {
     UnboundFunctionLiteralType result = unboundFunctionLiterals.get(tree);
     if (result == null) {

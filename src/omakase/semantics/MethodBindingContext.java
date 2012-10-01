@@ -26,6 +26,7 @@ public class MethodBindingContext extends StatementBindingContext {
   public MethodBindingContext(Project project, MethodSymbol method) {
     super(
         project,
+        null,
         new BindingResults(),
         new IdentifierLookupContext() {
           public Symbol lookupIdentifier(String value) {

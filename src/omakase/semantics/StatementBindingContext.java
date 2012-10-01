@@ -16,13 +16,17 @@ package omakase.semantics;
 
 import omakase.semantics.symbols.LocalVariableSymbol;
 import omakase.semantics.symbols.Symbol;
+import omakase.semantics.types.KeywordType;
 import omakase.semantics.types.Type;
+import omakase.syntax.trees.ParseTree;
+import omakase.syntax.trees.ReturnStatementTree;
 
 import java.util.Map;
 
 /**
  */
 public class StatementBindingContext extends ExpressionBindingContext {
+  private final ReturnInferenceContext returnContext;
   private final boolean hasBreak;
   private final boolean hasContinue;
   private final Type switchType;
@@ -31,6 +35,7 @@ public class StatementBindingContext extends ExpressionBindingContext {
 
   public StatementBindingContext(
       Project project,
+      ReturnInferenceContext returnContext,
       BindingResults results,
       IdentifierLookupContext lookupContext,
       Type thisType,
@@ -40,6 +45,7 @@ public class StatementBindingContext extends ExpressionBindingContext {
       boolean canReturn,
       Type returnType) {
     super(project, results, lookupContext, thisType);
+    this.returnContext = returnContext;
     this.hasBreak = hasBreak;
     this.hasContinue = hasContinue;
     this.switchType = switchType;
@@ -50,6 +56,7 @@ public class StatementBindingContext extends ExpressionBindingContext {
   public StatementBindingContext createLoopContext() {
     return new StatementBindingContext(
         this.project,
+        this.returnContext,
         this.getResults(),
         this.lookupContext,
         this.getThisType(),
@@ -63,6 +70,7 @@ public class StatementBindingContext extends ExpressionBindingContext {
   public StatementBindingContext createFinallyContext() {
     return new StatementBindingContext(
         this.project,
+        this.returnContext,
         this.getResults(),
         this.lookupContext,
         this.getThisType(),
@@ -76,6 +84,7 @@ public class StatementBindingContext extends ExpressionBindingContext {
   public StatementBindingContext createSwitchContext(Type switchExpressionType) {
     return new StatementBindingContext(
         this.project,
+        this.returnContext,
         this.getResults(),
         this.lookupContext,
         this.getThisType(),
@@ -89,6 +98,7 @@ public class StatementBindingContext extends ExpressionBindingContext {
   public StatementBindingContext createLookupContext(IdentifierLookupContext context) {
     return new StatementBindingContext(
         this.project,
+        this.returnContext,
         this.getResults(),
         context,
         this.getThisType(),
@@ -123,5 +133,9 @@ public class StatementBindingContext extends ExpressionBindingContext {
   public boolean containsLocal(String name) {
     Symbol result = lookupIdentifier(name);
     return result != null && (result.isLocalVariable() || result.isParameter());
+  }
+
+  public void addReturn(ParseTree tree, Type type) {
+    returnContext.addReturn(tree, type);
   }
 }

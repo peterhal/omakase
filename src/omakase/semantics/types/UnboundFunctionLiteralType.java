@@ -25,4 +25,9 @@ public class UnboundFunctionLiteralType extends Type {
     super(TypeKind.UNBOUND_FUNCTION_LITERAL);
     this.tree = tree;
   }
+
+  @Override
+  protected String computeDisplayName() {
+    throw new RuntimeException("Can this ever happen?");
+  }
 }

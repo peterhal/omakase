@@ -12,22 +12,26 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package omakase.semantics.types;
+package omakase.semantics;
 
-import omakase.syntax.tokens.TokenKind;
+import omakase.semantics.types.Type;
+import omakase.syntax.trees.FunctionExpressionTree;
+import omakase.syntax.trees.ParseTree;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  */
-public class KeywordType extends Type {
-  public final TokenKind keyword;
+public class ReturnInferenceContext {
+  private final FunctionExpressionTree tree;
+  public final Map<ParseTree, Type> returns = new HashMap<ParseTree, Type>();
 
-  public KeywordType(TokenKind keyword) {
-    super(TypeKind.KEYWORD);
-    this.keyword = keyword;
+  public ReturnInferenceContext(FunctionExpressionTree tree) {
+    this.tree = tree;
   }
 
-  @Override
-  protected String computeDisplayName() {
-    return keyword.value();
+  public void addReturn(ParseTree tree, Type type) {
+    returns.put(tree, type);
   }
 }

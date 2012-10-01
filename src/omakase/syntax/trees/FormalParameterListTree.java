@@ -27,4 +27,12 @@ public class FormalParameterListTree extends ParseTree {
     super(location, ParseTreeKind.FORMAL_PARAMETER_LIST);
     this.parameters = parameters;
   }
+
+  public boolean hasUntypedParameters() {
+    return size() > 0 && parameters.get(0).type == null;
+  }
+
+  public int size() {
+    return parameters.size();
+  }
 }

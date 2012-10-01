@@ -25,4 +25,9 @@ public class ClassType extends Type {
     super(TypeKind.CLASS);
     this.clazz = clazz;
   }
+
+  @Override
+  protected String computeDisplayName() {
+    return clazz.name;
+  }
 }

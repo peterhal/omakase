@@ -176,15 +176,24 @@ public class StatementBinder extends ParseTreeVisitor {
     Type returnType = null;
     if (!context.canReturn()) {
       reportError(tree, "Cannot return from within a finally block.");
+      return;
     } else {
       returnType = context.getReturnType();
     }
 
     if (tree.value != null) {
-      bindExpression(tree.value, returnType);
+      if (returnType != null) {
+        bindExpression(tree.value, returnType);
+      } else {
+        context.addReturn(tree, bindExpression(tree.value));
+      }
     } else {
-      if (returnType != null && !returnType.isVoidType()) {
-        reportError(tree, "Must return a value of type '%s'.", returnType);
+      if (returnType == null) {
+        context.addReturn(tree, context.getTypes().getVoidType());
+      } else {
+        if (returnType != null && !returnType.isVoidType()) {
+          reportError(tree, "Must return a value of type '%s'.", returnType);
+        }
       }
     }
   }

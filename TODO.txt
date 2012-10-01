@@ -1,18 +1,14 @@
 Next Up
 -------
-- use symbols for code gen
 - type system
   - name lookup of classes/members
   - type check expressions
-    - names
-    - member reference
-    - functions
-    - call
-    - new
+    - inference of function literals
 - namespaces
 - stdlib
 - hygiene
   - name table
+- use symbols for code gen
 
 TODO
 ----

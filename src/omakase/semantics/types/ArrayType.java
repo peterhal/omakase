@@ -23,4 +23,9 @@ public class ArrayType extends Type {
     super(TypeKind.ARRAY);
     this.elementType = elementType;
   }
+
+  @Override
+  protected String computeDisplayName() {
+    return elementType.toString() + "[]";
+  }
 }

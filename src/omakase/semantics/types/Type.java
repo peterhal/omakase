@@ -19,11 +19,22 @@ import omakase.syntax.tokens.TokenKind;
 
 /**
  */
-public class Type {
+public abstract class Type {
   public final TypeKind kind;
+  private String displayName;
 
   public Type(TypeKind kind) {
     this.kind = kind;
+  }
+
+  protected abstract String computeDisplayName();
+
+  @Override
+  public String toString() {
+    if (displayName == null) {
+      displayName = computeDisplayName();
+    }
+    return displayName;
   }
 
   public boolean isBoolType() {

@@ -25,4 +25,9 @@ public class TypeVariableType extends Type {
     super(TypeKind.VARIABLE);
     this.typeVariable = typeVariable;
   }
+
+  @Override
+  protected String computeDisplayName() {
+    return typeVariable.name;
+  }
 }

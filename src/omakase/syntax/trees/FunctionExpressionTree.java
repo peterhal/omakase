@@ -30,4 +30,8 @@ public class FunctionExpressionTree extends ParseTree {
     this.parameters = parameters;
     this.body = body;
   }
+
+  public boolean hasUntypedParameters() {
+    return parameters.hasUntypedParameters();
+  }
 }

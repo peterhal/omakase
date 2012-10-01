@@ -23,4 +23,9 @@ public class NullableType extends Type {
     super(TypeKind.NULLABLE);
     this.elementType = elementType;
   }
+
+  @Override
+  protected String computeDisplayName() {
+    return elementType.toString() + "?";
+  }
 }
