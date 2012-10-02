@@ -13,7 +13,7 @@ echo Running Omakase Tests ...
 echo Running Omakase Tests ... > $RESULTS_FILE
 
 echo Scanning Tests ... >> $RESULTS_FILE 2>&1
-for error_source in errors/*.oma ; do
+for error_source in errors/scanner/*.oma ; do
   ../omascan.sh $error_source >> $RESULTS_FILE 2>&1
 done
 
@@ -32,6 +32,9 @@ for symbol_source in symbols/*.oma ; do
 done
 
 echo Compiling Tests ... >> $RESULTS_FILE 2>&1
+for error_source in errors/compiler/*.oma ; do
+  ../oma.sh $error_source >> $RESULTS_FILE 2>&1
+done
 for compile_source in compile/*.oma ; do
   ../oma.sh $compile_source >> $RESULTS_FILE 2>&1
 done
