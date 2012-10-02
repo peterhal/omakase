@@ -1,11 +1,11 @@
 Running Omakase Tests ...
 Scanning Tests ...
-errors/missing-hex-escape.oma (1, 4): Missing hex digit in hex escape sequence.
-errors/number-too-large.oma (1, 1): Integer literal too large.
-errors/unexpected-char.oma (1, 1): Unexpected character '@'.
-errors/unrecognized-character-escape.oma (1, 3): Unrecognized character escape 'h'.
-errors/unterminated-multi-line-comment.oma (1, 1): Unterminated multi-line comment.
-errors/unterminated-string-literal.oma (1, 1): Unterminated string literal
+errors/scanner/missing-hex-escape.oma (1, 4): Missing hex digit in hex escape sequence.
+errors/scanner/number-too-large.oma (1, 1): Integer literal too large.
+errors/scanner/unexpected-char.oma (1, 1): Unexpected character '@'.
+errors/scanner/unrecognized-character-escape.oma (1, 3): Unrecognized character escape 'h'.
+errors/scanner/unterminated-multi-line-comment.oma (1, 1): Unterminated multi-line comment.
+errors/scanner/unterminated-string-literal.oma (1, 1): Unterminated string literal
 scanner/all-tokens.oma (1, 1): IDENTIFIER identifier
 scanner/all-tokens.oma (2, 1): NUMBER_LITERAL 0
 scanner/all-tokens.oma (3, 1): STRING_LITERAL "string"
@@ -103,8 +103,6 @@ class Program {
     ;
   }
   parseForInStatement ( ) : void {
-    for ( a in b )
-    ;
     for ( a in b )
     ;
   }
@@ -257,221 +255,12 @@ Symbol Tests ...
 A
 B
 C
+symbols/members.oma (3, 25): Expected expression of type 'number' but found 'string'.
 A
   a
   b
   c
 Compiling Tests ...
-( function ( ) {
-  Program = function ( ) {
-  }
-  ;
-  Program . prototype . parseVariableStatement = function ( ) {
-    var a ;
-    var a b c ;
-    var d = a ;
-    var e = a f = b g = c ;
-  }
-  ;
-  Program . prototype . parseEmptyStatement = function ( ) {
-    ;
-  }
-  ;
-  Program . prototype . parseForStatement = function ( ) {
-    for ( ; ; )
-    ;
-    for ( a ; b ; c )
-    ;
-    for ( var a ;
-    ; b ; c )
-    ;
-    for ( var a = b ;
-    ; c ; d )
-    ;
-  }
-  ;
-  Program . prototype . parseForInStatement = function ( ) {
-    for ( a in b )
-    ;
-    for ( a in b )
-    ;
-  }
-  ;
-  Program . prototype . parseIfStatement = function ( ) {
-    if ( cond )
-      {
-      }
-    if ( cond )
-      {
-      }
-    else
-      {
-      }
-    if ( cond )
-      ;
-    if ( cond )
-      ;
-    else
-      ;
-  }
-  ;
-  Program . prototype . parseDoStatement = function ( ) {
-    do
-    {
-    }
-    while ( e ) ;
-    do
-    ;
-    while ( e ) ;
-  }
-  ;
-  Program . prototype . parseWhileStatement = function ( ) {
-    while ( e )
-    ;
-    while ( e )
-    {
-    }
-  }
-  ;
-  Program . prototype . parseBreakStatement = function ( ) {
-    break ;
-  }
-  ;
-  Program . prototype . parseContinueStatement = function ( ) {
-    continue ;
-  }
-  ;
-  Program . prototype . parseReturnStatement = function ( ) {
-    return ;
-    return a ;
-  }
-  ;
-  Program . prototype . parseSwitchStatement = function ( ) {
-    switch ( v )
-    { } switch ( v )
-    { case a :
-    } switch ( v )
-    { default :
-    } switch ( v )
-    { case a :
-      ;
-    case b :
-    case c :
-      ;
-    default :
-      ;
-    } }
-  ;
-  Program . prototype . parseThrowStatement = function ( ) {
-    throw e ;
-  }
-  ;
-  Program . prototype . parseTryStatement = function ( ) {
-    try
-    {
-      ;
-    }
-    catch ( e )
-    {
-      ;
-    }
-    try
-    {
-    }
-    finally {
-      ;
-    }
-    try
-    {
-    }
-    catch ( e )
-    {
-    }
-    finally {
-    }
-  }
-  ;
-  Program . prototype . parseDebuggerStatement = function ( ) {
-    debugger ;
-  }
-  ;
-  Program . prototype . parseFunctionExpression = function ( ) {
-    a = ( function ( ) {
-      return b ;
-    }
-    ) . bind ( this ) ;
-    a = ( function ( x ) {
-      return x ;
-    }
-    ) . bind ( this ) ;
-    a = ( function ( x y ) {
-      return x + y ;
-    }
-    ) . bind ( this ) ;
-    a = ( function ( ) {
-    }
-    ) . bind ( this ) ;
-    a = ( function ( x ) {
-    }
-    ) . bind ( this ) ;
-    a = ( function ( x y ) {
-    }
-    ) . bind ( this ) ;
-  }
-  ;
-  Program . prototype . parseConditionalExpression = function ( ) {
-    a == b ? x : y ;
-  }
-  ;
-  Program . prototype . parseAssignmentExpression = function ( ) {
-    a = b ;
-    a += b ;
-  }
-  ;
-  Program . prototype . parseUnaryExpression = function ( ) {
-    typeof a ;
-    ++ a ;
-    -- a ;
-    + a ;
-    - a ;
-    ~ a ;
-    ! a ;
-  }
-  ;
-  Program . prototype . parsePostFixExpression = function ( ) {
-    a ( b ) ;
-    a [ b ] ;
-    a . b ;
-  }
-  ;
-  Program . prototype . parseNewExpression = function ( ) {
-    new a ( ) ;
-    new a ( b ) ;
-  }
-  ;
-  Program . prototype . parsePrimaryExpression = function ( ) {
-    this ;
-    [ 1 2 3 ] ;
-    ( a ) ;
-    a ;
-    null ;
-    true ;
-    false ;
-    1 ;
-    "hello" ;
-  }
-  ;
-  Program . prototype . parseBinaryExpression = function ( ) {
-    a + b ;
-    a + b * c ;
-  }
-  ;
-  Program . main = function ( ) {
-    print ( "Hello World!" ) ;
-  }
-  ;
-}
-( ) ) ;
 
 ( function ( ) {
   A = function ( ) {
