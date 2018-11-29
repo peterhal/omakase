@@ -14,8 +14,10 @@
 
 package omakase.syntax;
 
+import com.google.common.collect.ImmutableList;
 import omakase.syntax.tokens.Token;
 import omakase.syntax.tokens.TokenKind;
+import omakase.syntax.trees.ParseTree;
 import omakase.util.ErrorReporter;
 import omakase.util.SourceFile;
 import omakase.util.SourceLocation;
@@ -35,6 +37,22 @@ public class ParserBase {
     this.tokens = new ArrayList<Token>(5);
     this.scanner = scanner;
     this.reporter = reporter;
+  }
+
+  public interface PeekFunction {
+    boolean peek();
+  }
+
+  public interface ParseFunction {
+    ParseTree parse();
+  }
+
+  protected ImmutableList<ParseTree> parseList(PeekFunction peek, ParseFunction parse) {
+    ImmutableList.Builder<ParseTree> elements = new ImmutableList.Builder<ParseTree>();
+    while (peek.peek()) {
+      elements.add(parse.parse());
+    }
+    return elements.build();
   }
 
   /**

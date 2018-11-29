@@ -140,12 +140,10 @@ public class Parser extends ParserBase {
     return new ClassDeclarationTree(getRange(start), isExtern, name, members);
   }
 
-  private ImmutableList<ParseTree> parseClassMembers(boolean isExtern) {
-    ImmutableList.Builder<ParseTree> members = new ImmutableList.Builder<ParseTree>();
-    while (peekClassMember()) {
-      members.add(parseClassMember(isExtern));
-    }
-    return members.build();
+  private ImmutableList<ParseTree> parseClassMembers(final boolean isExtern) {
+    return this.parseList(
+        this::peekClassMember,
+        () -> this.parseClassMember(isExtern));
   }
 
   private ParseTree parseClassMember(boolean isExtern) {
