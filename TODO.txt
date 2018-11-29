@@ -39,6 +39,7 @@ TODO
   - statements
     - resource acquisition
   - expressions
+    - teamplated strings
     - function literals
     - object literals
   - classes
