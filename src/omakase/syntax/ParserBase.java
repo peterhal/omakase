@@ -47,12 +47,59 @@ public class ParserBase {
     ParseTree parse();
   }
 
+  public interface ParseListFunction {
+    ImmutableList<ParseTree> parse();
+  }
+
   protected ImmutableList<ParseTree> parseList(PeekFunction peek, ParseFunction parse) {
-    ImmutableList.Builder<ParseTree> elements = new ImmutableList.Builder<ParseTree>();
+    var elements = new ImmutableList.Builder<ParseTree>();
     while (peek.peek()) {
       elements.add(parse.parse());
     }
     return elements.build();
+  }
+
+  protected ImmutableList<ParseTree> parseSeparatedList(
+      TokenKind separator,
+      ParseFunction parse
+  ) {
+    var elements = new ImmutableList.Builder<ParseTree>();
+    do {
+      elements.add(parse.parse());
+    } while (eatOpt(separator));
+    return elements.build();
+  }
+
+  protected ImmutableList<ParseTree> parseCommaSeparatedList(ParseFunction parse) {
+    return parseSeparatedList(TokenKind.COMMA, parse);
+  }
+
+  protected ImmutableList<ParseTree> parseCommaSeparatedListOpt(
+      PeekFunction peek,
+      ParseFunction parse
+  ) {
+    if (peek.peek()) {
+      return parseCommaSeparatedList(parse);
+    } else {
+      return ImmutableList.of();
+    }
+  }
+
+  protected ImmutableList<ParseTree> parseDelimitedList(
+      TokenKind startDelimiter,
+      ParseListFunction parse,
+      TokenKind endDelimiter
+  ) {
+    eat(startDelimiter);
+    var result = parse.parse();
+    eat(endDelimiter);
+    return result;
+  }
+
+  protected ImmutableList<ParseTree> parseParenList(
+      ParseListFunction parse
+  ) {
+    return parseDelimitedList(TokenKind.OPEN_PAREN, parse, TokenKind.CLOSE_PAREN);
   }
 
   /**

@@ -50,8 +50,8 @@ public class ClassMemberDeclarer {
       declareMethod(clazz, tree.asMethodDeclaration());
     } else {
       FieldDeclarationTree fieldsTree = tree.asFieldDeclaration();
-      for (VariableDeclarationTree fieldTree : fieldsTree.declarations) {
-        declareField(clazz, fieldTree, fieldsTree.isStatic);
+      for (ParseTree fieldTree : fieldsTree.declarations) {
+        declareField(clazz, (VariableDeclarationTree) fieldTree, fieldsTree.isStatic);
       }
     }
   }

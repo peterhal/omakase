@@ -48,7 +48,7 @@ public class Parser extends ParserBase {
   }
 
   private SourceFileTree parseFile() {
-    Token start = peek();
+    var start = peek();
     ImmutableList.Builder<ParseTree> declarations = new ImmutableList.Builder<ParseTree>();
     while (peekClass()) {
       declarations.add(parseClass());
@@ -60,7 +60,7 @@ public class Parser extends ParserBase {
 
   // Parse Class Members
   private FormalParameterListTree parseParameterListDeclaration(boolean typesRequired) {
-    Token start = peek();
+    var start = peek();
     ImmutableList.Builder<ParameterDeclarationTree> result = new ImmutableList.Builder<ParameterDeclarationTree>();
     eat(TokenKind.OPEN_PAREN);
     if (peekParameter()) {
@@ -92,9 +92,9 @@ public class Parser extends ParserBase {
   }
 
   private ParameterDeclarationTree parseParameter() {
-    Token start = peek();
+    var start = peek();
     IdentifierToken name = eatId();
-    ParseTree type = parseColonTypeOpt();
+    var type = parseColonTypeOpt();
     return new ParameterDeclarationTree(getRange(start), type, name);
   }
 
@@ -130,12 +130,12 @@ public class Parser extends ParserBase {
   }
 
   private ParseTree parseClass() {
-    Token start = peek();
-    boolean isExtern = eatOpt(TokenKind.EXTERN);
+    var start = peek();
+    var isExtern = eatOpt(TokenKind.EXTERN);
     eat(TokenKind.CLASS);
     IdentifierToken name = eatId();
     eat(TokenKind.OPEN_CURLY);
-    ImmutableList<ParseTree> members = parseClassMembers(isExtern);
+    var members = parseClassMembers(isExtern);
     eat(TokenKind.CLOSE_CURLY);
     return new ClassDeclarationTree(getRange(start), isExtern, name, members);
   }
@@ -147,9 +147,9 @@ public class Parser extends ParserBase {
   }
 
   private ParseTree parseClassMember(boolean isExtern) {
-    Token start = peek();
-    boolean isStatic = eatOpt(TokenKind.STATIC);
-    boolean isNative = eatOpt(TokenKind.NATIVE);
+    var start = peek();
+    var isStatic = eatOpt(TokenKind.STATIC);
+    var isNative = eatOpt(TokenKind.NATIVE);
     if (peek(TokenKind.VAR)) {
       if (isNative) {
         reportError(start, "Fields may not be native.");
@@ -161,11 +161,16 @@ public class Parser extends ParserBase {
 
   private ParseTree parseField(Token start, boolean isExtern, boolean isStatic) {
     eat(TokenKind.VAR);
-    ImmutableList<VariableDeclarationTree> declarations = parseVariableDeclarations();
+    var declarations = parseVariableDeclarations();
     if (isExtern) {
-      for (VariableDeclarationTree declaration : declarations) {
-        if (declaration.initializer != null) {
-          reportError(declaration.initializer.start(), "Extern fields may not have initializers.");
+      for (var declaration : declarations) {
+        if (declaration instanceof VariableDeclarationTree) {
+          var initializer = ((VariableDeclarationTree) declaration).initializer;
+          if (initializer != null) {
+            reportError(
+                initializer.start(),
+                "Extern fields may not have initializers.");
+            }
         }
       }
     }
@@ -174,9 +179,9 @@ public class Parser extends ParserBase {
   }
 
   private ParseTree parseMethod(Token start, boolean isExtern, boolean isNative, boolean isStatic) {
-    IdentifierToken name = eatId();
-    FormalParameterListTree formals = parseParameterListDeclaration(true);
-    ParseTree returnType = parseColonType();
+    var name = eatId();
+    var formals = parseParameterListDeclaration(true);
+    var returnType = parseColonType();
     ParseTree body;
     if (isExtern) {
       body = null;
@@ -197,17 +202,17 @@ public class Parser extends ParserBase {
   }
 
   private ParseTree parseNativeBlock() {
-    JavascriptParser nativeParser = new JavascriptParser(reporter,
+    var nativeParser = new JavascriptParser(reporter,
         new SourceRange(this.file(), this.getPosition(), this.file().length()));
-    ParseTree result = nativeParser.parseBlock();
+    var result = nativeParser.parseBlock();
     this.setPosition(nativeParser.getPosition());
     return result;
   }
 
   // Types
   private ParseTree parseType() {
-    Token start = peek();
-    ParseTree elementType = parseElementType();
+    var start = peek();
+    var elementType = parseElementType();
     do {
       switch (peekKind()) {
       case OPEN_SQUARE:
@@ -245,8 +250,8 @@ public class Parser extends ParserBase {
   }
 
   private ParseTree parseNamedType() {
-    Token start = peek();
-    NamedTypeTree element = parseNamedTypeElement(start, null);
+    var start = peek();
+    var element = parseNamedTypeElement(start, null);
     while (eatOpt(TokenKind.PERIOD)) {
       element = parseNamedTypeElement(start, element);
     }
@@ -254,8 +259,8 @@ public class Parser extends ParserBase {
   }
 
   private NamedTypeTree parseNamedTypeElement(Token start, NamedTypeTree element) {
-    IdentifierToken name = eatId();
-    TypeArgumentListTree typeArguments = parseTypeArgumentsOpt();
+    var name = eatId();
+    var typeArguments = parseTypeArgumentsOpt();
     return new NamedTypeTree(getRange(start), element, name, typeArguments);
   }
 
@@ -267,15 +272,10 @@ public class Parser extends ParserBase {
   }
 
   private TypeArgumentListTree parseTypeArguments() {
-    Token start = peek();
+    var start = peek();
     eat(TokenKind.OPEN_ANGLE);
-    ImmutableList.Builder<ParseTree> typeArguments = new ImmutableList.Builder<ParseTree>();
-    typeArguments.add(parseType());
-    while (eatOpt(TokenKind.COMMA)) {
-      typeArguments.add(parseType());
-    }
-    eat(TokenKind.CLOSE_ANGLE);
-    return new TypeArgumentListTree(getRange(start), typeArguments.build());
+    var typeArguments = parseCommaSeparatedList(this::parseType);
+    return new TypeArgumentListTree(getRange(start), typeArguments);
   }
 
   private boolean peekType() {
@@ -295,42 +295,28 @@ public class Parser extends ParserBase {
   }
 
   private ParseTree parseKeywordType() {
-    Token start = peek();
+    var start = peek();
     nextToken();
     return new KeywordTypeTree(getRange(start), start);
   }
 
   private ParseTree parseFunctionType() {
-    Token start = peek();
-    eat(TokenKind.OPEN_PAREN);
-    ImmutableList.Builder<ParseTree> parameterTypes = new ImmutableList.Builder<ParseTree>();
-    if (peekType()) {
-      parameterTypes.add(parseType());
-      while(eatOpt(TokenKind.COMMA)) {
-        parameterTypes.add(parseType());
-      }
-    }
-    eat(TokenKind.CLOSE_PAREN);
+    var start = peek();
+    var parameterTypes = parseParenList(() -> parseCommaSeparatedListOpt(this::peekType, this::parseType));
     eat(TokenKind.ARROW);
-    ParseTree returnType = parseType();
-    return new FunctionTypeTree(getRange(start), parameterTypes.build(), returnType);
+    var returnType = parseType();
+    return new FunctionTypeTree(getRange(start), parameterTypes, returnType);
   }
 
   // Statements
   private BlockTree parseBlock() {
-    Token start = peek();
-    eat(TokenKind.OPEN_CURLY);
-    ImmutableList<ParseTree> statements = parseStatementList();
-    eat(TokenKind.CLOSE_CURLY);
+    var start = peek();
+    var statements = parseDelimitedList(TokenKind.OPEN_CURLY, this::parseStatementList, TokenKind.CLOSE_CURLY);
     return new BlockTree(getRange(start), statements);
   }
 
   private ImmutableList<ParseTree> parseStatementList() {
-    ImmutableList.Builder<ParseTree> statements = new ImmutableList.Builder<ParseTree>();
-    while (peekStatement()) {
-      statements.add(parseStatement());
-    }
-    return statements.build();
+    return parseList(this::peekStatement, this::parseStatement);
   }
 
   private ParseTree parseStatement() {
@@ -396,15 +382,15 @@ public class Parser extends ParserBase {
   }
 
   private ParseTree parseVariableStatement() {
-    Token start = peek();
+    var start = peek();
     eat(TokenKind.VAR);
-    ImmutableList<VariableDeclarationTree> declarations = parseVariableDeclarations();
+    var declarations = parseVariableDeclarations();
     eat(TokenKind.SEMI_COLON);
     return new VariableStatementTree(getRange(start), declarations);
   }
 
-  private ImmutableList<VariableDeclarationTree> parseVariableDeclarations() {
-    return parseRemainingVariableDeclarations(parseVariableDeclaration());
+  private ImmutableList<ParseTree> parseVariableDeclarations() {
+    return parseCommaSeparatedList(this::parseVariableDeclaration);
   }
 
   private ImmutableList<VariableDeclarationTree> parseRemainingVariableDeclarations(VariableDeclarationTree element) {
@@ -417,13 +403,13 @@ public class Parser extends ParserBase {
   }
 
   private VariableDeclarationTree parseVariableDeclaration() {
-    Token start = peek();
-    IdentifierToken identifier = eatId();
+    var start = peek();
+    var identifier = eatId();
     return parseVariableDeclaration(start, identifier);
   }
 
   private VariableDeclarationTree parseVariableDeclaration(Token start, IdentifierToken identifier) {
-    ParseTree type = parseColonTypeOpt();
+    var type = parseColonTypeOpt();
     ParseTree initializer = null;
     if (eatOpt(TokenKind.EQUAL)) {
       initializer = parseExpression();
@@ -432,18 +418,18 @@ public class Parser extends ParserBase {
   }
 
   private ParseTree parseEmptyStatement() {
-    Token start = peek();
+    var start = peek();
     eat(TokenKind.SEMI_COLON);
     return new EmptyStatementTree(getRange(start));
   }
 
   private ParseTree parseIfStatement() {
-    Token start = peek();
+    var start = peek();
     eat(TokenKind.IF);
     eat(TokenKind.OPEN_PAREN);
-    ParseTree expression = parseExpression();
+    var expression = parseExpression();
     eat(TokenKind.CLOSE_PAREN);
-    ParseTree ifBody = parseStatement();
+    var ifBody = parseStatement();
     ParseTree elseBody = null;
     if (eatOpt(TokenKind.ELSE)) {
       elseBody = parseStatement();
@@ -452,35 +438,35 @@ public class Parser extends ParserBase {
   }
 
   private ParseTree parseDoStatement() {
-    Token start = peek();
+    var start = peek();
     eat(TokenKind.DO);
-    ParseTree body = parseStatement();
+    var body = parseStatement();
     eat(TokenKind.WHILE);
     eat(TokenKind.OPEN_PAREN);
-    ParseTree expression = parseExpression();
+    var expression = parseExpression();
     eat(TokenKind.CLOSE_PAREN);
     eat(TokenKind.SEMI_COLON);
     return new DoStatementTree(getRange(start), body, expression);
   }
 
   private ParseTree parseWhileStatement() {
-    Token start = peek();
+    var start = peek();
     eat(TokenKind.WHILE);
     eat(TokenKind.OPEN_PAREN);
-    ParseTree expression = parseExpression();
+    var expression = parseExpression();
     eat(TokenKind.CLOSE_PAREN);
     return new WhileStatementTree(getRange(start), expression, parseStatement());
   }
 
   private ParseTree parseForStatement() {
-    Token start = peek();
+    var start = peek();
     eat(TokenKind.FOR);
     eat(TokenKind.OPEN_PAREN);
     switch (peekKind()) {
     case VAR:
-      Token variableStart = peek();
+      var variableStart = peek();
       eat(TokenKind.VAR);
-      VariableDeclarationTree variableDeclaration = parseVariableDeclaration();
+      var variableDeclaration = parseVariableDeclaration();
       if (eatOpt(TokenKind.IN)) {
         if (variableDeclaration.initializer != null) {
           reportError(variableDeclaration.initializer.start(), "Variable declared in for-in statement may not have an initializer.");
@@ -493,44 +479,44 @@ public class Parser extends ParserBase {
     case SEMI_COLON:
       return parseForStatement(start, null);
     default:
-      ParseTree initializer = parseExpression();
+      var initializer = parseExpression();
       return parseForStatement(start, initializer);
     }
   }
 
   private ParseTree parseForStatement(Token start, ParseTree initializer) {
     eat(TokenKind.SEMI_COLON);
-    ParseTree condition = peek(TokenKind.SEMI_COLON) ? null : parseExpression();
+    var condition = peek(TokenKind.SEMI_COLON) ? null : parseExpression();
     eat(TokenKind.SEMI_COLON);
-    ParseTree increment = peek(TokenKind.CLOSE_PAREN) ? null : parseExpression();
+    var increment = peek(TokenKind.CLOSE_PAREN) ? null : parseExpression();
     eat(TokenKind.CLOSE_PAREN);
     return new ForStatementTree(getRange(start), initializer, condition, increment, parseStatement());
   }
 
   private ParseTree parseForIn(Token start, VariableDeclarationTree variableDeclaration) {
-    ParseTree collection = parseExpression();
+    var collection = parseExpression();
     eat(TokenKind.CLOSE_PAREN);
     return new ForInStatementTree(getRange(start), variableDeclaration, collection, parseStatement());
   }
 
   private ParseTree parseContinueStatement() {
-    Token start = peek();
+    var start = peek();
     eat(TokenKind.CONTINUE);
-    IdentifierToken label = eatIdOpt();
+    var label = eatIdOpt();
     eat(TokenKind.SEMI_COLON);
     return new ContinueStatementTree(getRange(start), label);
   }
 
   private ParseTree parseBreakStatement() {
-    Token start = peek();
+    var start = peek();
     eat(TokenKind.BREAK);
-    IdentifierToken label = eatIdOpt();
+    var label = eatIdOpt();
     eat(TokenKind.SEMI_COLON);
     return new BreakStatementTree(getRange(start), label);
   }
 
   private ParseTree parseReturnStatement() {
-    Token start = peek();
+    var start = peek();
     eat(TokenKind.RETURN);
     ParseTree expression = null;
     if (peekExpression()) {
@@ -541,16 +527,16 @@ public class Parser extends ParserBase {
   }
 
   private ParseTree parseSwitchStatement() {
-    Token start = peek();
+    var start = peek();
     eat(TokenKind.SWITCH);
     eat(TokenKind.OPEN_PAREN);
-    ParseTree expression = parseExpression();
+    var expression = parseExpression();
     eat(TokenKind.CLOSE_PAREN);
     eat(TokenKind.OPEN_CURLY);
-    ImmutableList.Builder<ParseTree> caseClauses = new ImmutableList.Builder<ParseTree>();
+    var caseClauses = new ImmutableList.Builder<ParseTree>();
     ParseTree defaultClause = null;
     while (peekCaseClause()) {
-      ParseTree clause = parseCaseClause();
+      var clause = parseCaseClause();
       if (clause.isDefaultClause()) {
         if (defaultClause == null) {
           defaultClause = clause;
@@ -576,16 +562,16 @@ public class Parser extends ParserBase {
   }
 
   private ParseTree parseDefault() {
-    Token start = peek();
+    var start = peek();
     eat(TokenKind.DEFAULT);
     eat(TokenKind.COLON);
     return new DefaultClauseTree(getRange(start), parseStatementList());
   }
 
   private ParseTree parseCase() {
-    Token start = peek();
+    var start = peek();
     eat(TokenKind.CASE);
-    ParseTree expression = parseExpression();
+    var expression = parseExpression();
     eat(TokenKind.COLON);
     return new CaseClauseTree(getRange(start), expression, parseStatementList());
   }
@@ -601,17 +587,17 @@ public class Parser extends ParserBase {
   }
 
   private ParseTree parseThrowStatement() {
-    Token start = peek();
+    var start = peek();
     eat(TokenKind.THROW);
-    ParseTree exception = parseExpression();
+    var exception = parseExpression();
     eat(TokenKind.SEMI_COLON);
     return new ThrowStatementTree(getRange(start), exception);
   }
 
   private ParseTree parseTryStatement() {
-    Token start = peek();
+    var start = peek();
     eat(TokenKind.TRY);
-    BlockTree body = parseBlock();
+    var body = parseBlock();
     CatchClauseTree catchClause = null;
     if (peek(TokenKind.CATCH)) {
       catchClause = parseCatchClause();
@@ -624,25 +610,25 @@ public class Parser extends ParserBase {
   }
 
   private CatchClauseTree parseCatchClause() {
-    Token start = peek();
+    var start = peek();
     eat(TokenKind.CATCH);
     eat(TokenKind.OPEN_PAREN);
-    IdentifierToken exception = eatId();
+    var exception = eatId();
     eat(TokenKind.CLOSE_PAREN);
-    BlockTree body = parseBlock();
+    var body = parseBlock();
     return new CatchClauseTree(getRange(start), exception, body);
   }
 
   private ParseTree parseDebuggerStatement() {
-    Token start = peek();
+    var start = peek();
     eat(TokenKind.DEBUGGER);
     eat(TokenKind.SEMI_COLON);
     return new DebuggerStatementTree(getRange(start));
   }
 
   private ParseTree parseExpressionStatement() {
-    Token start = peek();
-    ParseTree expression = parseExpression();
+    var start = peek();
+    var expression = parseExpression();
     eat(TokenKind.SEMI_COLON);
     return new ExpressionStatementTree(getRange(start), expression);
   }
@@ -702,7 +688,7 @@ public class Parser extends ParserBase {
     if (peekFunction()) {
       return parseFunction();
     }
-    ParseTree left = parseConditionalExpression();
+    var left = parseConditionalExpression();
     if (!peekAssignmentOperator()) {
       return left;
     }
@@ -710,9 +696,9 @@ public class Parser extends ParserBase {
   }
 
   private ParseTree parseAssignmentExpression(ParseTree left) {
-    Token operator = nextToken();
+    var operator = nextToken();
     checkForLeftHandSideExpression(left, operator);
-    ParseTree right = parseExpression();
+    var right = parseExpression();
     return new BinaryExpressionTree(getRange(left.start()), left, operator, right);
   }
 
@@ -741,8 +727,8 @@ public class Parser extends ParserBase {
   }
 
   private ParseTree parseFunction() {
-    Token start = peek();
-    FormalParameterListTree parameters = parseParameterListDeclaration(false);
+    var start = peek();
+    var parameters = parseParameterListDeclaration(false);
     eat(TokenKind.ARROW);
     ParseTree body;
     if (peek(TokenKind.OPEN_CURLY)) {
@@ -757,7 +743,7 @@ public class Parser extends ParserBase {
     if (!peek(TokenKind.OPEN_PAREN)) {
       return false;
     }
-    int index = 1;
+    var index = 1;
     if (peekParameter(index)) {
       index++;
       while (peek(index, TokenKind.COMMA)) {
@@ -776,142 +762,142 @@ public class Parser extends ParserBase {
   }
 
   private ParseTree parseConditionalExpression() {
-    Token start = peek();
-    ParseTree condition = parseLogicalOrExpression();
+    var start = peek();
+    var condition = parseLogicalOrExpression();
     if (!eatOpt(TokenKind.QUESTION)) {
       return condition;
     }
-    ParseTree trueCase = parseExpression();
+    var trueCase = parseExpression();
     eat(TokenKind.COLON);
-    ParseTree falseCase = parseExpression();
+    var falseCase = parseExpression();
     return new ConditionalExpressionTree(getRange(start), condition, trueCase, falseCase);
   }
 
   private ParseTree parseLogicalOrExpression() {
-    Token start = peek();
-    ParseTree left = parseLogicalAndExpression();
+    var start = peek();
+    var left = parseLogicalAndExpression();
     while (peek(TokenKind.BAR_BAR)) {
-      Token operator = nextToken();
-      ParseTree right = parseLogicalAndExpression();
+      var operator = nextToken();
+      var right = parseLogicalAndExpression();
       left = new BinaryExpressionTree(getRange(start), left, operator, right);
     }
     return left;
   }
 
   private ParseTree parseLogicalAndExpression() {
-    Token start = peek();
-    ParseTree left = parseBitwiseOrExpression();
+    var start = peek();
+    var left = parseBitwiseOrExpression();
     while (peek(TokenKind.AMPERSAND_AMPERSAND)) {
-      Token operator = nextToken();
-      ParseTree right = parseBitwiseOrExpression();
+      var operator = nextToken();
+      var right = parseBitwiseOrExpression();
       left = new BinaryExpressionTree(getRange(start), left, operator, right);
     }
     return left;
   }
 
   private ParseTree parseBitwiseOrExpression() {
-    Token start = peek();
-    ParseTree left = parseBitwiseXorExpression();
+    var start = peek();
+    var left = parseBitwiseXorExpression();
     while (peek(TokenKind.BAR)) {
-      Token operator = nextToken();
-      ParseTree right = parseBitwiseXorExpression();
+      var operator = nextToken();
+      var right = parseBitwiseXorExpression();
       left = new BinaryExpressionTree(getRange(start), left, operator, right);
     }
     return left;
   }
 
   private ParseTree parseBitwiseXorExpression() {
-    Token start = peek();
-    ParseTree left = parseBitwiseAndExpression();
+    var start = peek();
+    var left = parseBitwiseAndExpression();
     while (peek(TokenKind.HAT)) {
-      Token operator = nextToken();
-      ParseTree right = parseBitwiseAndExpression();
+      var operator = nextToken();
+      var right = parseBitwiseAndExpression();
       left = new BinaryExpressionTree(getRange(start), left, operator, right);
     }
     return left;
   }
 
   private ParseTree parseBitwiseAndExpression() {
-    Token start = peek();
-    ParseTree left = parseEqualityExpression();
+    var start = peek();
+    var left = parseEqualityExpression();
     while (peek(TokenKind.AMPERSAND)) {
-      Token operator = nextToken();
-      ParseTree right = parseEqualityExpression();
+      var operator = nextToken();
+      var right = parseEqualityExpression();
       left = new BinaryExpressionTree(getRange(start), left, operator, right);
     }
     return left;
   }
 
   private ParseTree parseEqualityExpression() {
-    Token start = peek();
-    ParseTree left = parseRelationalExpression();
+    var start = peek();
+    var left = parseRelationalExpression();
     while (peekEqualityOperator()) {
-      Token operator = nextToken();
-      ParseTree right = parseRelationalExpression();
+      var operator = nextToken();
+      var right = parseRelationalExpression();
       left = new BinaryExpressionTree(getRange(start), left, operator, right);
     }
     return left;
   }
 
   private ParseTree parseRelationalExpression() {
-    Token start = peek();
-    ParseTree left = parseInstanceOfExpression();
+    var start = peek();
+    var left = parseInstanceOfExpression();
     while (peekRelationalOperator()) {
-      Token operator = nextToken();
-      ParseTree right = parseInstanceOfExpression();
+      var operator = nextToken();
+      var right = parseInstanceOfExpression();
       left = new BinaryExpressionTree(getRange(start), left, operator, right);
     }
     return left;
   }
 
   private ParseTree parseInstanceOfExpression() {
-    Token start = peek();
-    ParseTree left = parseShiftExpression();
+    var start = peek();
+    var left = parseShiftExpression();
     while (peek(TokenKind.INSTANCEOF)) {
-      Token operator = nextToken();
-      ParseTree right = parseType();
+      var operator = nextToken();
+      var right = parseType();
       left = new BinaryExpressionTree(getRange(start), left, operator, right);
     }
     return left;
   }
 
   private ParseTree parseShiftExpression() {
-    Token start = peek();
-    ParseTree left = parseAdditiveExpression();
+    var start = peek();
+    var left = parseAdditiveExpression();
     while (peekShiftOperator()) {
-      Token operator = nextToken();
-      ParseTree right = parseAdditiveExpression();
+      var operator = nextToken();
+      var right = parseAdditiveExpression();
       left = new BinaryExpressionTree(getRange(start), left, operator, right);
     }
     return left;
   }
 
   private ParseTree parseAdditiveExpression() {
-    Token start = peek();
-    ParseTree left = parseMultiplicativeExpression();
+    var start = peek();
+    var left = parseMultiplicativeExpression();
     while (peekAdditiveOperator()) {
-      Token operator = nextToken();
-      ParseTree right = parseMultiplicativeExpression();
+      var operator = nextToken();
+      var right = parseMultiplicativeExpression();
       left = new BinaryExpressionTree(getRange(start), left, operator, right);
     }
     return left;
   }
 
   private ParseTree parseMultiplicativeExpression() {
-    Token start = peek();
-    ParseTree left = parseUnaryExpression();
+    var start = peek();
+    var left = parseUnaryExpression();
     while (peekMultiplicativeOperator()) {
-      Token operator = nextToken();
-      ParseTree right = parseUnaryExpression();
+      var operator = nextToken();
+      var right = parseUnaryExpression();
       left = new BinaryExpressionTree(getRange(start), left, operator, right);
     }
     return left;
   }
 
   private ParseTree parseUnaryExpression() {
-    Token start = peek();
+    var start = peek();
     if (peekUnaryOperator()) {
-      Token operator = nextToken();
+      var operator = nextToken();
       return new UnaryExpressionTree(getRange(start), operator, parseUnaryExpression());
     }
     return parsePostfixExpression();
@@ -1030,28 +1016,24 @@ public class Parser extends ParserBase {
   }
 
   private ParseTree parseArrayLiteral() {
-    Token start = peek();
-    ImmutableList.Builder<ParseTree> elements = new ImmutableList.Builder<ParseTree>();
-    eat(TokenKind.OPEN_SQUARE);
-    if (peekExpression()) {
-      elements.add(parseExpression());
-      while (eatOpt(TokenKind.COMMA)) {
-        elements.add(parseExpression());
-      }
-    }
-    eat(TokenKind.CLOSE_SQUARE);
-    return new ArrayLiteralExpressionTree(getRange(start), elements.build());
+    var start = peek();
+    var elements = parseDelimitedList(
+        TokenKind.OPEN_SQUARE,
+        () -> parseCommaSeparatedListOpt(this::peekExpression, this::parseExpression),
+        TokenKind.CLOSE_SQUARE
+    );
+    return new ArrayLiteralExpressionTree(getRange(start), elements);
   }
 
   private ParseTree parseThisExpression() {
-    Token start = eat(TokenKind.THIS);
+    var start =eat(TokenKind.THIS);
     return new ThisExpressionTree(getRange(start));
   }
 
   private ParseTree parseParenExpression() {
-    Token start = peek();
+    var start = peek();
     eat(TokenKind.OPEN_PAREN);
-    ParseTree expression = parseExpression();
+    var expression = parseExpression();
     eat(TokenKind.CLOSE_PAREN);
     return new ParenExpressionTree(getRange(start), expression);
   }
@@ -1062,8 +1044,8 @@ public class Parser extends ParserBase {
   }
 
   private ParseTree parsePostfixExpression() {
-    Token start = peek();
-    ParseTree left = parseLeftHandSideExpression();
+    var start = peek();
+    var left = parseLeftHandSideExpression();
     while (peekPostfixOperator()) {
       left = new PostfixExpressionTree(getRange(start), left, nextToken());
     }
@@ -1071,8 +1053,8 @@ public class Parser extends ParserBase {
   }
 
   private ParseTree parseLeftHandSideExpression() {
-    Token start = peek();
-    ParseTree operand = parseNewExpression();
+    var start = peek();
+    var operand = parseNewExpression();
     while (peekCallSuffix()) {
       switch (peekKind()) {
       case OPEN_PAREN:
@@ -1118,10 +1100,10 @@ public class Parser extends ParserBase {
   }
 
   private ParseTree parseNewExpression() {
-    Token start = peek();
+    var start = peek();
     if (eatOpt(TokenKind.NEW)) {
       // TODO: Should be parseTypeName.
-      ParseTree operand = parseNewExpression();
+      var operand = parseNewExpression();
       ArgumentsTree arguments = null;
       if (peekArguments()) {
         arguments = parseArguments();
@@ -1133,7 +1115,7 @@ public class Parser extends ParserBase {
   }
 
   private ParseTree parseMemberExpressionNoNew() {
-    Token start = peek();
+    var start = peek();
     ParseTree operand;
     operand = parsePrimaryExpression();
     while (peekMemberExpressionSuffix()) {
@@ -1153,7 +1135,7 @@ public class Parser extends ParserBase {
 
   private ParseTree parseArrayIndex() {
     eat(TokenKind.OPEN_SQUARE);
-    ParseTree index = parseExpression();
+    var index = parseExpression();
     eat(TokenKind.CLOSE_SQUARE);
     return index;
   }
@@ -1179,7 +1161,7 @@ public class Parser extends ParserBase {
   }
 
   private ParseTree parseLiteral() {
-    Token value = nextToken();
+    var value = nextToken();
     return new LiteralExpressionTree(getRange(value), value);
   }
 
@@ -1215,21 +1197,13 @@ public class Parser extends ParserBase {
   }
 
   private ArgumentsTree parseArguments() {
-    Token start = peek();
-    eat(TokenKind.OPEN_PAREN);
-    ImmutableList.Builder<ParseTree> arguments = new ImmutableList.Builder<ParseTree>();
-    if (peekExpression()) {
-      do {
-        arguments.add(parseExpression());
-      } while (eatOpt(TokenKind.COMMA));
-    }
-    eat(TokenKind.CLOSE_PAREN);
-    return new ArgumentsTree(getRange(start), arguments.build());
+    var start = peek();
+    var arguments = parseParenList(() -> parseCommaSeparatedListOpt(this::peekExpression, this::parseExpression));
+    return new ArgumentsTree(getRange(start), arguments);
   }
 
   private IdentifierToken eatId() {
-    Token token = eat(TokenKind.IDENTIFIER);
-
+    var token = eat(TokenKind.IDENTIFIER);
     return token.isIdentifier() ? token.asIdentifier() : null;
   }
 

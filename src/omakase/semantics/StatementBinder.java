@@ -253,7 +253,8 @@ public class StatementBinder extends ParseTreeVisitor {
   }
 
   private Map<String, LocalVariableSymbol> bindLocalVariableDeclarations(VariableStatementTree variableStatement, Map<String, LocalVariableSymbol> locals) {
-    for (VariableDeclarationTree variableTree : variableStatement.declarations) {
+    for (var childTree : variableStatement.declarations) {
+      var variableTree = (VariableDeclarationTree) childTree;
       String name = variableTree.name.value;
       if ((locals != null && locals.containsKey(name)) || context.containsLocal(name)) {
         reportError(variableTree, "Duplicate local variable '%s'.", name);

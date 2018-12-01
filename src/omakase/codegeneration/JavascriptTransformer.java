@@ -352,8 +352,8 @@ public class JavascriptTransformer extends ParseTreeTransformer {
 
     private void createFields(FieldDeclarationTree fields) {
       boolean isStatic = fields.isStatic;
-      for (VariableDeclarationTree field : fields.declarations) {
-        members.add(createField(isStatic, field));
+      for (var field : fields.declarations) {
+        members.add(createField(isStatic, (VariableDeclarationTree) field));
       }
     }
 

@@ -420,7 +420,7 @@ public class ParseTreeTransformer {
   }
 
   protected ParseTree transform(FieldDeclarationTree tree) {
-    ImmutableList<? extends omakase.syntax.trees.VariableDeclarationTree> declarations = transformList(tree.declarations);
+    ImmutableList<? extends omakase.syntax.trees.ParseTree> declarations = transformList(tree.declarations);
     if (declarations == tree.declarations) {
       return tree;
     }
@@ -727,7 +727,7 @@ public class ParseTreeTransformer {
   }
 
   protected ParseTree transform(VariableStatementTree tree) {
-    ImmutableList<? extends omakase.syntax.trees.VariableDeclarationTree> declarations = transformList(tree.declarations);
+    ImmutableList<? extends omakase.syntax.trees.ParseTree> declarations = transformList(tree.declarations);
     if (declarations == tree.declarations) {
       return tree;
     }
