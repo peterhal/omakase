@@ -94,6 +94,7 @@ public enum TokenKind {
   FALSE("false"),
   FINALLY("finally"),
   FOR("for"),
+  FUNCTION("function"),
   IF("if"),
   IN("in"),
   INSTANCEOF("instanceof"),

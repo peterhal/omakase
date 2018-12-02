@@ -20,6 +20,7 @@ package omakase.syntax.trees;
 public enum ParseTreeKind {
   // Omakase
   CLASS_DECLARATION,
+  FUNCTION_DECLARATION,
   METHOD_DECLARATION,
   FIELD_DECLARATION,
   PARAMETER_DECLARATION,

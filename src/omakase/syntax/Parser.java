@@ -49,13 +49,54 @@ public class Parser extends ParserBase {
 
   private SourceFileTree parseFile() {
     var start = peek();
-    ImmutableList.Builder<ParseTree> declarations = new ImmutableList.Builder<ParseTree>();
-    while (peekClass()) {
-      declarations.add(parseClass());
-    }
+    var declarations = parseList(this::peekDeclaration, this::parseDeclaration);
     eat(TokenKind.END_OF_FILE);
+    return new SourceFileTree(getRange(start), declarations);
+  }
 
-    return new SourceFileTree(getRange(start), declarations.build());
+  private boolean peekDeclaration() {
+    switch (peekKind()) {
+    case EXTERN:
+    case CLASS:
+    case FUNCTION:
+      return true;
+    default:
+      return false;
+    }
+  }
+
+  private ParseTree parseDeclaration() {
+    switch (peekKind()) {
+    case FUNCTION:
+    case NATIVE:
+      return parseFunctionDeclaration();
+    case EXTERN:
+      if (peekKind(1) == TokenKind.FUNCTION) {
+        return parseFunctionDeclaration();
+      }
+    }
+    return parseClass();
+  }
+
+  private ParseTree parseFunctionDeclaration() {
+    var start = peek();
+    var isExtern = eatOpt(TokenKind.EXTERN);
+    var isNative = eatOpt(TokenKind.NATIVE);
+    if (isExtern && isNative) {
+      reportError(peek(), "Declaration may not be both 'native' and 'extern'.");
+    }
+    eat(TokenKind.FUNCTION);
+    var name = eatId();
+    var parameters = parseParameterListDeclaration(true);
+    var returnType = parseColonType();
+    ParseTree body;
+    if (isExtern) {
+      body = null;
+      eat(TokenKind.SEMI_COLON);
+    } else {
+      body = parseBlock(isNative);
+    }
+    return new FunctionDeclarationTree(getRange(start), returnType, name, parameters, isExtern, isNative, body);
   }
 
   // Parse Class Members
@@ -184,6 +225,9 @@ public class Parser extends ParserBase {
     var returnType = parseColonType();
     ParseTree body;
     if (isExtern) {
+      if (isNative) {
+        reportError(name, "Method may not be both 'extern' and 'native'.");
+      }
       body = null;
       eat(TokenKind.SEMI_COLON);
     } else {
