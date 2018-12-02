@@ -18,6 +18,7 @@ package omakase.semantics.symbols;
  */
 public enum SymbolKind {
   CLASS,
+  FUNCTION,
   METHOD,
   FIELD,
   TYPE_VARIABLE,

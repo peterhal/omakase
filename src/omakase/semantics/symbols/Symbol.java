@@ -36,6 +36,10 @@ public abstract class Symbol {
     return kind == SymbolKind.CLASS;
   }
 
+  public boolean isFunction() {
+    return kind == SymbolKind.FUNCTION;
+  }
+
   public boolean isLocalVariable() {
     return kind == SymbolKind.LOCAL_VARIABLE;
   }
@@ -58,6 +62,10 @@ public abstract class Symbol {
 
   public ClassSymbol asClass() {
     return (ClassSymbol) this;
+  }
+
+  public FunctionSymbol asFunction() {
+    return (FunctionSymbol) this;
   }
 
   public abstract boolean isWritable();

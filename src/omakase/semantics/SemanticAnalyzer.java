@@ -40,7 +40,7 @@ public class SemanticAnalyzer {
       return;
     }
 
-    declareClasses();
+    declareGlobals();
     if (hadError()) {
       return;
     }
@@ -56,8 +56,8 @@ public class SemanticAnalyzer {
     }
   }
 
-  private void declareClasses() {
-    new ClassDeclarer(project).declareClasses();
+  private void declareGlobals() {
+    GlobalDeclarer.declare(project);
   }
 
   private void declareClassMembers() {

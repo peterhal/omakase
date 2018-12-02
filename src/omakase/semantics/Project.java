@@ -15,6 +15,7 @@
 package omakase.semantics;
 
 import omakase.semantics.symbols.ClassSymbol;
+import omakase.semantics.symbols.Symbol;
 import omakase.semantics.types.TypeContainer;
 import omakase.syntax.trees.SourceFileTree;
 import omakase.util.ErrorReporter;
@@ -28,13 +29,14 @@ import java.util.Map;
 public class Project {
   private final Map<String, SourceFile> files = new LinkedHashMap<String, SourceFile>();
   private final Map<SourceFile, SourceFileTree> trees = new LinkedHashMap<SourceFile, SourceFileTree>();
-  private final Map<String, ClassSymbol> classes = new LinkedHashMap<String, ClassSymbol>();
+  private final Map<String, Symbol> symbols = new LinkedHashMap<String, Symbol>();
   private final TypeContainer types = new TypeContainer();
   private final ErrorReporter reporter;
+  private final GlobalLookupContext lookup;
 
   public Project(ErrorReporter reporter) {
-
     this.reporter = reporter;
+    this.lookup = new GlobalLookupContext(this);
   }
 
   public void addFile(SourceFile file) {
@@ -61,25 +63,25 @@ public class Project {
     return trees.values();
   }
 
-  public boolean containsClass(String className) {
-    return classes.containsKey(className);
+  public boolean containsSymbol(String name) {
+    return symbols.containsKey(name);
   }
 
-  public ClassSymbol getClass(String className) {
-    return classes.get(className);
+  public Symbol getSymbol(String name) {
+    return symbols.get(name);
   }
 
   public GlobalLookupContext getLookupContext() {
-    return new GlobalLookupContext(this);
+    return this.lookup;
   }
 
   public void addClass(ClassSymbol classSymbol) {
-    classes.put(classSymbol.name, classSymbol);
+    symbols.put(classSymbol.name, classSymbol);
     types.addClassType(classSymbol);
   }
 
-  public Iterable<ClassSymbol> getClasses() {
-    return classes.values();
+  public Iterable<Symbol> getSymbols() {
+    return symbols.values();
   }
 
   public TypeContainer getTypes() {

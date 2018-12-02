@@ -24,6 +24,6 @@ public class GlobalLookupContext implements IdentifierLookupContext {
   }
   @Override
   public Symbol lookupIdentifier(String value) {
-    return project.getClass(value);
+    return project.getSymbol(value);
   }
 }

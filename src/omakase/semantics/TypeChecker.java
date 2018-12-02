@@ -14,10 +14,7 @@
 
 package omakase.semantics;
 
-import omakase.semantics.symbols.ClassSymbol;
-import omakase.semantics.symbols.FieldSymbol;
-import omakase.semantics.symbols.MethodSymbol;
-import omakase.semantics.symbols.Symbol;
+import omakase.semantics.symbols.*;
 import omakase.syntax.trees.ParseTree;
 
 /**
@@ -30,9 +27,21 @@ public class TypeChecker {
   }
 
   public void checkAllTypes() {
-    for (ClassSymbol clazz : project.getClasses()) {
-      checkClassMembers(clazz);
+    for (Symbol symbol : project.getSymbols()) {
+      checkSymbol(symbol);
     }
+  }
+
+  private void checkSymbol(Symbol symbol) {
+    if (symbol.isClass()) {
+      checkClassMembers(symbol.asClass());
+    } else if (symbol.isFunction()) {
+      checkFunction(symbol.asFunction());
+    }
+  }
+
+  private void checkFunction(FunctionSymbol function) {
+    new StatementBinder(new FunctionBindingContext(project, function)).bind(function.tree.body);
   }
 
   private void checkClassMembers(ClassSymbol clazz) {

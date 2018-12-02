@@ -493,6 +493,10 @@ public class ParseTree {
     return this.kind == ParseTreeKind.FORMAL_PARAMETER_LIST;
   }
 
+  public boolean isFunctionDeclaration() {
+    return this.kind == ParseTreeKind.FUNCTION_DECLARATION;
+  }
+
   public boolean isFunctionExpression() {
     return this.kind == ParseTreeKind.FUNCTION_EXPRESSION;
   }

@@ -16,6 +16,7 @@ package omakase.semantics;
 
 import com.google.common.collect.ImmutableList;
 import omakase.semantics.symbols.ClassSymbol;
+import omakase.semantics.symbols.Symbol;
 import omakase.semantics.types.FunctionType;
 import omakase.semantics.types.Type;
 import omakase.semantics.types.TypeContainer;
@@ -79,12 +80,16 @@ public class TypeBinder {
 
   private Type bindNamedType(ParseTree type, NamedTypeTree namedTypeTree) {
     String className = namedTypeTree.name.value;
-    ClassSymbol clazz = project.getClass(className);
-    if (clazz == null) {
+    Symbol symbol = project.getSymbol(className);
+    if (symbol == null) {
       project.errorReporter().reportError(type.start(), "No class named '%s'.", className);
       return null;
     }
-    return types().getClassType(clazz);
+    if (symbol.isFunction()) {
+      project.errorReporter().reportError(type.start(), "'%s' is a function not a class.", className);
+      return null;
+    }
+    return types().getClassType(symbol.asClass());
   }
 
   private Type bindNullableType(NullableTypeTree type) {

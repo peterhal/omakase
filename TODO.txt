@@ -17,6 +17,7 @@ Next Up
   - name table
 - use symbols for code gen
 - self hosting
+- access control
 
 TODO
 ----

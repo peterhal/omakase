@@ -34,8 +34,10 @@ public class ClassMemberDeclarer {
   }
 
   public void declareMembers() {
-    for (ClassSymbol clazz : project.getClasses()) {
-      declareClassMembers(clazz);
+    for (Symbol symbol : project.getSymbols()) {
+      if (symbol.isClass()) {
+        declareClassMembers(symbol.asClass());
+      }
     }
   }
 

@@ -33,14 +33,16 @@ public class Program {
     analyzer.analyze();
 
     IndentedWriter out = new IndentedWriter(System.out);
-    for (ClassSymbol clazz : project.getClasses()) {
-      out.write(clazz.name);
+    for (Symbol symbol : project.getSymbols()) {
+      out.write(symbol.name);
       out.writeLine();
       out.indent();
 
-      for (Symbol member : clazz.members()) {
-        out.write(member.name);
-        out.writeLine();
+      if (symbol.isClass()) {
+        for (Symbol member : symbol.asClass().members()) {
+          out.write(member.name);
+          out.writeLine();
+        }
       }
 
       out.outdent();

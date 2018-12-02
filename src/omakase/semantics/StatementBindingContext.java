@@ -109,24 +109,24 @@ public class StatementBindingContext extends ExpressionBindingContext {
         this.returnType);
   }
 
-  public boolean hasBreakLabel() {
+  final public boolean hasBreakLabel() {
     return hasBreak;
   }
 
-  public boolean hasContinueLabel() {
+  final public boolean hasContinueLabel() {
     return hasContinue;
   }
 
-  public Type getSwitchExpressionType() {
+  final public Type getSwitchExpressionType() {
     // Parser ensures case labels never occur outside of switch statements.
     return switchType;
   }
 
-  public boolean canReturn() {
+  final public boolean canReturn() {
     return this.canReturn;
   }
 
-  public Type getReturnType() {
+  final public Type getReturnType() {
     return returnType;
   }
 

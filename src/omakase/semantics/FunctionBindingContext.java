@@ -1,4 +1,4 @@
-// Copyright 2012 Peter Hallam
+// Copyright 2018 Peter Hallam
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -14,35 +14,30 @@
 
 package omakase.semantics;
 
-import omakase.semantics.symbols.MethodSymbol;
+import omakase.semantics.symbols.FunctionSymbol;
 import omakase.semantics.symbols.Symbol;
 import omakase.semantics.types.Type;
 
-/**
- */
-public class MethodBindingContext extends StatementBindingContext {
-  private final MethodSymbol method;
+public class FunctionBindingContext extends StatementBindingContext {
+  private FunctionSymbol function;
 
-  public MethodBindingContext(Project project, MethodSymbol method) {
-    super(
-        project,
+  public FunctionBindingContext(Project project, FunctionSymbol function) {
+    super(project,
         null,
         new BindingResults(),
         project.getLookupContext(),
-        method.isStatic
-            ? null
-            : project.getTypes().getClassType(method.parent),
+        null,
         false,
         false,
         null,
         true,
-        method.getReturnType());
-    this.method = method;
+        function.getReturnType());
+    this.function = function;
   }
 
   @Override
   public Symbol lookupIdentifier(String value) {
-    Symbol result = method.parameters.get(value);
+    Symbol result = function.parameters.get(value);
     return result == null ? super.lookupIdentifier(value) : result;
   }
 }

@@ -18,36 +18,46 @@ import omakase.semantics.symbols.ClassSymbol;
 import omakase.semantics.symbols.Symbol;
 import omakase.syntax.tokens.Token;
 import omakase.syntax.trees.ClassDeclarationTree;
+import omakase.syntax.trees.FunctionDeclarationTree;
 import omakase.syntax.trees.ParseTree;
 import omakase.syntax.trees.SourceFileTree;
 import omakase.util.SourceLocation;
 
 /**
  */
-public class ClassDeclarer {
+public class GlobalDeclarer {
   private final Project project;
 
-  public ClassDeclarer(Project project) {
+  public GlobalDeclarer(Project project) {
     this.project = project;
   }
 
-  public void declareClasses() {
+  public static void declare(Project project) {
+    new GlobalDeclarer(project).declare();
+  }
+
+  public void declare() {
     for (SourceFileTree tree : project.trees()) {
-      declareClasses(tree);
+      declare(tree);
     }
   }
 
-  private void declareClasses(SourceFileTree tree) {
+  private void declare(SourceFileTree tree) {
     for (ParseTree element : tree.declarations) {
       if (element.isClassDeclaration()) {
         ClassDeclarationTree classDeclaration = element.asClassDeclaration();
         String className = classDeclaration.name.value;
-        if (project.containsClass(className)) {
+        if (project.containsSymbol(className)) {
           reportError(classDeclaration.name, "Duplicate class '%s'.", className);
-          reportRelatedError(project.getClass(className));
+          reportRelatedError(project.getSymbol(className));
           return;
         }
         project.addClass(new ClassSymbol(className, classDeclaration, project.getTypes().getClassSymbolType()));
+      }  else if (element.isFunctionDeclaration()) {
+        FunctionDeclarationTree functionDeclaration = element.asFunctionDeclaration();
+
+      } else {
+        throw new RuntimeException("Unexpected global parse tree");
       }
     }
   }
