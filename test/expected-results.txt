@@ -268,6 +268,7 @@ Compiling Tests ...
   ;
   A . prototype . a = null ;
   A . prototype . b = null ;
+  A . x = 15 ;
   A . prototype . c = function ( ) {
     return this . a ;
   }

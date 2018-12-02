@@ -1,5 +1,6 @@
 class A {
   var a : A, b : number;
+  static var x: number = 15;
   c() : A { return this.a; }
 }
 
