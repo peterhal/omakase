@@ -348,7 +348,11 @@ public final class JavascriptParseTreeFactory {
   public static ParseTree createFunction(FormalParameterListTree parameters, BlockTree body) {
     return new FunctionExpressionTree(null, null, parameters, body);
   }
-  
+
+  public static ParseTree createFunction(IdentifierToken name, FormalParameterListTree parameters, BlockTree body) {
+    return new FunctionExpressionTree(null, name, parameters, body);
+  }
+
   public static ParseTree createDottedName(String... names) {
     ParseTree result = null;
     for (String name: names) {

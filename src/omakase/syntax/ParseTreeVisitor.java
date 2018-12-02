@@ -103,6 +103,9 @@ public class ParseTreeVisitor {
     case FUNCTION_EXPRESSION:
       visit(tree.asFunctionExpression());
       break;
+    case FUNCTION_DECLARATION:
+      visit(tree.asFunctionDeclaration());
+      break;
     case FUNCTION_TYPE:
       visit(tree.asFunctionType());
       break;
@@ -411,6 +414,12 @@ public class ParseTreeVisitor {
 
   protected void visit(FunctionExpressionTree tree) {
     visitAny(tree.parameters);
+    visitAny(tree.body);
+  }
+
+  protected void visit(FunctionDeclarationTree tree) {
+    visitAny(tree.formals);
+    visitAny(tree.returnType);
     visitAny(tree.body);
   }
 

@@ -894,7 +894,9 @@ public class JavascriptParser extends ParserBase {
   }
 
   private ParseTree parseMemberAccessSuffix(Token start, ParseTree operand) {
-    return new MemberExpressionTree(getRange(start), operand, eatId());
+    eat(TokenKind.JS_PERIOD);
+    var name = eatId();
+    return new MemberExpressionTree(getRange(start), operand, name);
   }
 
   private ParseTree parseCallSuffix(Token start, ParseTree operand) {

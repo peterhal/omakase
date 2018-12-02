@@ -57,6 +57,7 @@ public class Parser extends ParserBase {
   private boolean peekDeclaration() {
     switch (peekKind()) {
     case EXTERN:
+    case NATIVE:
     case CLASS:
     case FUNCTION:
       return true;

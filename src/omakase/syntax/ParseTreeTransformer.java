@@ -95,6 +95,8 @@ public class ParseTreeTransformer {
       return transform(tree.asFormalParameterList());
     case FUNCTION_EXPRESSION:
       return transform(tree.asFunctionExpression());
+    case FUNCTION_DECLARATION:
+      return transform(tree.asFunctionDeclaration());
     case FUNCTION_TYPE:
       return transform(tree.asFunctionType());
     case IDENTIFIER_EXPRESSION:
@@ -485,6 +487,24 @@ public class ParseTreeTransformer {
     return new FunctionExpressionTree(
         null,
         parameters.asFormalParameterList(),
+        body);
+  }
+
+  protected ParseTree transform(FunctionDeclarationTree tree) {
+    ParseTree returnType = transformAny(tree.returnType);
+    ParseTree formals = transformAny(tree.formals);
+    ParseTree body = transformAny(tree.body);
+    if (formals == tree.formals &&
+        body == tree.body) {
+      return tree;
+    }
+    return new FunctionDeclarationTree(
+        null,
+        returnType,
+        tree.name,
+        formals.asFormalParameterList(),
+        tree.isExtern,
+        tree.isNative,
         body);
   }
 

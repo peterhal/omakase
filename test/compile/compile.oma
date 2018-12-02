@@ -8,3 +8,9 @@ extern class Externs {
   var a : number;
   b () : void;
 }
+
+function f(): number {
+  return 42;
+}
+
+extern function ef(): number;

@@ -79,6 +79,9 @@ class Program {
     print ( "Hello World!" ) ;
   }
 }
+native function f ( ) : void {
+  console . out ( "Hello world" ) ;
+}
 
 class Program {
   parseVariableStatement ( ) : void {
@@ -250,6 +253,8 @@ class Program {
     print ( "Hello World!" ) ;
   }
 }
+function main ( ) : void {
+}
 
 Symbol Tests ...
 A
@@ -275,5 +280,9 @@ Compiling Tests ...
   ;
 }
 ( ) ) ;
+;
+function f ( ) {
+  return 42 ;
+}
 ;
 

@@ -178,3 +178,6 @@ class Program {
     print("Hello World!");
   }
 }
+
+function main(): void {
+}

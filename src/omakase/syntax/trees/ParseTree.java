@@ -125,6 +125,10 @@ public class ParseTree {
     return (FunctionExpressionTree) this;
   }
 
+  public FunctionDeclarationTree asFunctionDeclaration() {
+    return (FunctionDeclarationTree) this;
+  }
+
   public FunctionTypeTree asFunctionType() {
     return (FunctionTypeTree) this;
   }

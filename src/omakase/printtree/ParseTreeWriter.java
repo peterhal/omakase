@@ -192,6 +192,21 @@ public class ParseTreeWriter extends ParseTreeVisitor {
   }
 
   @Override
+  protected void visit(FunctionDeclarationTree tree) {
+    if (tree.isExtern) {
+      write(TokenKind.EXTERN);
+    }
+    if (tree.isNative) {
+      write(TokenKind.NATIVE);
+    }
+    write(TokenKind.FUNCTION);
+    write(tree.name);
+    visitAny(tree.formals);
+    writeColonType(tree.returnType);
+    visitAny(tree.body);
+  }
+
+  @Override
   protected void visit(FunctionTypeTree tree) {
     write(TokenKind.OPEN_PAREN);
     writeCommaSeparatedList(tree.argumentTypes);

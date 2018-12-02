@@ -70,6 +70,14 @@ public class JavascriptTransformer extends ParseTreeTransformer {
   }
 
   @Override
+  protected ParseTree transform(FunctionDeclarationTree tree) {
+    if (tree.isExtern) {
+      return createEmptyStatement();
+    }
+    return createFunction(createIdentifierToken(tree.name.value), createFormalParameterList(), transformAny(tree.body).asJavascriptBlock());
+  }
+
+  @Override
   protected omakase.syntax.trees.javascript.ArgumentsTree transform(ArgumentsTree tree) {
     return createArguments(transformList(tree.arguments));
   }

@@ -4,3 +4,7 @@ class Program {
     print("Hello World!");
   }
 }
+
+native function f(): void {
+  console.out("Hello world");
+}

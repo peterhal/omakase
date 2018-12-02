@@ -30,7 +30,7 @@ public class FunctionDeclarationTree extends ParseTree {
 
   public FunctionDeclarationTree(SourceRange range, ParseTree returnType, IdentifierToken name, FormalParameterListTree formals,
                                boolean isExtern, boolean isNative, ParseTree body) {
-    super(range, ParseTreeKind.METHOD_DECLARATION);
+    super(range, ParseTreeKind.FUNCTION_DECLARATION);
     this.returnType = returnType;
     this.name = name;
     this.isExtern = isExtern;
