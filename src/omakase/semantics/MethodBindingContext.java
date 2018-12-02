@@ -28,7 +28,7 @@ public class MethodBindingContext extends StatementBindingContext {
         project,
         null,
         new BindingResults(),
-        project.getLookupContext(),
+        new ScopedLookupContext(project.getLookupContext(), new ParameterLookupContext(method.parameters)),
         method.isStatic
             ? null
             : project.getTypes().getClassType(method.parent),
@@ -38,11 +38,5 @@ public class MethodBindingContext extends StatementBindingContext {
         true,
         method.getReturnType());
     this.method = method;
-  }
-
-  @Override
-  public Symbol lookupIdentifier(String value) {
-    Symbol result = method.parameters.get(value);
-    return result == null ? super.lookupIdentifier(value) : result;
   }
 }

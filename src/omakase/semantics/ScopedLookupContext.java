@@ -14,22 +14,23 @@
 
 package omakase.semantics;
 
-import omakase.semantics.symbols.FunctionSymbol;
+import omakase.semantics.symbols.Symbol;
 
-public class FunctionBindingContext extends StatementBindingContext {
-  private FunctionSymbol function;
+public class ScopedLookupContext implements IdentifierLookupContext {
+  private final IdentifierLookupContext outer;
+  private final IdentifierLookupContext inner;
 
-  public FunctionBindingContext(Project project, FunctionSymbol function) {
-    super(project,
-        null,
-        new BindingResults(),
-        new ScopedLookupContext(project.getLookupContext(), new ParameterLookupContext(function.parameters)),
-        null,
-        false,
-        false,
-        null,
-        true,
-        function.getReturnType());
-    this.function = function;
+  public ScopedLookupContext(IdentifierLookupContext outer, IdentifierLookupContext inner) {
+    this.outer = outer;
+    this.inner = inner;
+  }
+
+  @Override
+  public Symbol lookupIdentifier(String value) {
+    var innerResult = inner.lookupIdentifier((value));
+    if (innerResult != null) {
+      return innerResult;
+    }
+    return outer.lookupIdentifier(value);
   }
 }

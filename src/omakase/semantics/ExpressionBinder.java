@@ -598,7 +598,7 @@ public class ExpressionBinder extends ParseTreeVisitor {
 
         // Bind the function
         returnContext = new ReturnInferenceContext(tree);
-        LocalVariableLookupContext lookupContext = new LocalVariableLookupContext(context.lookupContext, parameters);
+        IdentifierLookupContext lookupContext = LocalVariableLookupContext.create(context.lookupContext, parameters);
         if (tree.body.isBlock()) {
           StatementBindingContext innerContext = new StatementBindingContext(
               context.project,
@@ -725,7 +725,7 @@ public class ExpressionBinder extends ParseTreeVisitor {
       }
 
       // body
-      LocalVariableLookupContext lookupContext = new LocalVariableLookupContext(context.lookupContext, parameters);
+      IdentifierLookupContext lookupContext = LocalVariableLookupContext.create(context.lookupContext, parameters);
       if (tree.body.isBlock()) {
         StatementBindingContext innerContext = new StatementBindingContext(
             context.project,

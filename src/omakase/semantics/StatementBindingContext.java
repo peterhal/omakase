@@ -14,12 +14,11 @@
 
 package omakase.semantics;
 
+import com.google.common.collect.ImmutableMap;
 import omakase.semantics.symbols.LocalVariableSymbol;
 import omakase.semantics.symbols.Symbol;
-import omakase.semantics.types.KeywordType;
 import omakase.semantics.types.Type;
 import omakase.syntax.trees.ParseTree;
-import omakase.syntax.trees.ReturnStatementTree;
 
 import java.util.Map;
 
@@ -107,6 +106,17 @@ public class StatementBindingContext extends ExpressionBindingContext {
         this.switchType,
         this.canReturn,
         this.returnType);
+  }
+
+  public StatementBindingContext createLookupContext(Map<String, LocalVariableSymbol> locals) {
+    if (locals == null || locals.isEmpty()) {
+      return this;
+    }
+    return createLookupContext(LocalVariableLookupContext.create(this.lookupContext, locals));
+  }
+
+  public StatementBindingContext createLookupContext(LocalVariableSymbol local) {
+    return createLookupContext(ImmutableMap.of(local.name, local));
   }
 
   final public boolean hasBreakLabel() {

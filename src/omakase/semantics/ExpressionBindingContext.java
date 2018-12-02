@@ -50,7 +50,7 @@ public class ExpressionBindingContext {
     return thisType;
   }
 
-  public Symbol lookupIdentifier(String value) {
+  final public Symbol lookupIdentifier(String value) {
     return lookupContext.lookupIdentifier(value);
   }
 

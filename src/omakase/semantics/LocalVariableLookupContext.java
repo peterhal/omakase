@@ -23,20 +23,25 @@ import java.util.Map;
 /**
 */
 class LocalVariableLookupContext implements IdentifierLookupContext {
-  private final IdentifierLookupContext outerContext;
   private final Map<String, LocalVariableSymbol> locals;
 
-  public LocalVariableLookupContext(IdentifierLookupContext outerContext, Map<String, LocalVariableSymbol> locals) {
-    this.outerContext = outerContext;
+  private LocalVariableLookupContext(Map<String, LocalVariableSymbol> locals) {
     this.locals = locals;
   }
 
-  public LocalVariableLookupContext(IdentifierLookupContext outerContext, LocalVariableSymbol local) {
-    this(outerContext, ImmutableMap.of(local.name, local));
+  private LocalVariableLookupContext(LocalVariableSymbol local) {
+    this(ImmutableMap.of(local.name, local));
+  }
+
+  public static IdentifierLookupContext create(IdentifierLookupContext outer, Map<String, LocalVariableSymbol> locals) {
+    return new ScopedLookupContext(outer, new LocalVariableLookupContext(locals));
+  }
+
+  public static IdentifierLookupContext create(IdentifierLookupContext outer, LocalVariableSymbol local) {
+    return new ScopedLookupContext(outer, new LocalVariableLookupContext(local));
   }
 
   public Symbol lookupIdentifier(String value) {
-    Symbol result = locals.get(value);
-    return result != null ? result : outerContext.lookupIdentifier(value);
+    return locals.get(value);
   }
 }

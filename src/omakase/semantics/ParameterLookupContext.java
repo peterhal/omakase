@@ -14,22 +14,20 @@
 
 package omakase.semantics;
 
-import omakase.semantics.symbols.FunctionSymbol;
+import omakase.semantics.symbols.ParameterSymbol;
+import omakase.semantics.symbols.Symbol;
 
-public class FunctionBindingContext extends StatementBindingContext {
-  private FunctionSymbol function;
+import java.util.Map;
 
-  public FunctionBindingContext(Project project, FunctionSymbol function) {
-    super(project,
-        null,
-        new BindingResults(),
-        new ScopedLookupContext(project.getLookupContext(), new ParameterLookupContext(function.parameters)),
-        null,
-        false,
-        false,
-        null,
-        true,
-        function.getReturnType());
-    this.function = function;
+public class ParameterLookupContext implements IdentifierLookupContext {
+  private final Map<String, ParameterSymbol> parameters;
+
+  public ParameterLookupContext(Map<String, ParameterSymbol> parameters) {
+    this.parameters = parameters;
+  }
+
+  @Override
+  public Symbol lookupIdentifier(String value) {
+    return parameters.get(value);
   }
 }

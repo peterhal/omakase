@@ -46,7 +46,7 @@ public class StatementBinder extends ParseTreeVisitor {
         locals = bindLocalVariableDeclarations(statement.asVariableStatement(), locals);
       }
     }
-    StatementBindingContext innerContext = locals == null ? context : context.createLookupContext(new LocalVariableLookupContext(context.lookupContext, locals));
+    StatementBindingContext innerContext = context.createLookupContext(locals);
     for (ParseTree statement : tree.statements) {
       bindInnerStatement(innerContext, statement);
     }
@@ -77,8 +77,7 @@ public class StatementBinder extends ParseTreeVisitor {
     }
     // TODO: What types should be allowed to catch?
     LocalVariableSymbol exceptionVariable = new LocalVariableSymbol(name, tree, context.getTypes().getDynamicType());
-    StatementBindingContext innerContext = context
-        .createLookupContext(new LocalVariableLookupContext(context.lookupContext, exceptionVariable));
+    StatementBindingContext innerContext = context.createLookupContext(exceptionVariable);
     bindInnerStatement(innerContext, tree.block);
   }
 
@@ -140,7 +139,7 @@ public class StatementBinder extends ParseTreeVisitor {
 
     StatementBindingContext innerContext = context
         .createLoopContext()
-        .createLookupContext(new LocalVariableLookupContext(context.lookupContext, iterationVariable));
+        .createLookupContext(iterationVariable);
     bindInnerStatement(innerContext, tree.body);
   }
 
@@ -149,7 +148,7 @@ public class StatementBinder extends ParseTreeVisitor {
     StatementBindingContext context;
     if (tree.initializer != null && tree.isVariableStatement()) {
       Map<String, LocalVariableSymbol> locals = bindLocalVariableDeclarations(tree.asVariableStatement(), null);
-      context = this.context.createLookupContext(new LocalVariableLookupContext(this.context.lookupContext, locals));
+      context = this.context.createLookupContext(locals);
     } else {
       context = this.context;
     }
