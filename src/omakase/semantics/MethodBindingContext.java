@@ -30,7 +30,7 @@ public class MethodBindingContext extends StatementBindingContext {
         new BindingResults(),
         new IdentifierLookupContext() {
           public Symbol lookupIdentifier(String value) {
-            // TODO: Lookup class members.
+            // TODO: Lookup global/namespace scope.
             return null;
           }
         },

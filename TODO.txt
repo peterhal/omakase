@@ -1,5 +1,12 @@
 Next Up
 -------
+- function binding
+   - definition
+   - use
+- generics
+  - classes
+  - functions
+  - methods
 - type system
   - name lookup of classes/members
   - type check expressions
@@ -9,6 +16,7 @@ Next Up
 - hygiene
   - name table
 - use symbols for code gen
+- self hosting
 
 TODO
 ----
@@ -39,7 +47,7 @@ TODO
   - statements
     - resource acquisition
   - expressions
-    - teamplated strings
+    - templated strings
     - function literals
     - object literals
   - classes

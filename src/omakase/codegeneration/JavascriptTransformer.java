@@ -61,7 +61,10 @@ import omakase.syntax.trees.WhileStatementTree;
 import static omakase.codegeneration.JavascriptParseTreeFactory.*;
 
 /**
- *
+ * Converts an Omakase AST to a JS AST.
+ * Converts Debug quality, so no optimizations.
+ * Extern declarations are guaranteed not to be name mangled.
+ * native declarations may only reference non-mangled types.
  */
 public class JavascriptTransformer extends ParseTreeTransformer {
   @Override
