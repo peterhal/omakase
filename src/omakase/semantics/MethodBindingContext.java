@@ -28,12 +28,7 @@ public class MethodBindingContext extends StatementBindingContext {
         project,
         null,
         new BindingResults(),
-        new IdentifierLookupContext() {
-          public Symbol lookupIdentifier(String value) {
-            // TODO: Lookup global/namespace scope.
-            return null;
-          }
-        },
+        project.getLookupContext(),
         method.isStatic
             ? null
             : project.getTypes().getClassType(method.parent),

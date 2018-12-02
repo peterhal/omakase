@@ -69,6 +69,10 @@ public class Project {
     return classes.get(className);
   }
 
+  public GlobalLookupContext getLookupContext() {
+    return new GlobalLookupContext(this);
+  }
+
   public void addClass(ClassSymbol classSymbol) {
     classes.put(classSymbol.name, classSymbol);
     types.addClassType(classSymbol);

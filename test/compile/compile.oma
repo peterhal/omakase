@@ -2,6 +2,9 @@ class A {
   var a : A, b : number;
   static var x: number = 15;
   c() : A { return this.a; }
+  n(): number {
+    return A.x;
+  }
 }
 
 extern class Externs {
@@ -10,7 +13,7 @@ extern class Externs {
 }
 
 function f(): number {
-  return 42;
+  return A.x;
 }
 
 extern function ef(): number;

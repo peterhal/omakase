@@ -278,11 +278,15 @@ Compiling Tests ...
     return this . a ;
   }
   ;
+  A . prototype . n = function ( ) {
+    return A . x ;
+  }
+  ;
 }
 ( ) ) ;
 ;
 function f ( ) {
-  return 42 ;
+  return A . x ;
 }
 ;
 
