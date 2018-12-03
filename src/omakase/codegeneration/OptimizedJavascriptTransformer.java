@@ -21,6 +21,7 @@ import omakase.semantics.symbols.FunctionSymbol;
 import omakase.semantics.symbols.Symbol;
 import omakase.syntax.trees.IdentifierExpressionTree;
 import omakase.syntax.trees.MemberExpressionTree;
+import omakase.syntax.trees.ParameterDeclarationTree;
 import omakase.syntax.trees.ParseTree;
 
 import java.util.HashMap;
@@ -104,4 +105,10 @@ public class OptimizedJavascriptTransformer extends JavascriptTransformer {
   protected ParseTree transform(MemberExpressionTree tree) {
     return createMemberExpression(transformAny(tree.object), getSymbolName(project.bindings.getSymbol(tree)));
   }
+
+  @Override
+  protected String getParameterName(ParameterDeclarationTree parameter) {
+    return getSymbolName(project.bindings.getSymbol(parameter));
+  }
+
 }

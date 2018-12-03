@@ -285,7 +285,7 @@ Compiling Tests Debug ...
 }
 ( ) ) ;
 ;
-function f ( ) {
+function f ( ex ) {
   ex . externMethod ( ) ;
   return MyClass . staticField + ef ( ) + ex . externField ;
 }
@@ -310,7 +310,7 @@ Compiling Tests Optimized ...
 }
 ( ) ) ;
 ;
-function g ( ) {
+function g ( h ) {
   h . externMethod ( ) ;
   return a . d + ef ( ) + h . externField ;
 }

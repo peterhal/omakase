@@ -85,7 +85,7 @@ public class JavascriptTransformer extends ParseTreeTransformer {
     if (tree.isExtern) {
       return createEmptyStatement();
     }
-    return createFunction(createIdentifierToken(name), createFormalParameterList(), transformAny(tree.body).asJavascriptBlock());
+    return createFunction(createIdentifierToken(name), transform(tree.formals), transformAny(tree.body).asJavascriptBlock());
   }
 
   @Override
@@ -183,12 +183,16 @@ public class JavascriptTransformer extends ParseTreeTransformer {
     return createFormalParameterList(transformFormalParameterList(tree.parameters));
   }
 
-  private ImmutableList<omakase.syntax.tokens.javascript.IdentifierToken> transformFormalParameterList(ImmutableList<? extends ParseTree> parameters) {
+  private ImmutableList<omakase.syntax.tokens.javascript.IdentifierToken> transformFormalParameterList(ImmutableList<? extends ParameterDeclarationTree> parameters) {
     ImmutableList.Builder<IdentifierToken> names = new ImmutableList.Builder<IdentifierToken>();
-    for (ParseTree parameter : parameters) {
-      names.add(createIdentifierToken(parameter.asParameterDeclaration().name.value));
+    for (var parameter : parameters) {
+      names.add(createIdentifierToken(getParameterName(parameter)));
     }
     return names.build();
+  }
+
+  protected String getParameterName(ParameterDeclarationTree parameter) {
+    return parameter.name.value;
   }
 
   @Override
@@ -358,6 +362,7 @@ public class JavascriptTransformer extends ParseTreeTransformer {
     }
 
     private void createConstructor() {
+      // TODO: Get the formals/body for the actual ctor
       members.add(createAssignmentStatement(
           createIdentifier(getClassName()),
           createFunction(createFormalParameterList(), createBlock())
@@ -395,10 +400,10 @@ public class JavascriptTransformer extends ParseTreeTransformer {
       final String methodName = getMemberName(method.name.value);
       if (method.isStatic) {
         return createStaticMember(getClassName(), methodName,
-          createFunction(createFormalParameterList(), transformAny(method.body).asJavascriptBlock()));
+          createFunction(transform(method.formals), transformAny(method.body).asJavascriptBlock()));
       } else {
         return createProtoMember(getClassName(), methodName,
-            createFunction(createFormalParameterList(), transformAny(method.body).asJavascriptBlock()));
+            createFunction(transform(method.formals), transformAny(method.body).asJavascriptBlock()));
       }
     }
 
