@@ -1,8 +1,5 @@
 Next Up
 -------
-- function binding
-   - definition
-   - use
 - generics
   - classes
   - functions
@@ -18,6 +15,9 @@ Next Up
 - use symbols for code gen
 - self hosting
 - access control
+- allow modifiers in any order
+  - extern/native modifiers
+- natives & extern functions may only include primitives/externs in signatures
 
 TODO
 ----

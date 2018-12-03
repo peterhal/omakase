@@ -231,6 +231,8 @@ public class ExpressionBinder extends ParseTreeVisitor {
     Type function = bind(tree.function);
     ArgumentsTree argumentsTree = tree.arguments;
     ImmutableList<? extends ParseTree> arguments = argumentsTree.arguments;
+    // TODO: set expected type for arguments from function's type
+    // TODO: generics
     ArgumentBinder argumentBinder = new ArgumentBinder(argumentsTree).invoke();
     boolean hadError = argumentBinder.hadError();
     ImmutableList<Type> argumentTypes = argumentBinder.getArgumentTypes();
