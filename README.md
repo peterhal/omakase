@@ -36,6 +36,7 @@ Omakase is designed for programming web apps in the large. Specifically the goal
 
 ## Current Status
 
+Currently prototype quality. The end-to-end compiler is working, including both debug and a (simple) optimizer.
 
 
 ## FAQ
