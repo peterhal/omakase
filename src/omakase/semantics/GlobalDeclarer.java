@@ -15,21 +15,19 @@
 package omakase.semantics;
 
 import omakase.semantics.symbols.ClassSymbol;
+import omakase.semantics.symbols.FunctionSymbol;
 import omakase.semantics.symbols.Symbol;
+import omakase.semantics.types.FunctionType;
+import omakase.syntax.tokens.IdentifierToken;
 import omakase.syntax.tokens.Token;
-import omakase.syntax.trees.ClassDeclarationTree;
-import omakase.syntax.trees.FunctionDeclarationTree;
-import omakase.syntax.trees.ParseTree;
-import omakase.syntax.trees.SourceFileTree;
+import omakase.syntax.trees.*;
 import omakase.util.SourceLocation;
 
 /**
  */
-public class GlobalDeclarer {
-  private final Project project;
-
+public class GlobalDeclarer extends ParameterDeclarer {
   public GlobalDeclarer(Project project) {
-    this.project = project;
+    super(project);
   }
 
   public static void declare(Project project) {
@@ -37,29 +35,47 @@ public class GlobalDeclarer {
   }
 
   public void declare() {
+    // Declare classes first, as we need classes for function types
     for (SourceFileTree tree : project.trees()) {
-      declare(tree);
+      declareClasses(tree);
+    }
+
+    for (SourceFileTree tree : project.trees()) {
+      declareFunctions(tree);
     }
   }
 
-  private void declare(SourceFileTree tree) {
+  private void declareFunctions(SourceFileTree tree) {
+    for (ParseTree element : tree.declarations) {
+      if (element.isFunctionDeclaration()) {
+        FunctionDeclarationTree functionDeclaration = element.asFunctionDeclaration();
+        String functionName = functionDeclaration.name.value;
+        if (checkDuplicateSymbol(functionName, functionDeclaration.name)) return;
+
+        var type = new TypeBinder(project).bindFunctionType(functionDeclaration.returnType, functionDeclaration.formals);
+        project.addFunction(new FunctionSymbol(functionDeclaration, type, buildParameters(functionDeclaration.formals)));
+      }
+    }
+  }
+
+  private void declareClasses(SourceFileTree tree) {
     for (ParseTree element : tree.declarations) {
       if (element.isClassDeclaration()) {
         ClassDeclarationTree classDeclaration = element.asClassDeclaration();
         String className = classDeclaration.name.value;
-        if (project.containsSymbol(className)) {
-          reportError(classDeclaration.name, "Duplicate class '%s'.", className);
-          reportRelatedError(project.getSymbol(className));
-          return;
-        }
+        if (checkDuplicateSymbol(className, classDeclaration.name)) return;
         project.addClass(new ClassSymbol(className, classDeclaration, project.getTypes().getClassSymbolType()));
-      }  else if (element.isFunctionDeclaration()) {
-        FunctionDeclarationTree functionDeclaration = element.asFunctionDeclaration();
-
-      } else {
-        throw new RuntimeException("Unexpected global parse tree");
       }
     }
+  }
+
+  private boolean checkDuplicateSymbol(String name, IdentifierToken tree) {
+    if (project.containsSymbol(name)) {
+      reportError(tree, "Duplicate class '%s'.", name);
+      reportRelatedError(project.getSymbol(name));
+      return true;
+    }
+    return false;
   }
 
   private void reportRelatedError(Symbol symbol) {

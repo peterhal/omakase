@@ -77,7 +77,15 @@ public class JavascriptTransformer extends ParseTreeTransformer {
     if (tree.isExtern) {
       return createEmptyStatement();
     }
-    return createFunction(createIdentifierToken(tree.name.value), createFormalParameterList(), transformAny(tree.body).asJavascriptBlock());
+    final String name = tree.name.value;
+    return transformFunction(name, tree);
+  }
+
+  protected ParseTree transformFunction(String name, FunctionDeclarationTree tree) {
+    if (tree.isExtern) {
+      return createEmptyStatement();
+    }
+    return createFunction(createIdentifierToken(name), createFormalParameterList(), transformAny(tree.body).asJavascriptBlock());
   }
 
   @Override
@@ -229,6 +237,11 @@ public class JavascriptTransformer extends ParseTreeTransformer {
   }
 
   @Override
+  protected ParseTree transform(MemberExpressionTree tree) {
+    return createMemberExpression(transformAny(tree.object), tree.name.value);
+  }
+
+  @Override
   protected ParseTree transform(NewExpressionTree tree) {
     return createNew(transformAny(tree.constructor), transform(tree.arguments));
   }
@@ -316,7 +329,7 @@ public class JavascriptTransformer extends ParseTreeTransformer {
     return new ClassTransformer(tree).transformClass();
   }
 
-  private class ClassTransformer {
+  protected class ClassTransformer {
     private final ClassDeclarationTree classTree;
     private final ImmutableList.Builder<ParseTree> members = new ImmutableList.Builder<ParseTree>();
 
@@ -324,7 +337,7 @@ public class JavascriptTransformer extends ParseTreeTransformer {
       classTree = tree;
     }
 
-    private String getClassName() {
+    protected String getClassName() {
       return classTree.name.value;
     }
 
@@ -370,21 +383,27 @@ public class JavascriptTransformer extends ParseTreeTransformer {
 
     private ParseTree createField(boolean isStatic, VariableDeclarationTree field) {
       ParseTree value = field.initializer != null ? transformAny(field.initializer) : createNull();
+      final String fieldName = getMemberName(field.name.value);
       if (isStatic) {
-        return createStaticMember(getClassName(), field.name.value, value);
+        return createStaticMember(getClassName(), fieldName, value);
       } else {
-        return createProtoMember(getClassName(), field.name.value, value);
+        return createProtoMember(getClassName(), fieldName, value);
       }
     }
 
     private ParseTree createMember(MethodDeclarationTree method) {
+      final String methodName = getMemberName(method.name.value);
       if (method.isStatic) {
-        return createStaticMember(getClassName(), method.name.value,
+        return createStaticMember(getClassName(), methodName,
           createFunction(createFormalParameterList(), transformAny(method.body).asJavascriptBlock()));
       } else {
-        return createProtoMember(getClassName(), method.name.value,
+        return createProtoMember(getClassName(), methodName,
             createFunction(createFormalParameterList(), transformAny(method.body).asJavascriptBlock()));
       }
+    }
+
+    protected String getMemberName(String name) {
+      return name;
     }
   }
 }

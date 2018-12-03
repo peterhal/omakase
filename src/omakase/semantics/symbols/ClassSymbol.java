@@ -61,4 +61,8 @@ public class ClassSymbol extends Symbol {
     // TODO: isStatic
     return members.get(name);
   }
+
+  public boolean isExtern() {
+    return declaration.isExtern;
+  }
 }

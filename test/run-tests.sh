@@ -31,10 +31,17 @@ for symbol_source in symbols/*.oma ; do
   ../omasymbol.sh $symbol_source >> $RESULTS_FILE 2>&1
 done
 
-echo Compiling Tests ... >> $RESULTS_FILE 2>&1
+echo Compiling Error Tests ... >> $RESULTS_FILE 2>&1
 for error_source in errors/compiler/*.oma ; do
   ../oma.sh $error_source >> $RESULTS_FILE 2>&1
 done
+
+echo Compiling Tests Debug ... >> $RESULTS_FILE 2>&1
+for compile_source in compile/*.oma ; do
+  ../oma.sh --debug $compile_source >> $RESULTS_FILE 2>&1
+done
+
+echo Compiling Tests Optimized ... >> $RESULTS_FILE 2>&1
 for compile_source in compile/*.oma ; do
   ../oma.sh $compile_source >> $RESULTS_FILE 2>&1
 done

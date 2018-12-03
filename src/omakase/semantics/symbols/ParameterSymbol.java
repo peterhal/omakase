@@ -28,6 +28,11 @@ public class ParameterSymbol extends Symbol {
   }
 
   @Override
+  public boolean isExtern() {
+    return false;
+  }
+
+  @Override
   public Type getType() {
     return type;
   }

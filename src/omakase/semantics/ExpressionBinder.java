@@ -668,7 +668,9 @@ public class ExpressionBinder extends ParseTreeVisitor {
           if (parameterType == null) {
             hadError = true;
           } else {
-            parameters.put(name, new LocalVariableSymbol(name, parameterTree, parameterType));
+            final LocalVariableSymbol symbol = new LocalVariableSymbol(name, parameterTree, parameterType);
+            parameters.put(name, symbol);
+            context.project.bindings.setSymbol(parameterTree, symbol);
             parameterTypes = context.getTypes().getTypeArray(parameterTypes, parameterType);
           }
         }
@@ -695,7 +697,9 @@ public class ExpressionBinder extends ParseTreeVisitor {
               reportError(parameterTree, "Duplicate parameter '%s'", name);
               hadError = true;
             } else {
-              parameters.put(name, new LocalVariableSymbol(name, parameterTree, parameterTypes.get(index)));
+              final LocalVariableSymbol symbol = new LocalVariableSymbol(name, parameterTree, parameterTypes.get(index));
+              parameters.put(name, symbol);
+              context.project.bindings.setSymbol(parameterTree, symbol);
             }
             index += 1;
           }

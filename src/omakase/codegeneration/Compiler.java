@@ -37,6 +37,19 @@ public class Compiler {
   }
 
   private void writeProject() {
+    if (project.isDebug()) {
+      writeProjectDebug();
+    } else {
+      writeProjectOptimized();
+    }
+  }
+
+  private void writeProjectOptimized() {
+    ParseTreeWriter writer = new ParseTreeWriter(System.out);
+    new OptimizedJavascriptTransformer(project).write(writer);
+  }
+
+  private void writeProjectDebug() {
     for (ParseTree tree : project.trees()) {
       JavascriptTransformer transformer = new JavascriptTransformer();
       ParseTree result = transformer.transformAny(tree);

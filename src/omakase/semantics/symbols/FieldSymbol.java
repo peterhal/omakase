@@ -35,6 +35,11 @@ public class FieldSymbol extends Symbol {
   }
 
   @Override
+  public boolean isExtern() {
+    return parent.isExtern();
+  }
+
+  @Override
   public Type getType() {
     return type;
   }

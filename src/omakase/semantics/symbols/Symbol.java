@@ -69,4 +69,6 @@ public abstract class Symbol {
   }
 
   public abstract boolean isWritable();
+
+  public abstract boolean isExtern();
 }

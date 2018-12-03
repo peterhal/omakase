@@ -77,6 +77,7 @@ public class StatementBinder extends ParseTreeVisitor {
     }
     // TODO: What types should be allowed to catch?
     LocalVariableSymbol exceptionVariable = new LocalVariableSymbol(name, tree, context.getTypes().getDynamicType());
+    context.project.bindings.setSymbol(tree, exceptionVariable);
     StatementBindingContext innerContext = context.createLookupContext(exceptionVariable);
     bindInnerStatement(innerContext, tree.block);
   }
@@ -264,17 +265,20 @@ public class StatementBinder extends ParseTreeVisitor {
         type = bindType(variableTree.type);
       }
       locals = locals == null? new HashMap<String, LocalVariableSymbol>() : locals;
-      locals.put(name, new LocalVariableSymbol(name, variableTree, type));
+      LocalVariableSymbol symbol = new LocalVariableSymbol(name, variableTree, type);
+      locals.put(name, symbol);
+      context.project.bindings.setSymbol(variableTree, symbol);
     }
     return locals;
   }
 
   private LocalVariableSymbol declareLocalVariable(String name, Type type, VariableDeclarationTree variableTree) {
-    LocalVariableSymbol iterationVariable = new LocalVariableSymbol(name, variableTree, type);
+    LocalVariableSymbol symbol = new LocalVariableSymbol(name, variableTree, type);
+    context.project.bindings.setSymbol(variableTree, symbol);
     if (context.containsLocal(name)) {
       reportError(variableTree, "Duplicate local variable '%s'.", name);
     }
-    return iterationVariable;
+    return symbol;
   }
 
   private Type bindType(ParseTree type) {

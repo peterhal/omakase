@@ -27,7 +27,7 @@ public class MethodBindingContext extends StatementBindingContext {
     super(
         project,
         null,
-        new BindingResults(),
+        project.bindings,
         new ScopedLookupContext(project.getLookupContext(), new ParameterLookupContext(method.parameters)),
         method.isStatic
             ? null

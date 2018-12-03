@@ -22,7 +22,7 @@ public class FunctionBindingContext extends StatementBindingContext {
   public FunctionBindingContext(Project project, FunctionSymbol function) {
     super(project,
         null,
-        new BindingResults(),
+        project.bindings,
         new ScopedLookupContext(project.getLookupContext(), new ParameterLookupContext(function.parameters)),
         null,
         false,

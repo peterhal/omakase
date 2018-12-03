@@ -15,6 +15,7 @@
 package omakase.semantics;
 
 import omakase.semantics.symbols.ClassSymbol;
+import omakase.semantics.symbols.FunctionSymbol;
 import omakase.semantics.symbols.Symbol;
 import omakase.semantics.types.TypeContainer;
 import omakase.syntax.trees.SourceFileTree;
@@ -31,12 +32,22 @@ public class Project {
   private final Map<SourceFile, SourceFileTree> trees = new LinkedHashMap<SourceFile, SourceFileTree>();
   private final Map<String, Symbol> symbols = new LinkedHashMap<String, Symbol>();
   private final TypeContainer types = new TypeContainer();
+  public final BindingResults bindings = new BindingResults();
   private final ErrorReporter reporter;
   private final GlobalLookupContext lookup;
+  private boolean debug = true;
 
   public Project(ErrorReporter reporter) {
     this.reporter = reporter;
     this.lookup = new GlobalLookupContext(this);
+  }
+
+  public void setDebug(boolean debug) {
+    this.debug = debug;
+  }
+
+  public boolean isDebug() {
+    return this.debug;
   }
 
   public void addFile(SourceFile file) {
@@ -75,9 +86,15 @@ public class Project {
     return this.lookup;
   }
 
+  public void addFunction(FunctionSymbol function) {
+    symbols.put(function.name, function);
+    bindings.setSymbol(function.tree, function);
+  }
+
   public void addClass(ClassSymbol classSymbol) {
     symbols.put(classSymbol.name, classSymbol);
     types.addClassType(classSymbol);
+    bindings.setSymbol(classSymbol.declaration, classSymbol);
   }
 
   public Iterable<Symbol> getSymbols() {

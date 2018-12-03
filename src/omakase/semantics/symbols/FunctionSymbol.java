@@ -36,6 +36,11 @@ public class FunctionSymbol extends Symbol {
   }
 
   @Override
+  public boolean isExtern() {
+    return tree.isExtern;
+  }
+
+  @Override
   public Type getType() {
     return type;
   }

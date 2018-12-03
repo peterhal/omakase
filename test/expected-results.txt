@@ -265,28 +265,53 @@ A
   a
   b
   c
-Compiling Tests ...
-
+Compiling Error Tests ...
+Compiling Tests Debug ...
 ( function ( ) {
-  A = function ( ) {
+  MyClass = function ( ) {
   }
   ;
-  A . prototype . a = null ;
-  A . prototype . b = null ;
-  A . x = 15 ;
-  A . prototype . c = function ( ) {
-    return this . a ;
+  MyClass . prototype . classField = null ;
+  MyClass . prototype . numberField = null ;
+  MyClass . staticField = 15 ;
+  MyClass . prototype . getClassField = function ( ) {
+    return this . classField ;
   }
   ;
-  A . prototype . n = function ( ) {
-    return A . x ;
+  MyClass . prototype . getStaticField = function ( ) {
+    return MyClass . staticField ;
   }
   ;
 }
 ( ) ) ;
 ;
 function f ( ) {
-  return A . x ;
+  ex . externMethod ( ) ;
+  return MyClass . staticField + ef ( ) + ex . externField ;
 }
 ;
 
+Compiling Tests Optimized ...
+( function ( ) {
+  a = function ( ) {
+  }
+  ;
+  a . prototype . b = null ;
+  a . prototype . c = null ;
+  a . d = 15 ;
+  a . prototype . e = function ( ) {
+    return this . b ;
+  }
+  ;
+  a . prototype . f = function ( ) {
+    return a . d ;
+  }
+  ;
+}
+( ) ) ;
+;
+function g ( ) {
+  h . externMethod ( ) ;
+  return a . d + ef ( ) + h . externField ;
+}
+;

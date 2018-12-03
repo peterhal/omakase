@@ -27,22 +27,30 @@ import java.nio.charset.Charset;
 public class ProjectReader {
 
   public static Project readProject(String[] args, ErrorReporter reporter) {
+    Project project = new Project(reporter);
+    boolean hadError = false;
+    boolean hadDebug = false;
+    for (String arg : args) {
+      if (arg.equals("--debug")) {
+        hadDebug = true;
+      } else {
+        SourceFile file = readFile(arg);
+        if (file == null) {
+          hadError = true;
+        } else {
+          project.addFile(file);
+        }
+      }
+    }
+
     // TODO: Use error reporter.
-    if (args.length == 0) {
+    if (!project.files().iterator().hasNext()) {
       System.err.println("Missing filename argument.");
       return null;
     }
 
-    Project project = new Project(reporter);
-    boolean hadError = false;
-    for (String arg : args) {
-      SourceFile file = readFile(arg);
-      if (file == null) {
-        hadError = true;
-      } else {
-        project.addFile(file);
-      }
-    }
+    project.setDebug(hadDebug);
+
     return hadError ? null : project;
   }
 

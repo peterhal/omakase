@@ -26,6 +26,11 @@ public class TypeVariableSymbol extends Symbol {
   }
 
   @Override
+  public boolean isExtern() {
+    return false;
+  }
+
+  @Override
   public Type getType() {
     // TODO: generics
     throw new RuntimeException("NYI");

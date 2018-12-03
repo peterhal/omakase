@@ -26,11 +26,9 @@ import java.util.Map;
 
 /**
  */
-public class ClassMemberDeclarer {
-  private final Project project;
-
+public class ClassMemberDeclarer extends ParameterDeclarer {
   public ClassMemberDeclarer(Project project) {
-    this.project = project;
+    super(project);
   }
 
   public void declareMembers() {
@@ -63,30 +61,9 @@ public class ClassMemberDeclarer {
     FunctionType type = bindMethodType(methodTree);
     Map<String, ParameterSymbol> parameters = buildParameters(methodTree.formals);
     if (!checkForDuplicateMember(clazz, name, methodTree)) {
-      new MethodSymbol(clazz, methodTree, type, parameters);
+      var symbol = new MethodSymbol(clazz, methodTree, type, parameters);
+      project.bindings.setSymbol(methodTree, symbol);
     }
-  }
-
-  private Map<String, ParameterSymbol> buildParameters(FormalParameterListTree formals) {
-    Map<String, ParameterSymbol> parameters = new HashMap<String, ParameterSymbol>();
-    for (ParameterDeclarationTree tree : formals.parameters) {
-      String name = tree.name.value;
-      Type type = null;
-      if (tree.type != null) {
-        type = bindType(tree.type);
-      }
-      if (parameters.containsKey(name)) {
-        reportError(tree, "Duplicate parameter '%s'.", name);
-      } else {
-        ParameterSymbol parameter = new ParameterSymbol(tree, type);
-        parameters.put(name, parameter);
-      }
-    }
-    return ImmutableMap.copyOf(parameters);
-  }
-
-  private void reportError(ParseTree tree, String message, Object... args) {
-    project.errorReporter().reportError(tree.location.start, message, args);
   }
 
   private FunctionType bindMethodType(MethodDeclarationTree methodTree) {
@@ -97,25 +74,8 @@ public class ClassMemberDeclarer {
     String name = fieldTree.name.value;
     Type type = bindType(fieldTree.type);
     if (!checkForDuplicateMember(clazz, name, fieldTree)) {
-      new FieldSymbol(clazz, name, fieldTree, type, isStatic);
+      var symbol = new FieldSymbol(clazz, name, fieldTree, type, isStatic);
+      project.bindings.setSymbol(fieldTree, symbol);
     }
-  }
-
-  private Type bindType(ParseTree type) {
-    return new TypeBinder(project).bindType(type);
-  }
-
-  private TypeContainer types() {
-    return project.getTypes();
-  }
-
-  private boolean checkForDuplicateMember(ClassSymbol clazz, String name, ParseTree tree) {
-    Symbol member = clazz.getMember(name);
-    if (member != null) {
-      reportError(tree, "Duplicate member '%s' in class '%s'.", name, clazz);
-      reportError(member.location, "Location of duplicate member.");
-      return true;
-    }
-    return false;
   }
 }

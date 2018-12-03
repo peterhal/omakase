@@ -1,5 +1,6 @@
 Next Up
 -------
+- global variables/constants
 - generics
   - classes
   - functions

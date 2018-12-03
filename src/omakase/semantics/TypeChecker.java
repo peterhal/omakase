@@ -69,7 +69,7 @@ public class TypeChecker {
       new ExpressionBinder(
           new ExpressionBindingContext(
               project,
-              new BindingResults(),
+              project.bindings,
               new IdentifierLookupContext() {
                 public Symbol lookupIdentifier(String value) {
                   // TODO: Lookup class members.

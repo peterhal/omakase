@@ -1,19 +1,24 @@
-class A {
-  var a : A, b : number;
-  static var x: number = 15;
-  c() : A { return this.a; }
-  n(): number {
-    return A.x;
+class MyClass {
+  var classField : MyClass;
+  var numberField : number;
+
+  static var staticField: number = 15;
+
+  getClassField() : MyClass { return this.classField; }
+
+  getStaticField(): number {
+    return MyClass.staticField;
   }
 }
 
-extern class Externs {
-  var a : number;
-  b () : void;
+extern class ExternClass {
+  var externField : number;
+  externMethod () : void;
 }
 
-function f(): number {
-  return A.x;
+function f(ex: ExternClass): number {
+  ex.externMethod();
+  return MyClass.staticField + ef() + ex.externField;
 }
 
 extern function ef(): number;
