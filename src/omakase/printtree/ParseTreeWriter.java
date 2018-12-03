@@ -866,10 +866,6 @@ public class ParseTreeWriter extends ParseTreeVisitor {
     write(String.format(" %d", token.value));
   }
 
-  private void writeLine() {
-    indentedWriter.writeLine();
-  }
-
   private void write(Token token) {
     write(token.toValueString());
   }
@@ -878,15 +874,19 @@ public class ParseTreeWriter extends ParseTreeVisitor {
     write(kind.value());
   }
 
-  private void write(String value) {
+  protected void write(String value) {
     indentedWriter.write(value);
   }
 
-  private void outdent() {
+  protected void writeLine() {
+    indentedWriter.writeLine();
+  }
+
+  protected void outdent() {
     indentedWriter.outdent();
   }
 
-  private void indent() {
+  protected void indent() {
     indentedWriter.indent();
   }
 }
