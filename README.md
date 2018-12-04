@@ -41,6 +41,7 @@ Omakase is designed for programming web apps in the large. Specifically the goal
     * Async/Await
     * Generators(yield)
     * Sane iteration (for/in)
+    * Templated string literals
     * Annotations
     * JSON supported via data(aka anonymous) classes (with structural sub-typing)?
     * Immutable by default?

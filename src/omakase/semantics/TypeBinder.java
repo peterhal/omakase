@@ -47,18 +47,21 @@ public class TypeBinder {
       return bindNamedType(type, type.asNamedType());
     case NULLABLE_TYPE:
       return bindNullableType(type.asNullableType());
+    default:
+      throw new RuntimeException("Expected type tree got: " + type.toString());
     }
-    return null;
   }
 
   private FunctionType bindFunctionType(FunctionTypeTree tree) {
-    boolean hadError = false;
     Type returnType = bindType(tree.returnType);
-    if (returnType == null) {
-      hadError = true;
-    }
+    ImmutableList<Type> parameterTypes = bindTypeList(tree.argumentTypes);
+    return (returnType == null || parameterTypes == null) ? null : types().getFunctionType(parameterTypes, returnType);
+  }
+
+  public ImmutableList<Type> bindTypeList(ImmutableList<? extends ParseTree> argumentTrees) {
+    boolean hadError = false;
     ImmutableList<Type> parameterTypes = types().getEmptyTypeArray();
-    for (ParseTree parameterTypeTree : tree.argumentTypes) {
+    for (ParseTree parameterTypeTree : argumentTrees) {
       Type parameterType = bindType(parameterTypeTree);
       if (parameterType == null) {
         hadError = true;
@@ -66,7 +69,21 @@ public class TypeBinder {
         parameterTypes = types().getTypeArray(parameterTypes, parameterType);
       }
     }
-    return hadError ? null : types().getFunctionType(parameterTypes, returnType);
+    return hadError ? null : parameterTypes;
+  }
+
+  public ImmutableList<Type> bindParameterTypes(ImmutableList<? extends ParameterDeclarationTree> argumentTrees) {
+    boolean hadError = false;
+    ImmutableList<Type> parameterTypes = types().getEmptyTypeArray();
+    for (var parameterTypeTree : argumentTrees) {
+      Type parameterType = bindType(parameterTypeTree.type);
+      if (parameterType == null) {
+        hadError = true;
+      } else {
+        parameterTypes = types().getTypeArray(parameterTypes, parameterType);
+      }
+    }
+    return hadError ? null : parameterTypes;
   }
 
   private Type bindArrayType(ArrayTypeTree arrayTypeTree) {
@@ -98,20 +115,8 @@ public class TypeBinder {
   }
 
   public FunctionType bindFunctionType(ParseTree returnTypeTree, FormalParameterListTree formals) {
-    boolean hadError = false;
     Type returnType = bindType(returnTypeTree);
-    if (returnType == null) {
-      hadError = true;
-    }
-    ImmutableList<Type> parameterTypes = types().getEmptyTypeArray();
-    for (ParseTree parameterTree : formals.parameters) {
-      Type parameterType = bindType(parameterTree.asParameterDeclaration().type);
-      if (parameterType == null) {
-        hadError = true;
-      } else {
-        parameterTypes = types().getTypeArray(parameterTypes, parameterType);
-      }
-    }
-    return hadError ? null : types().getFunctionType(parameterTypes, returnType);
+    ImmutableList<Type> parameterTypes = bindParameterTypes(formals.parameters);
+    return (returnType == null || parameterTypes == null) ? null : types().getFunctionType(parameterTypes, returnType);
   }
 }

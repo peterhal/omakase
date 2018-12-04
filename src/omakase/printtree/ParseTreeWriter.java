@@ -807,11 +807,11 @@ public class ParseTreeWriter extends ParseTreeVisitor {
   }
 
   private void writeCommaSeparatedList(ImmutableList<? extends ParseTree> trees) {
-    writeList(trees, TokenKind.COMMA.toString());
+    writeList(trees, TokenKind.COMMA.value());
   }
 
   private void writeCommaSeparatedTokenList(ImmutableList<? extends Token> trees) {
-    writeTokenList(trees, TokenKind.COMMA.toString());
+    writeTokenList(trees, TokenKind.COMMA.value());
   }
 
   private void writeList(ImmutableList<? extends ParseTree> trees, String separator) {
@@ -819,6 +819,7 @@ public class ParseTreeWriter extends ParseTreeVisitor {
     for (ParseTree tree: trees) {
       if (!first) {
         write(separator);
+      } else {
         first = false;
       }
       visitAny(tree);
@@ -830,6 +831,7 @@ public class ParseTreeWriter extends ParseTreeVisitor {
     for (Token token: tokens) {
       if (!first) {
         write(separator);
+      } else {
         first = false;
       }
       write(token);

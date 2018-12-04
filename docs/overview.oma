@@ -1,0 +1,45 @@
+// Overview of Omakase Language features
+
+// Classes
+class Point {
+  // fields
+  var x: number;
+  var y: number;
+
+  constructor(x: number, y: number) {
+    this.x = x;
+    this.y = y;
+  }
+
+  // methods
+  toString(): string {
+    return "(" + numberToString(this.x) + ", " + numberToString(this.y) + ")";
+  }
+
+  difference(other: Point): Point {
+    return new Point(this.x - other.x, this.y - other.y);
+  }
+}
+
+// global functions
+native function numberToString(value: number): string {
+  // native functions are implemented in inline JavaScript
+  // native functions are used for wrapping the builtin libraries (JS, Node, HTML).
+  return value.toString();
+}
+
+
+native function commandLineArguments(): string[] {
+  // 0-th arg is 'node'
+  // 1-th arg is JS file being executed
+  return process.argv.slice(2);
+}
+
+native function writeLine(value: string): void {
+  console.out(value);
+}
+
+// entrypoint ...
+function main(): void {
+  writeLine("Hello " + commandLineArguments()[0]);
+}

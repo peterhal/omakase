@@ -59,6 +59,7 @@ import omakase.syntax.trees.VariableStatementTree;
 import omakase.syntax.trees.WhileStatementTree;
 
 import static omakase.codegeneration.JavascriptParseTreeFactory.*;
+import static omakase.syntax.JavascriptPredefinedNames.CONSTRUCTOR;
 
 /**
  * Converts an Omakase AST to a JS AST.
@@ -361,11 +362,41 @@ public class JavascriptTransformer extends ParseTreeTransformer {
       return createExpressionStatement(createScopedBlock(members.build()));
     }
 
+    protected omakase.syntax.trees.javascript.FormalParameterListTree constructorParameters() {
+      final var ctor = findConstructorTree();
+      if (ctor == null) {
+        return createFormalParameterList();
+      } else {
+        return transform(ctor.formals);
+      }
+    }
+
+    protected omakase.syntax.trees.javascript.BlockTree constructorBody() {
+      final var ctor = findConstructorTree();
+      if (ctor == null || ctor.body == null) {
+        return createBlock();
+      } else {
+        return transform(ctor.body.asBlock());
+      }
+    }
+
+    private MethodDeclarationTree findConstructorTree() {
+      for (var member: classTree.members) {
+        if (member.isMethodDeclaration()) {
+          var method = member.asMethodDeclaration();
+          if (method.name.value.equals(CONSTRUCTOR)) {
+            return method;
+          }
+        }
+      }
+      return null;
+    }
+
     private void createConstructor() {
       // TODO: Get the formals/body for the actual ctor
       members.add(createAssignmentStatement(
           createIdentifier(getClassName()),
-          createFunction(createFormalParameterList(), createBlock())
+          createFunction(constructorParameters(), createBlock())
       ));
     }
 

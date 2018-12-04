@@ -22,4 +22,5 @@ public final class JavascriptPredefinedNames {
   public static final String SET = "set";
   public static final String PROTOTYPE = "prototype";
   public static final String BIND = "bind";
+  public static final String CONSTRUCTOR = "constructor";
 }

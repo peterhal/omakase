@@ -23,6 +23,8 @@ import omakase.util.ErrorReporter;
 import omakase.util.SourceFile;
 import omakase.util.SourceRange;
 
+import static omakase.syntax.JavascriptPredefinedNames.CONSTRUCTOR;
+
 /**
  * Parser for the Omakase language.
  *
@@ -222,8 +224,9 @@ public class Parser extends ParserBase {
 
   private ParseTree parseMethod(Token start, boolean isExtern, boolean isNative, boolean isStatic) {
     var name = eatId();
+    var isCtor = name.value.equals(CONSTRUCTOR);
     var formals = parseParameterListDeclaration(true);
-    var returnType = parseColonType();
+    var returnType = isCtor ? null : parseColonType();
     ParseTree body;
     if (isExtern) {
       if (isNative) {

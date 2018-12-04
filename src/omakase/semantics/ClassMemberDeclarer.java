@@ -14,15 +14,15 @@
 
 package omakase.semantics;
 
-import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableList;
 import omakase.semantics.symbols.*;
 import omakase.semantics.types.FunctionType;
 import omakase.semantics.types.Type;
-import omakase.semantics.types.TypeContainer;
 import omakase.syntax.trees.*;
 
-import java.util.HashMap;
 import java.util.Map;
+
+import static omakase.syntax.JavascriptPredefinedNames.CONSTRUCTOR;
 
 /**
  */
@@ -60,14 +60,29 @@ public class ClassMemberDeclarer extends ParameterDeclarer {
     String name = methodTree.name.value;
     FunctionType type = bindMethodType(methodTree);
     Map<String, ParameterSymbol> parameters = buildParameters(methodTree.formals);
-    if (!checkForDuplicateMember(clazz, name, methodTree)) {
+    if (!checkForDuplicateMember(clazz, name, methodTree) && type != null) {
       var symbol = new MethodSymbol(clazz, methodTree, type, parameters);
       project.bindings.setSymbol(methodTree, symbol);
     }
   }
 
   private FunctionType bindMethodType(MethodDeclarationTree methodTree) {
-    return new TypeBinder(project).bindFunctionType(methodTree.returnType, methodTree.formals);
+    if (isConstructor(methodTree)) {
+      ImmutableList<Type> parameterTypes = new TypeBinder(project).bindParameterTypes(methodTree.formals.parameters);
+      if (parameterTypes == null) {
+        if (!project.errorReporter().hadError()) {
+          throw new RuntimeException("expected to have had error");
+        }
+        return null;
+      }
+      return project.getTypes().getFunctionType(parameterTypes, project.getTypes().getVoidType());
+    } else {
+      return new TypeBinder(project).bindFunctionType(methodTree.returnType, methodTree.formals);
+    }
+  }
+
+  private static boolean isConstructor(MethodDeclarationTree tree) {
+    return tree.returnType == null;
   }
 
   private void declareField(ClassSymbol clazz, VariableDeclarationTree fieldTree, boolean isStatic) {
