@@ -28,7 +28,7 @@ public class ParameterDeclarer extends SymbolDeclarer {
     super(project);
   }
 
-  protected Map<String, ParameterSymbol> buildParameters(FormalParameterListTree formals) {
+  protected Map<String, ParameterSymbol> buildParameters(FormalParameterListTree formals, boolean isExtern) {
     Map<String, ParameterSymbol> parameters = new HashMap<String, ParameterSymbol>();
     for (ParameterDeclarationTree tree : formals.parameters) {
       String name = tree.name.value;
@@ -39,7 +39,7 @@ public class ParameterDeclarer extends SymbolDeclarer {
       if (parameters.containsKey(name)) {
         reportError(tree, "Duplicate parameter '%s'.", name);
       } else {
-        ParameterSymbol parameter = new ParameterSymbol(tree, type);
+        ParameterSymbol parameter = new ParameterSymbol(tree, type, isExtern);
         project.bindings.setSymbol(tree, parameter);
         parameters.put(name, parameter);
       }

@@ -36,7 +36,7 @@ javascript function commandLineArguments(): string[] {
 }
 
 javascript function writeLine(value: string): void {
-  console.out(value);
+  console.log(value);
 }
 
 // entrypoint ...

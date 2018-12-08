@@ -53,7 +53,7 @@ public class GlobalDeclarer extends ParameterDeclarer {
         if (checkDuplicateSymbol(functionName, functionDeclaration.name)) return;
 
         var type = new TypeBinder(project).bindFunctionType(functionDeclaration.returnType, functionDeclaration.formals);
-        project.addFunction(new FunctionSymbol(functionDeclaration, type, buildParameters(functionDeclaration.formals)));
+        project.addFunction(new FunctionSymbol(functionDeclaration, type, buildParameters(functionDeclaration.formals, functionDeclaration.isJavascript)));
       }
     }
   }

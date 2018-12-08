@@ -21,15 +21,17 @@ import omakase.syntax.trees.ParameterDeclarationTree;
  */
 public class ParameterSymbol extends Symbol {
   public final Type type;
+  private final boolean isExtern;
 
-  public ParameterSymbol(ParameterDeclarationTree tree, Type type) {
+  public ParameterSymbol(ParameterDeclarationTree tree, Type type, boolean isExtern) {
     super(SymbolKind.PARAMETER, tree.name.value, tree);
     this.type = type;
+    this.isExtern = isExtern;
   }
 
   @Override
   public boolean isExtern() {
-    return false;
+    return this.isExtern;
   }
 
   @Override

@@ -57,7 +57,7 @@ public class ClassMemberDeclarer extends ParameterDeclarer {
   private void declareMethod(ClassSymbol clazz, MethodDeclarationTree methodTree) {
     String name = methodTree.name.value;
     FunctionType type = bindMethodType(methodTree);
-    Map<String, ParameterSymbol> parameters = buildParameters(methodTree.formals);
+    Map<String, ParameterSymbol> parameters = buildParameters(methodTree.formals, methodTree.isJavascript);
     if (!checkForDuplicateMember(clazz, name, methodTree) && type != null) {
       var symbol = new MethodSymbol(clazz, methodTree, type, parameters);
       project.bindings.setSymbol(methodTree, symbol);
