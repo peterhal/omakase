@@ -16,6 +16,7 @@ package omakase.codegeneration;
 
 import com.google.common.collect.ImmutableList;
 import omakase.syntax.ParseTreeTransformer;
+import omakase.syntax.PredefinedNames;
 import omakase.syntax.tokens.Token;
 import omakase.syntax.tokens.TokenKind;
 import omakase.syntax.tokens.javascript.IdentifierToken;
@@ -70,7 +71,18 @@ import static omakase.syntax.PredefinedNames.CONSTRUCTOR;
 public class JavascriptTransformer extends ParseTreeTransformer {
   @Override
   protected ParseTree transform(SourceFileTree tree) {
-    return new omakase.syntax.trees.javascript.ProgramTree(null, transformList(tree.declarations));
+    var elements = ImmutableList.<ParseTree>builder();
+    elements.addAll(transformList(tree.declarations));
+    elements.add(callEntryPoint());
+    return new omakase.syntax.trees.javascript.ProgramTree(null, elements.build());
+  }
+
+  protected ParseTree callEntryPoint() {
+    return createExpressionStatement(createCall(createIdentifier(getEntrypointName())));
+  }
+
+  protected String getEntrypointName() {
+    return PredefinedNames.MAIN;
   }
 
   @Override

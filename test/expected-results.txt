@@ -300,6 +300,7 @@ function f ( ex ) {
 ;
 function main ( ) {
 }
+main ( ) ;
 
 Compiling Tests Optimized ...
 ( function ( ) {
@@ -333,3 +334,4 @@ function g ( h ) {
 ;
 function j ( ) {
 }
+j ( ) ;

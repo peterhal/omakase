@@ -19,6 +19,7 @@ import omakase.semantics.Project;
 import omakase.semantics.symbols.ClassSymbol;
 import omakase.semantics.symbols.FunctionSymbol;
 import omakase.semantics.symbols.Symbol;
+import omakase.syntax.PredefinedNames;
 import omakase.syntax.trees.IdentifierExpressionTree;
 import omakase.syntax.trees.MemberExpressionTree;
 import omakase.syntax.trees.ParameterDeclarationTree;
@@ -39,6 +40,9 @@ public class OptimizedJavascriptTransformer extends JavascriptTransformer {
     this.project = project;
   }
 
+  protected String getEntrypointName() {
+    return getSymbolName(project.getSymbol(PredefinedNames.MAIN));
+  }
 
   public void write(ParseTreeWriter writer) {
     for (var symbol: project.getSymbols()) {
@@ -50,6 +54,7 @@ public class OptimizedJavascriptTransformer extends JavascriptTransformer {
         throw new RuntimeException("Unexpected symbol");
       }
     }
+    writer.visitAny(callEntryPoint());
   }
 
   private void writeFunction(ParseTreeWriter writer, FunctionSymbol function) {
