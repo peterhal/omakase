@@ -15,12 +15,11 @@
 package omakase.codegeneration;
 
 import com.google.common.collect.ImmutableList;
-import omakase.syntax.JavascriptPredefinedNames;
+import omakase.syntax.PredefinedNames;
 import omakase.syntax.tokens.Token;
 import omakase.syntax.tokens.TokenKind;
 import omakase.syntax.tokens.javascript.IdentifierToken;
 import omakase.syntax.trees.*;
-import omakase.syntax.trees.javascript.*;
 import omakase.syntax.trees.javascript.ArgumentsTree;
 import omakase.syntax.trees.javascript.ArrayAccessExpressionTree;
 import omakase.syntax.trees.javascript.ArrayLiteralExpressionTree;
@@ -319,7 +318,7 @@ public final class JavascriptParseTreeFactory {
   public static ParseTree createProtoMember(String className, String memberName, ParseTree value) {
     // class.prototype.memberName = value;
     return createAssignmentStatement(
-        createDottedName(className, JavascriptPredefinedNames.PROTOTYPE, memberName),
+        createDottedName(className, PredefinedNames.PROTOTYPE, memberName),
         value);
   }
 
@@ -337,7 +336,7 @@ public final class JavascriptParseTreeFactory {
 
   public static ParseTree createThisBoundFunction(ParseTree function) {
     // (function).bind(this)
-    return createCall(createMemberExpression(createParenExpression(function), JavascriptPredefinedNames.BIND), createThis());
+    return createCall(createMemberExpression(createParenExpression(function), PredefinedNames.BIND), createThis());
   }
 
   // Low-level Helpers

@@ -23,7 +23,7 @@ import omakase.util.ErrorReporter;
 import omakase.util.SourceFile;
 import omakase.util.SourceRange;
 
-import static omakase.syntax.JavascriptPredefinedNames.CONSTRUCTOR;
+import static omakase.syntax.PredefinedNames.CONSTRUCTOR;
 
 /**
  * Parser for the Omakase language.

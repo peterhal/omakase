@@ -22,8 +22,6 @@ import omakase.syntax.trees.*;
 
 import java.util.Map;
 
-import static omakase.syntax.JavascriptPredefinedNames.CONSTRUCTOR;
-
 /**
  */
 public class ClassMemberDeclarer extends ParameterDeclarer {

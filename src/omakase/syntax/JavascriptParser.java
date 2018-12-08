@@ -804,11 +804,11 @@ public class JavascriptParser extends ParserBase {
   }
 
   private boolean peekSetProperty() {
-    return peekPredefinedName(JavascriptPredefinedNames.SET) && peekPropertyAssignment(1);
+    return peekPredefinedName(PredefinedNames.SET) && peekPropertyAssignment(1);
   }
 
   private boolean peekGetProperty() {
-    return peekPredefinedName(JavascriptPredefinedNames.GET) && peekPropertyAssignment(1);
+    return peekPredefinedName(PredefinedNames.GET) && peekPropertyAssignment(1);
   }
 
   private boolean peekPropertyAssignment() {

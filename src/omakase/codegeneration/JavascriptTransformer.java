@@ -59,7 +59,7 @@ import omakase.syntax.trees.VariableStatementTree;
 import omakase.syntax.trees.WhileStatementTree;
 
 import static omakase.codegeneration.JavascriptParseTreeFactory.*;
-import static omakase.syntax.JavascriptPredefinedNames.CONSTRUCTOR;
+import static omakase.syntax.PredefinedNames.CONSTRUCTOR;
 
 /**
  * Converts an Omakase AST to a JS AST.
