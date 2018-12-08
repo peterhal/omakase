@@ -27,12 +27,16 @@ public abstract class ErrorReporter {
    * @param args The arguments to the format string.
    */
   public void reportError(SourceLocation location, String format, Object... args) {
-    this.hadError = true;
     String message = String.format(format, args);
     if (location != null) {
       message = String.format("%s: %s", location, message);
     }
-    reportMessage(message);
+    reportError(message);
+  }
+
+  public void reportError(String message) {
+    this.hadError = true;
+    this.reportMessage(message);
   }
 
   public abstract void reportMessage(String message);

@@ -15,8 +15,10 @@
 package omakase.semantics;
 
 import omakase.syntax.Parser;
+import omakase.syntax.PredefinedNames;
 import omakase.syntax.trees.SourceFileTree;
 import omakase.util.SourceFile;
+import omakase.util.SourceLocation;
 
 /**
  */
@@ -53,6 +55,29 @@ public class SemanticAnalyzer {
     checkTypes();
     if (hadError()) {
       return;
+    }
+
+    checkMain();
+    if (hadError()) {
+      return;
+    }
+  }
+
+  // TODO: Extract this into checker specific to node.js targets.
+  private void checkMain() {
+    var main = project.getSymbol(PredefinedNames.MAIN);
+    if (main == null) {
+      project.errorReporter().reportError("Missing definition of 'main'.");
+    } else if (main.isFunction()) {
+      var mainFunction = main.asFunction();
+      if (!mainFunction.parameters.isEmpty()) {
+        project.errorReporter().reportError(main.location.location.start, "'main' may not have parameters.");
+      }
+      if (!mainFunction.type.returnType.isVoidType()) {
+        project.errorReporter().reportError(main.location.location.start, "'main' must return 'void'.");
+      }
+    } else {
+      project.errorReporter().reportError(main.location.location.start, "'main' must be a function");
     }
   }
 

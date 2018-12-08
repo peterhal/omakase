@@ -22,3 +22,7 @@ function f(ex: ExternClass): number {
 }
 
 native function ef(): number;
+
+function main(): void {
+
+}

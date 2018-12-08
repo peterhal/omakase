@@ -24,4 +24,5 @@ public final class PredefinedNames {
   public static final String BIND = "bind";
   public static final String CONSTRUCTOR = "constructor";
   public static final String JAVASCRIPT = "javascript";
+  public static final String MAIN = "main";
 }

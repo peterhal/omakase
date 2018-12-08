@@ -257,6 +257,7 @@ function main ( ) : void {
 }
 
 Symbol Tests ...
+Missing definition of 'main'.
 A
 B
 C
@@ -266,6 +267,7 @@ A
   b
   c
 Compiling Error Tests ...
+Missing definition of 'main'.
 Compiling Tests Debug ...
 ( function ( ) {
   MyClass = function ( ) {
@@ -296,6 +298,8 @@ function f ( ex ) {
   return MyClass . staticField + ef ( ) + ex . externField ;
 }
 ;
+function main ( ) {
+}
 
 Compiling Tests Optimized ...
 ( function ( ) {
@@ -327,3 +331,5 @@ function g ( h ) {
   return a . d + i ( ) + h . externField ;
 }
 ;
+function j ( ) {
+}
