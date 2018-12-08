@@ -26,15 +26,17 @@ public class FunctionDeclarationTree extends ParseTree {
   public final FormalParameterListTree formals;
   public final boolean isExtern;
   public final boolean isNative;
+  public final boolean isJavascript;
   public final ParseTree body;
 
   public FunctionDeclarationTree(SourceRange range, ParseTree returnType, IdentifierToken name, FormalParameterListTree formals,
-                               boolean isExtern, boolean isNative, ParseTree body) {
+                               boolean isExtern, boolean isNative, boolean isJavascript, ParseTree body) {
     super(range, ParseTreeKind.FUNCTION_DECLARATION);
     this.returnType = returnType;
     this.name = name;
     this.isExtern = isExtern;
     this.isNative = isNative;
+    this.isJavascript = isJavascript;
     this.formals = formals;
     this.body = body;
   }

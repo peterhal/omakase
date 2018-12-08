@@ -196,6 +196,9 @@ public class ParseTreeWriter extends ParseTreeVisitor {
     if (tree.isExtern) {
       write(TokenKind.EXTERN);
     }
+    if (tree.isJavascript) {
+      write(PredefinedNames.JAVASCRIPT);
+    }
     if (tree.isNative) {
       write(TokenKind.NATIVE);
     }
@@ -404,6 +407,9 @@ public class ParseTreeWriter extends ParseTreeVisitor {
     }
     if (tree.isNative) {
       write(TokenKind.NATIVE);
+    }
+    if (tree.isJavascript) {
+      write(PredefinedNames.JAVASCRIPT);
     }
     write(tree.name);
     visitAny(tree.formals);

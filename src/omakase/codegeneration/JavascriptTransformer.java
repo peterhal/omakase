@@ -75,7 +75,7 @@ public class JavascriptTransformer extends ParseTreeTransformer {
 
   @Override
   protected ParseTree transform(FunctionDeclarationTree tree) {
-    if (tree.isExtern) {
+    if (tree.isNative) {
       return createEmptyStatement();
     }
     final String name = tree.name.value;
@@ -83,7 +83,7 @@ public class JavascriptTransformer extends ParseTreeTransformer {
   }
 
   protected ParseTree transformFunction(String name, FunctionDeclarationTree tree) {
-    if (tree.isExtern) {
+    if (tree.isNative) {
       return createEmptyStatement();
     }
     return createFunction(createIdentifierToken(name), transform(tree.formals), transformAny(tree.body).asJavascriptBlock());
@@ -354,16 +354,12 @@ public class JavascriptTransformer extends ParseTreeTransformer {
     //  }());
     //
     public ParseTree transformClass() {
-      if (classTree.isExtern) {
-        return createEmptyStatement();
-      }
       createConstructor();
       createMembers();
       return createExpressionStatement(createScopedBlock(members.build()));
     }
 
-    protected omakase.syntax.trees.javascript.FormalParameterListTree constructorParameters() {
-      final var ctor = findConstructorTree();
+    protected omakase.syntax.trees.javascript.FormalParameterListTree constructorParameters(MethodDeclarationTree ctor) {
       if (ctor == null) {
         return createFormalParameterList();
       } else {
@@ -371,9 +367,9 @@ public class JavascriptTransformer extends ParseTreeTransformer {
       }
     }
 
-    protected omakase.syntax.trees.javascript.BlockTree constructorBody() {
-      final var ctor = findConstructorTree();
-      if (ctor == null || ctor.body == null) {
+    protected omakase.syntax.trees.javascript.BlockTree constructorBody(MethodDeclarationTree ctor) {
+      if (ctor == null) {
+        // TODO: instance field initializers
         return createBlock();
       } else {
         return transform(ctor.body.asBlock());
@@ -393,17 +389,22 @@ public class JavascriptTransformer extends ParseTreeTransformer {
     }
 
     private void createConstructor() {
-      // TODO: Get the formals/body for the actual ctor
-      members.add(createAssignmentStatement(
-          createIdentifier(getClassName()),
-          createFunction(constructorParameters(), createBlock())
-      ));
+      final var ctor = findConstructorTree();
+      if (ctor == null || !ctor.isNative) {
+        members.add(
+            createAssignmentStatement(
+                createIdentifier(getClassName()),
+                createFunction(constructorParameters(ctor), constructorBody(ctor))));
+      }
     }
 
     private void createMembers() {
       for (ParseTree member: classTree.members) {
         if (member.isMethodDeclaration()) {
-          members.add(createMember(member.asMethodDeclaration()));
+          var method = member.asMethodDeclaration();
+          if (!method.isNative) {
+            members.add(createMember(method));
+          }
         } else {
           createFields(member.asFieldDeclaration());
         }

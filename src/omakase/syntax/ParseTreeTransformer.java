@@ -429,6 +429,7 @@ public class ParseTreeTransformer {
     return new FieldDeclarationTree(
         null,
         tree.isStatic,
+        tree.isNative,
         declarations);
   }
 
@@ -505,6 +506,7 @@ public class ParseTreeTransformer {
         formals.asFormalParameterList(),
         tree.isExtern,
         tree.isNative,
+        tree.isJavascript,
         body);
   }
 
@@ -576,6 +578,7 @@ public class ParseTreeTransformer {
         formals.asFormalParameterList(),
         tree.isStatic,
         tree.isNative,
+        tree.isJavascript,
         body);
   }
 

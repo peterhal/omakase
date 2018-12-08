@@ -21,11 +21,13 @@ import omakase.util.SourceRange;
  */
 public class FieldDeclarationTree extends ParseTree {
   public final boolean isStatic;
+  public final boolean isNative;
   public final ImmutableList<? extends ParseTree> declarations;
 
-  public FieldDeclarationTree(SourceRange location, boolean isStatic, ImmutableList<? extends ParseTree> declarations) {
+  public FieldDeclarationTree(SourceRange location, boolean isStatic, boolean isNative, ImmutableList<? extends ParseTree> declarations) {
     super(location, ParseTreeKind.FIELD_DECLARATION);
     this.isStatic = isStatic;
+    this.isNative = isNative;
     this.declarations = declarations;
   }
 }

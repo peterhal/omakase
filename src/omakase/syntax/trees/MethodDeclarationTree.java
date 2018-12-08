@@ -26,15 +26,17 @@ public class MethodDeclarationTree extends ParseTree {
   public final FormalParameterListTree formals;
   public final boolean isStatic;
   public final boolean isNative;
+  public final boolean isJavascript;
   public final ParseTree body;
 
   public MethodDeclarationTree(SourceRange range, ParseTree returnType, IdentifierToken name, FormalParameterListTree formals,
-      boolean isStatic, boolean isNative, ParseTree body) {
+      boolean isStatic, boolean isNative, boolean isJavascript, ParseTree body) {
     super(range, ParseTreeKind.METHOD_DECLARATION);
     this.returnType = returnType;
     this.name = name;
     this.isStatic = isStatic;
     this.isNative = isNative;
+    this.isJavascript = isJavascript;
     this.formals = formals;
     this.body = body;
   }

@@ -24,6 +24,8 @@ import omakase.util.SourceFile;
 import omakase.util.SourceRange;
 
 import static omakase.syntax.PredefinedNames.CONSTRUCTOR;
+import static omakase.syntax.PredefinedNames.JAVASCRIPT;
+import static omakase.syntax.tokens.TokenKind.NATIVE;
 
 /**
  * Parser for the Omakase language.
@@ -41,6 +43,7 @@ import static omakase.syntax.PredefinedNames.CONSTRUCTOR;
  *    the token stream at the end of the scanned construct. Scanning must never report errors.
  */
 public class Parser extends ParserBase {
+
   public Parser(ErrorReporter reporter, SourceFile file) {
     super(reporter, file, new Scanner(reporter, file));
   }
@@ -58,48 +61,124 @@ public class Parser extends ParserBase {
 
   private boolean peekDeclaration() {
     switch (peekKind()) {
+    // TODO: global vars/constants
     case EXTERN:
     case NATIVE:
     case CLASS:
     case FUNCTION:
+      return true;
+    case IDENTIFIER:
+      return peekModifier();
+    default:
+      return false;
+    }
+  }
+
+  private boolean peekModifier() {
+    switch (peekKind()) {
+    // TODO: private/protected/public
+    case EXTERN:
+    case NATIVE:
+    case STATIC:
+      return true;
+    case IDENTIFIER:
+      return isModifier(peek().asIdentifier().value);
+    default:
+      return false;
+    }
+  }
+
+  private static boolean isModifier(String value) {
+    switch (value) {
+    case JAVASCRIPT:
       return true;
     default:
       return false;
     }
   }
 
-  private ParseTree parseDeclaration() {
-    switch (peekKind()) {
-    case FUNCTION:
-    case NATIVE:
-      return parseFunctionDeclaration();
-    case EXTERN:
-      if (peekKind(1) == TokenKind.FUNCTION) {
-        return parseFunctionDeclaration();
-      }
-    }
-    return parseClass();
+  public interface ValidateModifier {
+    boolean isValid(Token token);
   }
 
-  private ParseTree parseFunctionDeclaration() {
+  private ImmutableList<Token> parseModifiers() {
+    var elements = new ImmutableList.Builder<Token>();
+    while (peekModifier()) {
+      elements.add(nextToken());
+    }
+
+    var result = elements.build();
+    for (int index = 0; index < result.size(); index++) {
+      var token = result.get(index);
+      for (int i = 0; i < index; i++) {
+        var other = result.get(i);
+        if (token.kind.equals(other.kind) && (!token.isIdentifier() || (token.valueString().equals(other.valueString())))) {
+          reportError(token, "Duplicate modifier");
+        }
+      }
+    }
+    return result;
+  }
+
+  private void validateModifiers(ImmutableList<Token> modifiers, ValidateModifier isValid) {
+    for (var modifier: modifiers) {
+      if (!isValid.isValid(modifier)) {
+        reportError(modifier, "Invalid modifier");
+      }
+    }
+  }
+
+  private ParseTree parseDeclaration() {
     var start = peek();
-    var isExtern = eatOpt(TokenKind.EXTERN);
-    var isNative = eatOpt(TokenKind.NATIVE);
-    if (isExtern && isNative) {
-      reportError(peek(), "Declaration may not be both 'native' and 'extern'.");
+    var modifiers = parseModifiers();
+    switch (peekKind()) {
+    case FUNCTION:
+      return parseFunctionDeclaration(start, modifiers);
+    default:
+      return parseClass(start, modifiers);
+    }
+  }
+
+  private static boolean isValidFunctionModifier(Token token) {
+    switch (token.kind) {
+    case EXTERN:
+    case NATIVE:
+      return true;
+    case IDENTIFIER:
+      return token.asIdentifier().value.equals(JAVASCRIPT);
+    default:
+      return false;
+    }
+  }
+
+  private static boolean hasModifier(ImmutableList<Token> modifiers, TokenKind kind) {
+    return modifiers.stream().anyMatch(modifier -> modifier.kind.equals(kind));
+  }
+
+  private static boolean hasModifier(ImmutableList<Token> modifiers, String name) {
+    return modifiers.stream().anyMatch(modifier -> modifier.kind.equals(TokenKind.IDENTIFIER) && modifier.asIdentifier().value.equals(name));
+  }
+
+  private ParseTree parseFunctionDeclaration(Token start, ImmutableList<Token> modifiers) {
+    validateModifiers(modifiers, Parser::isValidFunctionModifier);
+    var isExtern = hasModifier(modifiers, TokenKind.EXTERN);
+    var isNative = hasModifier(modifiers, NATIVE);
+    var isJavascript = hasModifier(modifiers, JAVASCRIPT);
+    if (isJavascript && isNative) {
+      reportError(peek(), "Declaration may not be both 'native' and 'javascript'.");
     }
     eat(TokenKind.FUNCTION);
     var name = eatId();
     var parameters = parseParameterListDeclaration(true);
     var returnType = parseColonType();
     ParseTree body;
-    if (isExtern) {
+    if (isNative) {
       body = null;
       eat(TokenKind.SEMI_COLON);
     } else {
-      body = parseBlock(isNative);
+      body = parseBlock(isJavascript);
     }
-    return new FunctionDeclarationTree(getRange(start), returnType, name, parameters, isExtern, isNative, body);
+    return new FunctionDeclarationTree(getRange(start), returnType, name, parameters, isExtern, isNative, isJavascript, body);
   }
 
   // Parse Class Members
@@ -169,13 +248,18 @@ public class Parser extends ParserBase {
     return false;
   }
 
-  private boolean peekClass() {
-    return peek(TokenKind.CLASS) || peek(TokenKind.EXTERN);
+  private static boolean isValidClassModifier(Token token) {
+    switch (token.kind) {
+    case EXTERN:
+      return true;
+    default:
+      return false;
+    }
   }
 
-  private ParseTree parseClass() {
-    var start = peek();
-    var isExtern = eatOpt(TokenKind.EXTERN);
+  private ParseTree parseClass(Token start, ImmutableList<Token> modifiers) {
+    validateModifiers(modifiers, Parser::isValidClassModifier);
+    var isExtern = hasModifier(modifiers, TokenKind.EXTERN);
     eat(TokenKind.CLASS);
     IdentifierToken name = eatId();
     eat(TokenKind.OPEN_CURLY);
@@ -192,52 +276,93 @@ public class Parser extends ParserBase {
 
   private ParseTree parseClassMember(boolean isExtern) {
     var start = peek();
-    var isStatic = eatOpt(TokenKind.STATIC);
-    var isNative = eatOpt(TokenKind.NATIVE);
+    var modifiers = parseModifiers();
     if (peek(TokenKind.VAR)) {
-      if (isNative) {
-        reportError(start, "Fields may not be native.");
-      }
-      return parseField(start, isExtern, isStatic);
+      return parseField(start, modifiers);
     }
-    return parseMethod(start, isExtern, isNative, isStatic);
+    return parseMethod(start, modifiers);
   }
 
-  private ParseTree parseField(Token start, boolean isExtern, boolean isStatic) {
+  private static boolean isValidFieldModifier(Token token) {
+    switch (token.kind) {
+    case STATIC:
+    case NATIVE:
+      return true;
+    default:
+      return false;
+    }
+  }
+
+  private ParseTree parseField(Token start, ImmutableList<Token> modifiers) {
+    validateModifiers(modifiers, Parser::isValidFieldModifier);
+    var isStatic = hasModifier(modifiers, TokenKind.STATIC);
+    var isNative = hasModifier(modifiers, TokenKind.NATIVE);
     eat(TokenKind.VAR);
     var declarations = parseVariableDeclarations();
-    if (isExtern) {
+    if (isNative) {
       for (var declaration : declarations) {
         if (declaration instanceof VariableDeclarationTree) {
           var initializer = ((VariableDeclarationTree) declaration).initializer;
           if (initializer != null) {
             reportError(
                 initializer.start(),
-                "Extern fields may not have initializers.");
+                "Native fields may not have initializers.");
             }
         }
       }
     }
     eat(TokenKind.SEMI_COLON);
-    return new FieldDeclarationTree(getRange(start), isStatic, declarations);
+    return new FieldDeclarationTree(getRange(start), isStatic, isNative, declarations);
   }
 
-  private ParseTree parseMethod(Token start, boolean isExtern, boolean isNative, boolean isStatic) {
+  private static boolean isValidMethodModifier(Token token) {
+    switch (token.kind) {
+    case STATIC:
+    case NATIVE:
+      return true;
+    case IDENTIFIER:
+      return token.asIdentifier().value.equals(JAVASCRIPT);
+    default:
+      return false;
+    }
+  }
+
+  private static boolean isValidConstructorModifier(Token token) {
+    switch (token.kind) {
+    case NATIVE:
+      return true;
+    case IDENTIFIER:
+      return token.asIdentifier().value.equals(JAVASCRIPT);
+    default:
+      return false;
+    }
+  }
+
+  private ParseTree parseMethod(Token start, ImmutableList<Token> modifiers) {
+    var isStatic = hasModifier(modifiers, TokenKind.STATIC);
+    var isNative = hasModifier(modifiers, TokenKind.NATIVE);
+    var isJavascript = hasModifier(modifiers, JAVASCRIPT);
     var name = eatId();
     var isCtor = name.value.equals(CONSTRUCTOR);
     var formals = parseParameterListDeclaration(true);
     var returnType = isCtor ? null : parseColonType();
-    ParseTree body;
-    if (isExtern) {
-      if (isNative) {
-        reportError(name, "Method may not be both 'extern' and 'native'.");
+    if (isCtor) {
+      if (isStatic) {
+        reportError(name, "constructor may not be both 'static'.");
       }
+    }
+    if (isNative && isJavascript) {
+      reportError(name, "Method may not be both 'javascript' and 'native'.");
+    }
+
+    ParseTree body;
+    if (isNative) {
       body = null;
       eat(TokenKind.SEMI_COLON);
     } else {
-      body = parseBlock(isNative);
+      body = parseBlock(isJavascript);
     }
-    return new MethodDeclarationTree(getRange(start), returnType, name, formals, isStatic, isNative, body);
+    return new MethodDeclarationTree(getRange(start), returnType, name, formals, isStatic, isNative, isJavascript, body);
   }
 
   private ParseTree parseColonType() {
@@ -245,15 +370,15 @@ public class Parser extends ParserBase {
     return parseType();
   }
 
-  private ParseTree parseBlock(boolean isNative) {
-    return isNative ? parseNativeBlock() : parseBlock();
+  private ParseTree parseBlock(boolean isJavascript) {
+    return isJavascript ? parseJavascriptBlock() : parseBlock();
   }
 
-  private ParseTree parseNativeBlock() {
-    var nativeParser = new JavascriptParser(reporter,
+  private ParseTree parseJavascriptBlock() {
+    var javascriptParser = new JavascriptParser(reporter,
         new SourceRange(this.file(), this.getPosition(), this.file().length()));
-    var result = nativeParser.parseBlock();
-    this.setPosition(nativeParser.getPosition());
+    var result = javascriptParser.parseBlock();
+    this.setPosition(javascriptParser.getPosition());
     return result;
   }
 
@@ -1248,6 +1373,15 @@ public class Parser extends ParserBase {
     var start = peek();
     var arguments = parseParenList(() -> parseCommaSeparatedListOpt(this::peekExpression, this::parseExpression));
     return new ArgumentsTree(getRange(start), arguments);
+  }
+
+  private boolean peekPredefinedName(String name) {
+    return peekPredefinedName(0, name);
+  }
+
+  private boolean peekPredefinedName(int index, String name) {
+    var token = peek();
+    return token.isIdentifier() && token.asIdentifier().value.equals(name);
   }
 
   private IdentifierToken eatId() {

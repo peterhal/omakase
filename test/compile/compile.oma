@@ -13,7 +13,7 @@ class MyClass {
 
 extern class ExternClass {
   var externField : number;
-  externMethod () : void;
+  native externMethod () : void;
 }
 
 function f(ex: ExternClass): number {
@@ -21,4 +21,4 @@ function f(ex: ExternClass): number {
   return MyClass.staticField + ef() + ex.externField;
 }
 
-extern function ef(): number;
+native function ef(): number;

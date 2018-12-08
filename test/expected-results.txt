@@ -75,20 +75,20 @@ class Program {
 }
 
 class Program {
-  native main ( ) : void {
+  javascript main ( ) : void {
     print ( "Hello World!" ) ;
   }
 }
-native function f ( ) : void {
+extern javascript function f ( ) : void {
   console . out ( "Hello world" ) ;
 }
 
 class Program {
   parseVariableStatement ( ) : void {
     var a ;
-    var a b c ;
+    var a , b , c ;
     var d = a ;
-    var e = a f = b g = c ;
+    var e = a , f = b , g = c ;
   }
   parseEmptyStatement ( ) : void {
     ;
@@ -198,14 +198,14 @@ class Program {
   parseFunctionExpression ( ) : void {
     a = ( ) -> b ;
     a = ( x ) -> x ;
-    a = ( x y ) -> x + y ;
+    a = ( x , y ) -> x + y ;
     a = ( ) -> {
     }
     ;
     a = ( x ) -> {
     }
     ;
-    a = ( x y ) -> {
+    a = ( x , y ) -> {
     }
     ;
   }
@@ -236,7 +236,7 @@ class Program {
   }
   parsePrimaryExpression ( ) : void {
     this ;
-    [  1  2  3 ] ;
+    [  1 ,  2 ,  3 ] ;
     ( a ) ;
     a ;
     null ;
@@ -249,7 +249,7 @@ class Program {
     a + b ;
     a + b * c ;
   }
-  static native main ( ) : void {
+  static javascript main ( ) : void {
     print ( "Hello World!" ) ;
   }
 }
@@ -284,7 +284,13 @@ Compiling Tests Debug ...
   ;
 }
 ( ) ) ;
-;
+( function ( ) {
+  ExternClass = function ( ) {
+  }
+  ;
+  ExternClass . prototype . externField = null ;
+}
+( ) ) ;
 function f ( ex ) {
   ex . externMethod ( ) ;
   return MyClass . staticField + ef ( ) + ex . externField ;
@@ -309,9 +315,15 @@ Compiling Tests Optimized ...
   ;
 }
 ( ) ) ;
-;
+( function ( ) {
+  ExternClass = function ( ) {
+  }
+  ;
+  ExternClass . prototype . externField = null ;
+}
+( ) ) ;
 function g ( h ) {
   h . externMethod ( ) ;
-  return a . d + ef ( ) + h . externField ;
+  return a . d + i ( ) + h . externField ;
 }
 ;
