@@ -1,4 +1,4 @@
-// Copyright 2012 Peter Hallam
+// Copyright 2018 Peter Hallam
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -14,24 +14,16 @@
 
 package omakase.syntax.trees;
 
-import com.google.common.collect.ImmutableList;
 import omakase.syntax.tokens.IdentifierToken;
 import omakase.util.SourceRange;
 
-/**
- *
- */
-public class ClassDeclarationTree extends ParseTree {
-  public final boolean isExtern;
+public class TypeParameterDeclarationTree extends ParseTree {
+  public final ParseTree bounds;
   public final IdentifierToken name;
-  public final ImmutableList<? extends ParseTree> typeParameters;
-  public final ImmutableList<? extends ParseTree> members;
 
-  public ClassDeclarationTree(SourceRange range, boolean isExtern, IdentifierToken name, ImmutableList<? extends ParseTree> typeParameters, ImmutableList<? extends ParseTree> members) {
-    super(range, ParseTreeKind.CLASS_DECLARATION);
-    this.isExtern = isExtern;
+  public TypeParameterDeclarationTree(SourceRange location, ParseTree bounds, IdentifierToken name) {
+    super(location, ParseTreeKind.TYPE_PARAMETER_DECLARATION);
+    this.bounds = bounds;
     this.name = name;
-    this.typeParameters = typeParameters;
-    this.members = members;
   }
 }

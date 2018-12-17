@@ -249,7 +249,7 @@ public class ParseTreeWriter extends ParseTreeVisitor {
       write(TokenKind.PERIOD);
     }
     write(tree.name);
-    visit(tree.typeArguments);
+    visitAny(tree.typeArguments);
   }
 
   @Override
@@ -449,6 +449,7 @@ public class ParseTreeWriter extends ParseTreeVisitor {
   protected void visit(ClassDeclarationTree tree) {
     write(TokenKind.CLASS);
     write(tree.name);
+    writeTypeParameters(tree.typeParameters);
     write(TokenKind.OPEN_CURLY);
     writeLine();
 
@@ -458,6 +459,12 @@ public class ParseTreeWriter extends ParseTreeVisitor {
 
     write(TokenKind.CLOSE_CURLY);
     writeLine();
+  }
+
+  @Override
+  protected void visit(TypeParameterDeclarationTree tree) {
+    write(tree.name);
+    writeColonType(tree.bounds);
   }
 
   protected void visit(omakase.syntax.trees.javascript.ArgumentsTree tree) {
@@ -803,6 +810,14 @@ public class ParseTreeWriter extends ParseTreeVisitor {
     write(TokenKind.JS_CLOSE_PAREN);
     writeLine();
     visitAny(tree.body);
+  }
+
+  private void writeTypeParameters(ImmutableList<? extends ParseTree> typeParameters) {
+    if (typeParameters != null && !typeParameters.isEmpty()) {
+      write(TokenKind.OPEN_ANGLE);
+      writeCommaSeparatedList(typeParameters);
+      write(TokenKind.CLOSE_ANGLE);
+    }
   }
 
   private void writeColonType(ParseTree type) {

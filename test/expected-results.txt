@@ -83,7 +83,7 @@ extern javascript function f ( ) : void {
   console . out ( "Hello world" ) ;
 }
 
-class Program {
+class Program < T , U : T > {
   parseVariableStatement ( ) : void {
     var a ;
     var a , b , c ;

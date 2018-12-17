@@ -1,5 +1,5 @@
 // Hello World
-class Program {
+class Program<T, U: T> {
 
   // statements
   parseVariableStatement() : void {

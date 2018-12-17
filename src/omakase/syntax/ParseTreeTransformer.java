@@ -137,6 +137,8 @@ public class ParseTreeTransformer {
       return transform(tree.asTryStatement());
     case TYPE_ARGUMENT_LIST:
       return transform(tree.asTypeArgumentList());
+    case TYPE_PARAMETER_DECLARATION:
+      return transform(tree.asTypeParameterDeclaration());
     case UNARY_EXPRESSION:
       return transform(tree.asUnaryExpression());
     case VARIABLE_DECLARATION:
@@ -349,14 +351,16 @@ public class ParseTreeTransformer {
   }
 
   protected ParseTree transform(ClassDeclarationTree tree) {
+    ImmutableList<? extends omakase.syntax.trees.ParseTree> typeParameters = transformList(tree.typeParameters);
     ImmutableList<? extends omakase.syntax.trees.ParseTree> members = transformList(tree.members);
-    if (members == tree.members) {
+    if (members == tree.members && typeParameters == tree.typeParameters) {
       return tree;
     }
     return new ClassDeclarationTree(
         null,
         tree.isExtern,
         tree.name,
+        typeParameters,
         members);
   }
 
@@ -724,15 +728,23 @@ public class ParseTreeTransformer {
         typeArguments);
   }
 
-  protected ParseTree transform(UnaryExpressionTree tree) {
-    ParseTree operand = transformAny(tree.operand);
-    if (operand == tree.operand) {
+  protected ParseTree transform(TypeParameterDeclarationTree tree) {
+    var bounds = transformAny(tree.bounds);
+    if (bounds == tree.bounds) {
       return tree;
     }
-    return new UnaryExpressionTree(
-        null,
-        tree.operator,
-        operand);
+    return new TypeParameterDeclarationTree(null, bounds, tree.name);
+  }
+
+  protected ParseTree transform(UnaryExpressionTree tree) {
+  ParseTree operand = transformAny(tree.operand);
+  if (operand == tree.operand) {
+    return tree;
+  }
+  return new UnaryExpressionTree(
+      null,
+      tree.operator,
+      operand);
   }
 
   protected ParseTree transform(VariableDeclarationTree tree) {

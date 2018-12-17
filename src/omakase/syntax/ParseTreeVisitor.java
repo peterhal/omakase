@@ -166,6 +166,9 @@ public class ParseTreeVisitor {
     case TYPE_ARGUMENT_LIST:
       visit(tree.asTypeArgumentList());
       break;
+    case TYPE_PARAMETER_DECLARATION:
+      visit(tree.asTypeParameterDeclaration());
+      break;
     case UNARY_EXPRESSION:
       visit(tree.asUnaryExpression());
       break;
@@ -360,6 +363,7 @@ public class ParseTreeVisitor {
   }
 
   protected void visit(ClassDeclarationTree tree) {
+    visitList(tree.typeParameters);
     visitList(tree.members);
   }
 
@@ -507,6 +511,10 @@ public class ParseTreeVisitor {
 
   protected void visit(TypeArgumentListTree tree) {
     visitList(tree.typeArguments);
+  }
+
+  protected void visit(TypeParameterDeclarationTree tree) {
+    visitAny(tree.bounds);
   }
 
   protected void visit(UnaryExpressionTree tree) {

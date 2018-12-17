@@ -15,6 +15,7 @@
 package omakase.syntax;
 
 import com.google.common.collect.ImmutableList;
+import com.sun.source.tree.TypeParameterTree;
 import omakase.syntax.tokens.IdentifierToken;
 import omakase.syntax.tokens.Token;
 import omakase.syntax.tokens.TokenKind;
@@ -25,7 +26,9 @@ import omakase.util.SourceRange;
 
 import static omakase.syntax.PredefinedNames.CONSTRUCTOR;
 import static omakase.syntax.PredefinedNames.JAVASCRIPT;
+import static omakase.syntax.tokens.TokenKind.CLOSE_ANGLE;
 import static omakase.syntax.tokens.TokenKind.NATIVE;
+import static omakase.syntax.tokens.TokenKind.OPEN_ANGLE;
 
 /**
  * Parser for the Omakase language.
@@ -262,10 +265,28 @@ public class Parser extends ParserBase {
     var isExtern = hasModifier(modifiers, TokenKind.EXTERN);
     eat(TokenKind.CLASS);
     IdentifierToken name = eatId();
+    var typeParameters = parseTypeParametersOpt();
     eat(TokenKind.OPEN_CURLY);
     var members = parseClassMembers(isExtern);
     eat(TokenKind.CLOSE_CURLY);
-    return new ClassDeclarationTree(getRange(start), isExtern, name, members);
+    return new ClassDeclarationTree(getRange(start), isExtern, name, typeParameters, members);
+  }
+
+  private ImmutableList<ParseTree> parseTypeParametersOpt() {
+    if (eatOpt(OPEN_ANGLE)) {
+      var result = parseCommaSeparatedList(this::parseTypeParameter);
+      eat(CLOSE_ANGLE);
+      return result;
+    } else {
+      return ImmutableList.of();
+    }
+  }
+
+  private TypeParameterDeclarationTree parseTypeParameter() {
+    var start = peek();
+    IdentifierToken name = eatId();
+    var bounds = parseColonTypeOpt();
+    return new TypeParameterDeclarationTree(getRange(start), bounds, name);
   }
 
   private ImmutableList<ParseTree> parseClassMembers(final boolean isExtern) {
@@ -448,6 +469,7 @@ public class Parser extends ParserBase {
     var start = peek();
     eat(TokenKind.OPEN_ANGLE);
     var typeArguments = parseCommaSeparatedList(this::parseType);
+    assert(typeArguments != null);
     return new TypeArgumentListTree(getRange(start), typeArguments);
   }
 

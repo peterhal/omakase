@@ -209,6 +209,10 @@ public class ParseTree {
     return (TypeArgumentListTree) this;
   }
 
+  public TypeParameterDeclarationTree asTypeParameterDeclaration() {
+    return (TypeParameterDeclarationTree) this;
+  }
+
   public UnaryExpressionTree asUnaryExpression() {
     return (UnaryExpressionTree) this;
   }
@@ -579,6 +583,10 @@ public class ParseTree {
 
   public boolean isTypeArgumentList() {
     return this.kind == ParseTreeKind.TYPE_ARGUMENT_LIST;
+  }
+
+  public boolean isTypeParameter() {
+    return this.kind == ParseTreeKind.TYPE_PARAMETER_DECLARATION;
   }
 
   public boolean isUnaryExpression() {
