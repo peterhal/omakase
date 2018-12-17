@@ -47,6 +47,8 @@ public class SemanticAnalyzer {
       return;
     }
 
+    // TODO: Declare Type Parameter Constraints
+
     declareClassMembers();
     if (hadError()) {
       return;

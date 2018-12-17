@@ -97,6 +97,10 @@ public class Project {
     bindings.setSymbol(classSymbol.declaration, classSymbol);
   }
 
+  public Map<String, Symbol> getSymbolMap() {
+    return symbols;
+  }
+
   public Iterable<Symbol> getSymbols() {
     return symbols.values();
   }

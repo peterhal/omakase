@@ -14,10 +14,12 @@
 
 package omakase.semantics.symbols;
 
+import com.google.common.collect.ImmutableList;
 import omakase.semantics.types.Type;
 import omakase.syntax.trees.ClassDeclarationTree;
 
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -27,12 +29,14 @@ public class ClassSymbol extends Symbol {
   private final Type type;
   // TODO: Static and instance members with same name.
   private final Map<String, Symbol> members;
+  private final Map<String, TypeVariableSymbol> typeParameters;
 
-  public ClassSymbol(String name, ClassDeclarationTree declaration, Type type) {
+  public ClassSymbol(String name, ClassDeclarationTree declaration, Type type, Map<String, TypeVariableSymbol> typeParameters) {
     super(SymbolKind.CLASS, name, declaration);
     this.declaration = declaration;
+    this.typeParameters = typeParameters;
     this.type = type;
-    this.members = new LinkedHashMap<String, Symbol>();
+    this.members = new LinkedHashMap<>();
   }
 
   public void addMember(Symbol member) {

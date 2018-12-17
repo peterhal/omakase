@@ -14,14 +14,19 @@
 
 package omakase.semantics;
 
+import com.google.common.collect.ImmutableList;
 import omakase.semantics.symbols.ClassSymbol;
 import omakase.semantics.symbols.FunctionSymbol;
 import omakase.semantics.symbols.Symbol;
-import omakase.semantics.types.FunctionType;
+import omakase.semantics.symbols.TypeVariableSymbol;
 import omakase.syntax.tokens.IdentifierToken;
 import omakase.syntax.tokens.Token;
 import omakase.syntax.trees.*;
 import omakase.util.SourceLocation;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  */
@@ -50,7 +55,7 @@ public class GlobalDeclarer extends ParameterDeclarer {
       if (element.isFunctionDeclaration()) {
         FunctionDeclarationTree functionDeclaration = element.asFunctionDeclaration();
         String functionName = functionDeclaration.name.value;
-        if (checkDuplicateSymbol(functionName, functionDeclaration.name)) return;
+        if (checkDuplicateSymbol(project.getSymbolMap(), functionName, functionDeclaration.name)) return;
 
         var type = new TypeBinder(project).bindFunctionType(functionDeclaration.returnType, functionDeclaration.formals);
         project.addFunction(new FunctionSymbol(functionDeclaration, type, buildParameters(functionDeclaration.formals, functionDeclaration.isJavascript)));
@@ -63,16 +68,39 @@ public class GlobalDeclarer extends ParameterDeclarer {
       if (element.isClassDeclaration()) {
         ClassDeclarationTree classDeclaration = element.asClassDeclaration();
         String className = classDeclaration.name.value;
-        if (checkDuplicateSymbol(className, classDeclaration.name)) return;
-        project.addClass(new ClassSymbol(className, classDeclaration, project.getTypes().getClassSymbolType()));
+        var typeParameters = declareTypeParameters(classDeclaration.typeParameters);
+        if (checkDuplicateSymbol(project.getSymbolMap(), className, classDeclaration.name)) return;
+        project.addClass(new ClassSymbol(
+            className,
+            classDeclaration,
+            project.getTypes().getClassSymbolType(),
+            typeParameters));
       }
     }
   }
 
-  private boolean checkDuplicateSymbol(String name, IdentifierToken tree) {
-    if (project.containsSymbol(name)) {
+  private HashMap<String, TypeVariableSymbol> declareTypeParameters(List<? extends ParseTree> typeParameters) {
+    var result = new HashMap<String, TypeVariableSymbol>();
+    if (typeParameters != null) {
+      for (var typeParameter: typeParameters) {
+        declareTypeParameter(result, typeParameter.asTypeParameterDeclaration());
+      }
+    }
+    return result;
+  }
+
+  private void declareTypeParameter(HashMap<String, TypeVariableSymbol> typeParameters, TypeParameterDeclarationTree tree) {
+    var name = tree.name;
+    if (checkDuplicateSymbol(typeParameters, name.value, name)) {
+      return;
+    }
+    typeParameters.put(name.value, new TypeVariableSymbol(tree, name));
+  }
+
+  private boolean checkDuplicateSymbol(Map<String, ? extends Symbol> symbolMap, String name, IdentifierToken tree) {
+    if (symbolMap.containsKey(name)) {
       reportError(tree, "Duplicate class '%s'.", name);
-      reportRelatedError(project.getSymbol(name));
+      reportRelatedError(symbolMap.get(name));
       return true;
     }
     return false;

@@ -267,7 +267,8 @@ A
   b
   c
 Compiling Error Tests ...
-Missing definition of 'main'.
+errors/compiler/compile.oma (1, 12): Duplicate class 'T'.
+errors/compiler/compile.oma (1, 9): Related location
 Compiling Tests Debug ...
 ( function ( ) {
   MyClass = function ( ) {

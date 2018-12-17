@@ -16,13 +16,13 @@ package omakase.semantics.symbols;
 
 import omakase.semantics.types.Type;
 import omakase.syntax.tokens.IdentifierToken;
+import omakase.syntax.trees.TypeParameterDeclarationTree;
 
 /**
  */
 public class TypeVariableSymbol extends Symbol {
-  public TypeVariableSymbol(IdentifierToken name) {
-    // TODO: Need Parse tree.
-    super(SymbolKind.TYPE_VARIABLE, name.value, null);
+  public TypeVariableSymbol(TypeParameterDeclarationTree tree, IdentifierToken name) {
+    super(SymbolKind.TYPE_VARIABLE, name.value, tree);
   }
 
   @Override
